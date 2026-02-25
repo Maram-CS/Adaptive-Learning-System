@@ -46,15 +46,15 @@ body {
     position: relative;
     width: 100%;
     max-width: 800px;
-    min-height: 550px;
+    min-height: 500px;
     border: 2px solid #00d4ff;
     box-shadow: 0 0 25px #00d4ff;
     overflow: hidden;
     display: flex;
 }
 
-/* قسم التسجيل */
-.signup-section {
+/* قسم بيانات الاعتماد (Login/Signup) */
+.credentials-panel {
     width: 50%;
     padding: 50px 40px;
     display: flex;
@@ -63,14 +63,32 @@ body {
     z-index: 2;
 }
 
-.signup-section h2 {
+.credentials-panel.signin {
+    width: 50%;
+    padding: 50px 40px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.credentials-panel.signup {
+     width: 50%;
+    padding: 50px 40px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.credentials-panel h2 {
     font-size: 32px;
     text-align: center;
     margin-bottom: 20px;
 }
 
 /* حاويات الحقول */
-.signup-section .field-wrapper {
+.credentials-panel .field-wrapper {
     position: relative;
     width: 100%;
     height: 50px;
@@ -112,6 +130,20 @@ body {
     color: #00d4ff;
 }
 
+.field-wrapper i {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    font-size: 18px;
+    transform: translateY(-50%);
+    color: #fff;
+}
+
+.field-wrapper input:focus~i,
+.field-wrapper input:valid~i {
+    color: #00d4ff;
+}
+
 /* زر الإرسال */
 .submit-button {
     position: relative;
@@ -125,7 +157,7 @@ body {
     border: 2px solid #00d4ff;
     overflow: hidden;
     z-index: 1;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .submit-button::before {
@@ -144,27 +176,53 @@ body {
     top: 0;
 }
 
-/* رابط تسجيل الدخول */
-.login-link {
+/* رابط التبديل */
+.switch-link {
     font-size: 14px;
     text-align: center;
     margin: 20px 0 10px;
 }
 
-.login-link a {
+.switch-link a {
     text-decoration: none;
     color: #00d4ff;
     font-weight: 600;
     cursor: pointer;
 }
 
-.login-link a:hover {
+.switch-link a:hover {
     text-decoration: underline;
 }
 
 /* قسم الترحيب */
 .welcome-section {
     width: 50%;
+    background: linear-gradient(135deg, #1a1a2e, #00d4ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-section.signin {
+    width: 50%;
+    background: linear-gradient(135deg, #1a1a2e, #00d4ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-section.signup {
+     width: 50%;
     background: linear-gradient(135deg, #1a1a2e, #00d4ff);
     display: flex;
     justify-content: center;
@@ -187,6 +245,7 @@ body {
     font-size: 16px;
     opacity: 0.9;
 }
+
 
 /* الأشكال الخلفية */
 .background-shape {
@@ -214,27 +273,48 @@ body {
     z-index: 1;
 }
 
-
 /* تأثيرات الحركة للعناصر */
-.signup-section .slide-element {
+.credentials-panel .slide-element {
     animation: slideInRight 0.7s ease forwards;
     opacity: 0;
 }
 
-.signup-section .slide-element:nth-child(1) { animation-delay: 0.2s; }
-.signup-section .slide-element:nth-child(2) { animation-delay: 0.3s; }
-.signup-section .slide-element:nth-child(3) { animation-delay: 0.4s; }
-.signup-section .slide-element:nth-child(4) { animation-delay: 0.5s; }
-.signup-section .slide-element:nth-child(5) { animation-delay: 0.6s; }
-.signup-section .slide-element:nth-child(6) { animation-delay: 0.7s; }
+.credentials-panel .slide-element:nth-child(1) { 
+    animation-delay: 0.2s; 
+}
+
+.credentials-panel .slide-element:nth-child(2) { 
+    animation-delay: 0.3s; 
+}
+
+.credentials-panel .slide-element:nth-child(3) { 
+    animation-delay: 0.4s; 
+}
+
+.credentials-panel .slide-element:nth-child(4) { 
+    animation-delay: 0.5s; 
+}
+
+.credentials-panel .slide-element:nth-child(5) { 
+    animation-delay: 0.6s; 
+}
+
+.credentials-panel .slide-element:nth-child(6) { 
+    animation-delay: 0.7s; 
+}
 
 .welcome-section .slide-element {
     animation: slideInLeft 0.7s ease forwards;
     opacity: 0;
 }
 
-.welcome-section .slide-element:nth-child(1) { animation-delay: 0.4s; }
-.welcome-section .slide-element:nth-child(2) { animation-delay: 0.5s; }
+.welcome-section .slide-element:nth-child(1) { 
+    animation-delay: 0.4s; 
+}
+
+.welcome-section .slide-element:nth-child(2) { 
+    animation-delay: 0.5s; 
+}
 
 /* تعريف الحركات */
 @keyframes slideInRight {
@@ -275,7 +355,7 @@ body {
         min-height: auto;
     }
 
-    .signup-section,
+    .credentials-panel,
     .welcome-section {
         width: 100%;
         padding: 40px 30px;
@@ -290,8 +370,9 @@ body {
         display: none;
     }
 
-    .signup-section h2 {
+    .credentials-panel h2 {
         font-size: 28px;
+        margin-bottom: 10px;
     }
 
     .welcome-section h2 {
@@ -301,16 +382,55 @@ body {
     .field-wrapper {
         margin-top: 20px;
     }
+
+    .credentials-panel .slide-element {
+        animation: slideInUp 0.5s ease forwards;
+    }
+
+    .credentials-panel .slide-element:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .credentials-panel .slide-element:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .credentials-panel .slide-element:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .credentials-panel .slide-element:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .credentials-panel .slide-element:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .credentials-panel .slide-element:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 /* التصميم المتجاوب للموبايل */
 @media (max-width: 480px) {
-    .signup-section,
+    .credentials-panel,
     .welcome-section {
         padding: 30px 20px;
     }
 
-    .signup-section h2,
+    .credentials-panel h2,
     .welcome-section h2 {
         font-size: 24px;
     }
@@ -325,7 +445,6 @@ body {
         height: 40px;
     }
 
-    .login-link {
+    .switch-link {
         font-size: 13px;
-    }
-}
+    }}

@@ -1,63 +1,76 @@
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Edufin</title>
-    
+    <title>Sign Up - Eduphin</title>
     <!-- Font Awesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- ملف CSS الخارجي -->
-    <link rel="stylesheet" href="../Public/Style/Register.css">
+    <!-- نفس ملف CSS -->
+    <link rel="stylesheet" href="../Public/Style/Register.css"> 
 </head>
 <body>
-    <div class="auth-wrapper" id="authWrapper">
-        <!-- الأشكال الخلفية -->
-        <div class="background-shape"></div>
-        <div class="secondary-shape"></div>
 
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-            <h2 class="slide-element">Welcome!</h2>
-            <p class="slide-element">Join to Edufin family today and<br>start your journey</p>
-        </div>
+<div class="auth-wrapper">
+    <!-- قسم التسجيل -->
+    <div class="credentials-panel signup">
+        <h2 class="slide-element">Sign Up</h2>
 
-        <!-- قسم التسجيل -->
-        <div class="signup-section">
-            <h2 class="slide-element">Register</h2>
-            
+        <form>
             <div class="field-wrapper slide-element">
-                <input type="text" id="username" required>
-                <label for="username">Username</label>
+                <input type="text" required name="username">
+                <label>Username</label>
+                <i class="fas fa-user" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);"></i>
             </div>
 
             <div class="field-wrapper slide-element">
-                <input type="email" id="email" required>
-                <label for="email">Email</label>
+                <input type="email" required name="email">
+                <label>Email</label>
+                <i class="fas fa-envelope" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);"></i>
             </div>
 
             <div class="field-wrapper slide-element">
-                <input type="password" id="password" required>
-                <label for="password">Password</label>
+                <input type="password" required name="password">
+                <label>Password</label>
+                <i class="fas fa-lock" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);"></i>
             </div>
 
-            <button class="submit-button slide-element">SIGN UP</button>
+            <button type="submit" class="submit-button slide-element">
+                Sign Up
+            </button>
 
-            <div class="login-link slide-element">
-                Already have an account? <a href="login.html" id="signInLink">Sign In</a>
+            <div class="switch-link slide-element">
+                Already have an account? 
+                <br>
+                <a href="login.html">Login</a>
             </div>
-        </div>
+        </form>
     </div>
 
-    <div class="footer">
-        &copy; 2026 Edufin. All rights reserved. | <a href="#">Privacy Policy</a>
+    <!-- قسم الترحيب -->
+    <div class="welcome-section signup">
+        <h2 class="slide-element">Join Us!</h2>
+        <p class="slide-element">
+            Create your account and start your learning journey with Eduphin.
+        </p>
     </div>
 
-    <!-- ملف JavaScript الخارجي -->
-    <script src="script.js"></script>
+    <!-- الأشكال الخلفية -->
+    <div class="background-shape"></div>
+    <div class="secondary-shape"></div>
+</div>
+
+<!-- الفوتر -->
+<div class="footer">
+    © 2026 Eduphin. All rights reserved.
+</div>
+
+<!-- JavaScript بسيط -->
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('تم محاولة التسجيل! (تجريبي)');
+    });
+</script>
+
 </body>
 </html>
