@@ -20,7 +20,7 @@ body {
     padding: 20px;
 }
 
-
+/* تنسيق الفوتر */
 .footer {
     margin-top: 30px;
     text-align: center;
@@ -41,7 +41,7 @@ body {
     color: #00b8d4;
 }
 
-
+/* الحاوية الرئيسية */
 .auth-wrapper {
     position: relative;
     width: 100%;
@@ -53,7 +53,7 @@ body {
     display: flex;
 }
 
-
+/* قسم التسجيل */
 .signup-section {
     width: 50%;
     padding: 50px 40px;
@@ -69,7 +69,7 @@ body {
     margin-bottom: 20px;
 }
 
-
+/* حاويات الحقول */
 .signup-section .field-wrapper {
     position: relative;
     width: 100%;
