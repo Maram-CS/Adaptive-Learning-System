@@ -1,5 +1,6 @@
 import loginDB from "../ConfigDB/LoginDB.js";
 import LoginModel from "../Model/LoginModel.js";
+import registerModel from "../Model/registerModel.js";
 import { config } from "dotenv";
 
 config();
