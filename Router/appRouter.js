@@ -1,8 +1,8 @@
 import {Router} from 'express';
 
 const AppRouter = Router();
-AppRouter.get('/', (req, res) => {
-    res.render('login.html');
+AppRouter.get('/login', (req, res) => {
+    res.render('auth/login');
 });
 
 export default AppRouter;
