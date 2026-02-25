@@ -41,6 +41,93 @@ body {
     color: #00b8d4;
 }
 
+
+
+.field-wrapper select {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
+    border-bottom: 2px solid #fff;
+    padding-right: 23px;
+    transition: .5s;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
+/* إخفاء السهم الافتراضي للمتصفح */
+.field-wrapper select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* سهم مخصص لحقل الدور فقط */
+.field-wrapper select ~ i {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #fff;
+    transition: .5s;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* إضافة سهم إضافي (اختياري) */
+.field-wrapper select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 center;
+    background-size: 16px;
+}
+
+/* عندما يكون الحقل فارغ (لا قيمة مختارة) */
+.field-wrapper select:invalid {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* عندما يتم اختيار قيمة */
+.field-wrapper select:valid {
+    color: #fff;
+}
+
+/* تحريك التسمية عند التركيز أو عند وجود قيمة مختارة */
+.field-wrapper select:focus ~ label,
+.field-wrapper select:valid ~ label {
+    top: -5px;
+    color: #00d4ff;
+    font-size: 14px;
+}
+
+/* تغيير لون الأيقونة عند التركيز */
+.field-wrapper select:focus ~ i,
+.field-wrapper select:valid ~ i {
+    color: #00d4ff;
+}
+
+/* تغيير لون السهم المخصص عند التركيز */
+.field-wrapper select:focus {
+    border-bottom: 2px solid #00d4ff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300d4ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+/* تنسيق الخيارات في القائمة المنسدلة */
+.field-wrapper select option {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 10px;
+}
+
+
+
+
 /* الحاوية الرئيسية */
 .auth-wrapper {
     position: relative;
