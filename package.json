@@ -1,0 +1,31 @@
+{
+  "name": "adaptive-learning-system",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000A\u0000d\u0000a\u0000p\u0000t\u0000i\u0000v\u0000e\u0000-\u0000L\u0000e\u0000a\u0000r\u0000n\u0000i\u0000n\u0000g\u0000-\u0000S\u0000y\u0000s\u0000t\u0000e\u0000m\u0000\r\u0000 \u0000",
+  "main": "App.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node App.js",
+    "dev": "nodemon App.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maram-CS/Adaptive-Learning-System.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Maram-CS/Adaptive-Learning-System/issues"
+  },
+  "homepage": "https://github.com/Maram-CS/Adaptive-Learning-System#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "mongoose": "^9.2.2",
+    "nodejs": "^0.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
