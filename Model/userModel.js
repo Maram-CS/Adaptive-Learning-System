@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 import {model} from "mongoose";
 import bcrypt from "bcryptjs";
 
-const registerSchema = new Schema({
+const UserSchema = new Schema({
      email: {
         type: String,
         required: true,
@@ -19,34 +19,26 @@ const registerSchema = new Schema({
     },
 },{timestamps: true});
 
-registerSchema.pre('save',function(next) {
+UserSchema.pre("save",async function(next) {
     const user = this;
     try {
-    if(!user.isModified('password')){
-        next();
-    }else {
-        salt  = bcrypt.genSalt(10,(err,salt)=>{
-            if(err) {
-                next();
-            }else {
-                bcrypt.hash(user.password,salt,(err,hash)=> {
-                    if(err) {
-                        next();
-                    }
-                    user.password = hash;
-                    next();
-                })
-            }
-
-        })
-    }
-}catch(err) {
-    console.error(err);
-}
-})
+        if(!user.isModified("password")) {
+         next();
+        }else {
+        const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(user.password,salt);
+            user.password = hash;
+            next();
+        }
+    }catch(err) {
+        console.error(err);
+    }});
+               
+        
 
 
- registerSchema.statics.login = async function(email,password) {
+
+ UserSchema.statics.login = async function(email,password) {
     const model = this;
     const user = await model.findOne({email});
     if(user) {
@@ -65,6 +57,5 @@ registerSchema.pre('save',function(next) {
         throw Error ("this user not exist");
     }
 }
-
-const registerModel = model('Register',registerSchema);
-export default registerModel;
+const UserModel = model('User',UserSchema);
+export default UserModel;
