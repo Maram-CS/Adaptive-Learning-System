@@ -12,7 +12,7 @@
     <div class="credentials-panel signin">
         <h2 class="slide-element">Login</h2>
 
-        <form>
+        <form action="/auth/login" method="post">
             <div class="field-wrapper slide-element">
                 <input type="email" required name="email">
                 <label>Email</label>
@@ -32,7 +32,7 @@
             <div class="switch-link slide-element">
                 Don't have an account? 
                 <br>
-                <a href="Register.ejs">Sign Up</a>
+                <a href="/App/register">Sign Up</a>
             </div>
         </form>
     </div>
@@ -52,6 +52,7 @@
     © 2026 Eduphin. All rights reserved.
 </div>
 
+<<<<<<< HEAD
 <script>
     document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -59,5 +60,7 @@
     });
 </script>
 
+=======
+>>>>>>> 61f4f7dfad706a9d19b15f47ef94991b24c55c85
 </body>
 </html>
