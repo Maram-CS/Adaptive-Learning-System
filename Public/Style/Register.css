@@ -63,6 +63,7 @@ body {
     appearance: none;
 }
 
+
 /* يخفي السهم الافتراضي */
 .field-wrapper select {
     -webkit-appearance: none;
