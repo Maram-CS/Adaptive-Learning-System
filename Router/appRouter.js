@@ -17,4 +17,8 @@ AppRouter.get("/studentDashboard",(req,res)=>{
     res.render("auth/studentDashboard");
 });
 
+AppRouter.get("/profile",(req,res)=>{
+    res.render("auth/profile");
+});
+
 export default AppRouter;
