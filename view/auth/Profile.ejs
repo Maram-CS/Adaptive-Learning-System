@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,15 +30,18 @@
     <h2>Student <span>Profile</span></h2>
 
     <div class="profile-header">
-      <div class="avatar"></div>
+      <div class="avatar-container">
+        <img id="profileImage" class="avatar" src="https://via.placeholder.com/90" alt="Profile">
+        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+      </div>
       <div>
         <h3>Name</h3>
         <p>frontend developer</p>
       </div>
 
       <div class="header-buttons">
-        <button class="upload">Upload New Photo</button>
-        <button class="delete">Delete</button>
+        <button class="upload" onclick="document.getElementById('imageUpload').click();">Upload New Photo</button>
+        <button class="delete" id="deleteImage">Delete</button>
       </div>
     </div>
 
@@ -46,63 +50,91 @@
       <div class="row">
         <div class="input-group">
           <label>First Name</label>
-          <input type="text">
+          <input type="text" placeholder="Enter first name">
         </div>
 
         <div class="input-group">
           <label>Last Name</label>
-          <input type="text">
+          <input type="text" placeholder="Enter last name">
         </div>
       </div>
 
       <div class="input-group">
         <label>User Name</label>
-        <input type="text">
+        <input type="text" placeholder="Enter username">
       </div>
 
       <div class="row">
         <div class="input-group">
           <label>Email Address</label>
-          <input type="email">
+          <input type="email" placeholder="Enter email">
         </div>
 
         <div class="input-group">
           <label>Phone Number</label>
-          <input type="text">
+          <input type="text" placeholder="Enter phone number">
         </div>
       </div>
 
       <div class="input-group">
         <label>University</label>
-        <input type="text">
+        <input type="text" placeholder="Enter university">
       </div>
 
-      <div class="input-group">
-        <label>Speciality</label>
-        <select>
-          <option>Select speciality</option>
-        </select>
+      <div class="row">
+        <div class="input-group">
+          <label>Speciality</label>
+          <select>
+            <option>- Select specialty -</option>
+            <option>Computer Science</option>
+            <option>Software Engineering</option>
+            <option>Information Technology</option>
+            <option>Data Science</option>
+            <option>Artificial Intelligence</option>
+            <option>Cybersecurity</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Year of study</label>
+          <select>
+            <option>- Select year of study -</option>
+            <option>1st Year</option>
+            <option>2nd Year</option>
+            <option>3rd Year</option>
+            <option>4th Year</option>
+            <option>5th Year</option>
+            <option>Master's</option>
+            <option>PhD</option>
+          </select>
+        </div>
       </div>
 
-      <div class="input-group">
-        <label>Year of study</label>
-        <select>
-          <option>Select year of study</option>
-        </select>
-      </div>
+      <div class="row">
+        <div class="input-group">
+          <label>Main track</label>
+          <select>
+            <option>- Select main track -</option>
+            <option>Web Development</option>
+            <option>Mobile Development</option>
+            <option>Frontend Development</option>
+            <option>Backend Development</option>
+            <option>Full Stack Development</option>
+            <option>DevOps</option>
+            <option>Cloud Computing</option>
+          </select>
+        </div>
 
-      <div class="input-group">
-        <label>Main track</label>
-        <select>
-          <option>Select main track</option>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <label>Skill level</label>
-        <select>
-          <option>Select skill level</option>
-        </select>
+        <div class="input-group">
+          <label>Skill level</label>
+          <select>
+            <option>- Select skill level -</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+            <option>Expert</option>
+          </select>
+        </div>
       </div>
 
       <div class="form-buttons">
@@ -114,7 +146,28 @@
 
   </div>
 
+
 </div>
+
+<script>
+  // JavaScript for image upload
+  document.getElementById('imageUpload').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('profileImage').src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Delete image
+  document.getElementById('deleteImage').addEventListener('click', function() {
+    document.getElementById('profileImage').src = 'https://via.placeholder.com/90';
+    document.getElementById('imageUpload').value = '';
+  });
+</script>
 
 </body>
 </html>
