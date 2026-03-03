@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Page - Eduphin</title>
+    <title>Sign in - Eduphin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/Style/Register.css"> 
 </head>
@@ -10,23 +10,23 @@
 
 <div class="auth-wrapper">
     <div class="credentials-panel signin">
-        <h2 class="slide-element">Login</h2>
+        <h2 class="slide-element">Sign in</h2>
 
         <form action="/auth/login" method="post">
             <div class="field-wrapper slide-element">
-                <input type="email" required name="email">
+                <input type="email" name="email" required placeholder=" ">
                 <label>Email</label>
                 <i class="fas fa-envelope" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);"></i>
             </div>
 
             <div class="field-wrapper slide-element">
-                <input type="password" required name="password">
+                <input type="password" name="password" id="loginPassword" required placeholder=" ">
                 <label>Password</label>
-                <i class="fas fa-lock" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);"></i>
+                <i class="fas fa-lock toggle-password" id="toggleLoginPassword" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);"></i>
             </div>
 
             <button type="submit" class="submit-button slide-element">
-                Login
+               Sign in
             </button>
 
             <div class="switch-link slide-element">
@@ -52,15 +52,31 @@
     © 2026 Eduphin. All rights reserved.
 </div>
 
-<<<<<<< HEAD
+
 <script>
     document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
-        alert('تم محاولة تسجيل الدخول! (تجريبي)');
+        alert('Login successful! Explore your courses and start coding.'); // يمكنك استبدال هذا بتنفيذ فعلي لتسجيل الدخول
+    });
+</script>
+<script>
+    const toggleLoginPassword = document.getElementById("toggleLoginPassword");
+    const loginPassword = document.getElementById("loginPassword");
+
+    toggleLoginPassword.addEventListener("click", function () {
+
+        if (loginPassword.type === "password") {
+            loginPassword.type = "text";
+            this.classList.remove("fa-lock");
+            this.classList.add("fa-unlock");
+        } else {
+            loginPassword.type = "password";
+            this.classList.remove("fa-unlock");
+            this.classList.add("fa-lock");
+        }
+
     });
 </script>
 
-=======
->>>>>>> 61f4f7dfad706a9d19b15f47ef94991b24c55c85
 </body>
 </html>

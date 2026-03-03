@@ -9,7 +9,9 @@
     font-family: 'Poppins', sans-serif;
     color: #fff;
 }
-
+.toggle-password {
+    cursor: pointer;
+}
 body {
     display: flex;
     flex-direction: column;
@@ -43,6 +45,8 @@ body {
 
 
 
+/* ====== SELECT (I am a) SAME STYLE AS INPUT ====== */
+
 .field-wrapper select {
     width: 100%;
     height: 100%;
@@ -50,84 +54,53 @@ body {
     border: none;
     outline: none;
     font-size: 16px;
-    color: #fff;
+    color: #1c1c1C; /* نفس لون input */
     font-weight: 600;
-    border-bottom: 2px solid #fff;
+    border-bottom: 2px solid rgb(4, 4, 69); /* نفس border */
     padding-right: 23px;
     transition: .5s;
     cursor: pointer;
-    position: relative;
-    z-index: 2;
-}
-
-/* إخفاء السهم الافتراضي للمتصفح */
-.field-wrapper select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
 }
 
-/* سهم مخصص لحقل الدور فقط */
-.field-wrapper select ~ i {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: #fff;
-    transition: .5s;
-    z-index: 3;
-    pointer-events: none;
-}
-
-/* إضافة سهم إضافي (اختياري) */
+/* يخفي السهم الافتراضي */
 .field-wrapper select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+/* السهم المخصص */
+.field-wrapper select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231c1c1C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0 center;
     background-size: 16px;
 }
 
-/* عندما يكون الحقل فارغ (لا قيمة مختارة) */
-.field-wrapper select:invalid {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-/* عندما يتم اختيار قيمة */
+/* كي ندير focus ولا نختار قيمة */
+.field-wrapper select:focus,
 .field-wrapper select:valid {
-    color: #fff;
+    border-bottom: 2px solid #00d4ff;
+    color: #1c1c1C;
 }
 
-/* تحريك التسمية عند التركيز أو عند وجود قيمة مختارة */
+/* label تتحرك كيما input */
 .field-wrapper select:focus ~ label,
 .field-wrapper select:valid ~ label {
     top: -5px;
-    color: #00d4ff;
-    font-size: 14px;
+    color: #053672;
 }
 
-/* تغيير لون الأيقونة عند التركيز */
+/* الأيقونة تولي زرقاء كي focus */
 .field-wrapper select:focus ~ i,
 .field-wrapper select:valid ~ i {
-    color: #00d4ff;
+    color: #053672;
 }
 
-/* تغيير لون السهم المخصص عند التركيز */
-.field-wrapper select:focus {
-    border-bottom: 2px solid #00d4ff;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300d4ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-/* تنسيق الخيارات في القائمة المنسدلة */
+/* لون الخيارات داخل القائمة */
 .field-wrapper select option {
-    background: #1a1a2e;
-    color: #fff;
-    padding: 10px;
+    background: #fff;
+    color: #1c1c1C;
 }
-
-
-
-
 /* الحاوية الرئيسية */
 .auth-wrapper {
     position: relative;
@@ -214,8 +187,8 @@ body {
     transition: .5s;
 }
 
-.field-wrapper input:focus~label,
-.field-wrapper input:valid~label {
+.field-wrapper input:focus ~ label,
+.field-wrapper input:not(:placeholder-shown) ~ label {
     top: -5px;
     color: #053672;
 }
@@ -223,7 +196,6 @@ body {
 .field-wrapper i {
     position: absolute;
     top: 50%;
-    right: 0;
     font-size: 18px;
     transform: translateY(-50%);
     color: #1c1c1C;
@@ -271,17 +243,19 @@ body {
     font-size: 14px;
     text-align: center;
     margin: 20px 0 10px;
+    color: #000;
 }
 
 .switch-link a {
     text-decoration: none;
-    color: #00d4ff;
+    color: #053672;
     font-weight: 600;
     cursor: pointer;
 }
 
 .switch-link a:hover {
     text-decoration: underline;
+    color: #00d4ff;
 }
 
 /* قسم الترحيب */
