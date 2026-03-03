@@ -1,4 +1,3 @@
-
 /* استيراد خط Poppins */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
@@ -9,9 +8,11 @@
     font-family: 'Poppins', sans-serif;
     color: #fff;
 }
+
 .toggle-password {
     cursor: pointer;
 }
+
 body {
     display: flex;
     flex-direction: column;
@@ -43,10 +44,7 @@ body {
     color: #00b8d4;
 }
 
-
-
-/* ====== SELECT (I am a) SAME STYLE AS INPUT ====== */
-
+/* ====== تنسيق الـ SELECT ====== */
 .field-wrapper select {
     width: 100%;
     height: 100%;
@@ -54,53 +52,44 @@ body {
     border: none;
     outline: none;
     font-size: 16px;
-    color: #1c1c1C; /* نفس لون input */
+    color: #1c1c1C;
     font-weight: 600;
-    border-bottom: 2px solid rgb(4, 4, 69); /* نفس border */
+    border-bottom: 2px solid rgb(4, 4, 69);
     padding-right: 23px;
+    padding-left: 30px !important;
     transition: .5s;
     cursor: pointer;
     appearance: none;
-}
-
-/* يخفي السهم الافتراضي */
-.field-wrapper select {
     -webkit-appearance: none;
     -moz-appearance: none;
-}
-/* السهم المخصص */
-.field-wrapper select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231c1c1C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 0 center;
+    background-position: right 10px center;
     background-size: 16px;
 }
 
-/* كي ندير focus ولا نختار قيمة */
 .field-wrapper select:focus,
 .field-wrapper select:valid {
     border-bottom: 2px solid #00d4ff;
     color: #1c1c1C;
 }
 
-/* label تتحرك كيما input */
 .field-wrapper select:focus ~ label,
 .field-wrapper select:valid ~ label {
     top: -5px;
     color: #053672;
 }
 
-/* الأيقونة تولي زرقاء كي focus */
 .field-wrapper select:focus ~ i,
 .field-wrapper select:valid ~ i {
     color: #053672;
 }
 
-/* لون الخيارات داخل القائمة */
 .field-wrapper select option {
     background: #fff;
     color: #1c1c1C;
 }
+
 /* الحاوية الرئيسية */
 .auth-wrapper {
     position: relative;
@@ -113,7 +102,7 @@ body {
     display: flex;
 }
 
-/* قسم بيانات الاعتماد (Login/Signup) */
+/* قسم بيانات الاعتماد */
 .credentials-panel {
     width: 50%;
     padding: 50px 40px;
@@ -121,21 +110,12 @@ body {
     justify-content: center;
     flex-direction: column;
     z-index: 2;
-    COLOR: #1c1c1C;
+    color: #1c1c1C;
 }
 
-.credentials-panel.signin {
-    width: 50%;
-    padding: 50px 40px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    z-index: 2;
-    COLOR: #1c1c1C;
-}
-
+.credentials-panel.signin,
 .credentials-panel.signup {
-     width: 50%;
+    width: 50%;
     padding: 50px 40px;
     display: flex;
     justify-content: center;
@@ -147,7 +127,7 @@ body {
     font-size: 32px;
     text-align: center;
     margin-bottom: 20px;
-    COLOR: #1c1c1C;
+    color: #1c1c1C;
 }
 
 /* حاويات الحقول */
@@ -158,6 +138,27 @@ body {
     margin-top: 25px;
 }
 
+/* ====== التعديلات الرئيسية للأيقونات على اليسار ====== */
+.field-wrapper {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 25px;
+}
+
+.field-wrapper i {
+    position: absolute;
+    top: 50%;
+    left: 0 !important;
+    right: auto !important;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #1c1c1C;
+    z-index: 2;
+    width: 25px;
+    text-align: center;
+}
+
 .field-wrapper input {
     width: 100%;
     height: 100%;
@@ -165,11 +166,13 @@ body {
     border: none;
     outline: none;
     font-size: 16px;
-    COLOR: #1c1c1C;
+    color: #1c1c1C;
     font-weight: 600;
     border-bottom: 2px solid rgb(4, 4, 69);
-    padding-right: 23px;
+    padding-left: 30px !important;
+    padding-right: 5px;
     transition: .5s;
+    box-sizing: border-box;
 }
 
 .field-wrapper input:focus,
@@ -180,30 +183,41 @@ body {
 .field-wrapper label {
     position: absolute;
     top: 50%;
-    left: 0;
+    left: 30px !important;
+    right: auto !important;
     transform: translateY(-50%);
     font-size: 16px;
     color: black;
     transition: .5s;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 .field-wrapper input:focus ~ label,
 .field-wrapper input:not(:placeholder-shown) ~ label {
-    top: -5px;
+    top: -5px !important;
+    left: 0 !important;
+    color: #053672;
+    font-size: 14px;
+}
+
+.field-wrapper input:focus ~ i,
+.field-wrapper input:valid ~ i {
     color: #053672;
 }
 
-.field-wrapper i {
-    position: absolute;
-    top: 50%;
-    font-size: 18px;
-    transform: translateY(-50%);
-    color: #1c1c1C;
+/* تنسيق خاص لحقل البريد الإلكتروني */
+.field-wrapper input[type="email"] {
+    direction: ltr;
+    text-align: left;
+    padding-left: 35px !important;
 }
 
-.field-wrapper input:focus~i,
-.field-wrapper input:valid~i {
-    color: #053672;
+/* تنسيق خاص لأيقونة الباسوورد */
+.field-wrapper .fa-lock,
+.field-wrapper .fa-unlock {
+    cursor: pointer;
+    left: 0 !important;
 }
 
 /* زر الإرسال */
@@ -220,6 +234,7 @@ body {
     overflow: hidden;
     z-index: 1;
     margin-top: 30px;
+    color: #fff;
 }
 
 .submit-button::before {
@@ -272,21 +287,9 @@ body {
     z-index: 2;
 }
 
-.welcome-section.signin {
-    width: 50%;
-    background: linear-gradient(135deg, #1a1a2e, #00d4ff);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 40px;
-    position: relative;
-    z-index: 2;
-}
-
+.welcome-section.signin,
 .welcome-section.signup {
-     width: 50%;
+    width: 50%;
     background: linear-gradient(135deg, #1a1a2e, #00d4ff);
     display: flex;
     justify-content: center;
@@ -303,13 +306,14 @@ body {
     font-size: 36px;
     line-height: 1.3;
     margin-bottom: 20px;
+    color: #fff;
 }
 
 .welcome-section p {
     font-size: 16px;
     opacity: 0.9;
+    color: #fff;
 }
-
 
 /* الأشكال الخلفية */
 .background-shape {
@@ -511,4 +515,25 @@ body {
 
     .switch-link {
         font-size: 13px;
-    }}
+    }
+}
+
+/* ====== إصلاحات إضافية للأيقونات على اليسار ====== */
+.fa-user, 
+.fa-envelope, 
+.fa-user-graduate, 
+.fa-lock, 
+.fa-unlock {
+    left: 0 !important;
+    right: auto !important;
+}
+
+/* تأكيد مسافة الحقول */
+input, select {
+    padding-left: 30px !important;
+}
+
+/* تصحيح أي تداخل محتمل */
+.field-wrapper * {
+    box-sizing: border-box;
+}
