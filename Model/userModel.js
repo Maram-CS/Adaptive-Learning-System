@@ -3,7 +3,11 @@ import {model} from "mongoose";
 import bcrypt from "bcryptjs";
 
 const UserSchema = new Schema({
-     email: {
+    userName: {
+        type: String,
+        required: true,
+    },
+    email: {
         type: String,
         required: true,
         unique: true,
@@ -57,5 +61,5 @@ UserSchema.pre("save",async function(next) {
         throw Error ("this user not exist");
     }
 }
-const UserModel = model('User',UserSchema);
-export default UserModel;
+const userModel = model('User',UserSchema);
+export default userModel;

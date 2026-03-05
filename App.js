@@ -3,6 +3,7 @@ import AppRouter from "./Router/appRouter.js";
 import express from "express";
 import { config } from "dotenv";
 import { join, dirname } from "path";
+import profileRouter from "./Router/profileRouter.js";
 import { fileURLToPath } from "url";
 config();
 
@@ -13,9 +14,11 @@ const __dirname = import.meta.dirname;
 
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
+App.use('/uploads', express.static('uploads'));
 
 App.use("/auth", RouterLogin);
 App.use("/App", AppRouter);
+App.use("/profile", profileRouter);
 
 App.set("view engine", "ejs");
 App.set("views", join(__dirname, "view"));
