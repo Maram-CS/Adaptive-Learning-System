@@ -29,14 +29,14 @@
     <h2>Student <span>Profile</span></h2>
 
     <!-- الفورم تحتوي على كل المحتوى -->
-    <form class="profile-form">
+    <form class="profile-form" method="POST" action="/profile/create" enctype="multipart/form-data">
       
       <!-- صورة المستخدم والـ Bio داخل الفورم -->
       <div class="profile-header">
         <div class="profile-info">
           <div class="avatar-container">
             <img id="profileImage" class="avatar" src="https://via.placeholder.com/90" alt="Profile">
-            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" name="profilePicture">
           </div>
           
           <div class="user-details">
@@ -61,18 +61,18 @@
           <div class="row">
             <div class="input-group">
               <label>First Name</label>
-              <input type="text" placeholder="Enter first name" name="first_name">
+              <input type="text" placeholder="Enter first name" name="firstName">
             </div>
 
             <div class="input-group">
               <label>Last Name</label>
-              <input type="text" placeholder="Enter last name" name="last_name">
+              <input type="text" placeholder="Enter last name" name="lastName">
             </div>
           </div>
 
           <div class="input-group">
             <label>User Name</label>
-            <input type="text" placeholder="Enter username" name="username_field">
+            <input type="text" placeholder="Enter username" name="userName">
           </div>
 
           <div class="row">
@@ -83,7 +83,7 @@
 
             <div class="input-group">
               <label>Phone Number</label>
-              <input type="text" placeholder="Enter phone number" name="phone">
+              <input type="text" placeholder="Enter phone number" name="PhoneNumber">
             </div>
           </div>
         </div>
@@ -99,7 +99,7 @@
           <div class="row">
             <div class="input-group">
               <label>Main track</label>
-              <select name="main_track">
+              <select name="mainTrack">
                 <option>- Select main track -</option>
                 <option>Web Development</option>
                 <option>Mobile Development</option>
@@ -113,7 +113,7 @@
 
             <div class="input-group">
  <label>Skill level</label>
-              <select name="skill_level">
+              <select name="skillLevel">
                 <option>- Select skill level -</option>
                 <option>Beginner</option>
                 <option>Intermediate</option>
