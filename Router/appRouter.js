@@ -21,4 +21,8 @@ AppRouter.get("/profile",(req,res)=>{
     res.render("auth/profile");
 });
 
+AppRouter.get("/infoProfile",(req,res)=>{
+    res.render("auth/Profile-view");
+});
+
 export default AppRouter;
