@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Profile - View</title>
+  <title>Student Profile</title>
   <link rel="stylesheet" href="/Style/Profile.css">
 </head>
 <body>
@@ -28,87 +28,95 @@
 
     <h2>Student <span>Profile</span></h2>
 
-    <!-- عرض البيانات -->
-    <div class="profile-view">
+    <!-- الفورم تحتوي على كل المحتوى -->
+    <form class="profile-form"  enctype="multipart/form-data">
       
-      <!-- صورة المستخدم والـ Bio (عرض فقط) -->
+      <!-- صورة المستخدم والـ Bio داخل الفورم -->
       <div class="profile-header">
         <div class="profile-info">
           <div class="avatar-container">
-            <img id="profileImage" class="avatar" src="https://via.placeholder.com/90" alt="Profile">
+            <img id="profileImage" class="avatar" src="<%= profile.profilePicture %>" alt="Profile">
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;" name="profilePicture" >
           </div>
           
           <div class="user-details">
-            <div class="username-input" style="background-color: #f1f5f9; border-color: #cbd5e0; color: #2d3748; display: flex; align-items: center;">frontend developer</div>
-            <div class="bio-value">Frontend developer passionate about creating beautiful and responsive web applications</div>
+            <input type="text" class="username-input" placeholder="Enter username" value="<%= profile.userName %>" name="username">
+            <textarea class="bio-input" placeholder="Write a short bio..." name="bio"><%= profile.bio %></textarea>
           </div>
         </div>
 
-        <div class="header-buttons">
-          <button class="edit-button" onclick="window.location.href='/App/profile'">Edit Profile</button>
+       <div class="header-buttons">
+          <button type="button" class="edit-button" onclick="window.location.href='/App/profile'">
+            Edit Profile
+          </button>
         </div>
       </div>
       
-      <!-- Personal Information Box (عرض فقط) -->
+     
+      <!-- Personal Information Box -->
       <div class="info-box">
         <div class="box-header">
           <h3 class="box-title">Personal Information</h3>
           <span class="box-icon">👤</span>
         </div>
+
         <div class="box-content">
           <div class="row">
             <div class="input-group">
               <label>First Name</label>
-              <div class="info-value">John</div>
+              <div class="info-value"><%= profile.firstName %></div>
             </div>
 
             <div class="input-group">
               <label>Last Name</label>
-              <div class="info-value">Doe</div>
+              <div class="info-value"><%= profile.lastName %></div>
             </div>
           </div>
 
           <div class="input-group">
             <label>User Name</label>
-            <div class="info-value">johndoe123</div>
+            <div class="info-value"><%= profile.userName %></div>
           </div>
 
           <div class="row">
             <div class="input-group">
               <label>Email Address</label>
-              <div class="info-value">john.doe@example.com</div>
+              <div class="info-value"><%= profile.email %></div>
             </div>
 
             <div class="input-group">
               <label>Phone Number</label>
-              <div class="info-value">+1 234 567 890</div>
+              <div class="info-value"><%= profile.PhoneNumber %></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Skills & Track Box (عرض فقط) -->
+      <!-- Skills & Track Box -->
       <div class="info-box">
         <div class="box-header">
           <h3 class="box-title">Skills & Track</h3>
           <span class="box-icon">⚡️</span>
         </div>
+
         <div class="box-content">
           <div class="row">
             <div class="input-group">
               <label>Main track</label>
-              <div class="info-value">Frontend Development</div>
+              <div class="info-value"><%= profile.mainTrack %></div>
             </div>
 
             <div class="input-group">
               <label>Skill level</label>
-              <div class="info-value">Advanced</div>
+              <div class="info-value"><%= profile.skillLevel %></div>
             </div>
           </div>
         </div>
       </div>
 
     </div>
+
+    </form>
 
   </div>
 
