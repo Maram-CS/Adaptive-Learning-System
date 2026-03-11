@@ -1,0 +1,265 @@
+/* Reset */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: "Segoe UI", sans-serif;
+}
+
+body{
+background:#f9fbfd;
+color:#333;
+line-height:1.6;
+}
+
+/* Container */
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+/* Navbar */
+header{
+background:white;
+padding:15px 0;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+color:#2b7de9;
+font-weight:700;
+}
+
+nav a{
+text-decoration:none;
+margin-left:20px;
+}
+
+.btn{
+background:#f4a640;
+border:none;
+padding:10px 18px;
+border-radius:20px;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn:hover{
+background:#e4912c;
+}
+
+/* Hero */
+
+.hero{
+padding:80px 0;
+}
+
+.hero-content{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:40px;
+}
+
+.hero-text h1{
+font-size:45px;
+color:#1f2d3d;
+margin-bottom:20px;
+}
+
+.hero-text p{
+font-size:18px;
+color:#555;
+margin-bottom:25px;
+}
+
+.start-btn{
+background:#2b7de9;
+color:white;
+border:none;
+padding:14px 28px;
+border-radius:30px;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.start-btn:hover{
+background:#1f66c1;
+}
+
+.hero-img img{
+width:420px;
+border-radius:20px;
+}
+.discussions img{
+width:420px;
+border-radius:20px;
+}
+/* Features */
+
+.features{
+text-align:center;
+padding:80px 20px;
+background:#f4f7fb;
+}
+
+.features h2{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.feature-container{
+margin-top:40px;
+display:flex;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:15px;
+width:300px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 15px 35px rgba(0,0,0,0.08);
+}
+
+.card h3{
+margin-bottom:15px;
+color:#2b7de9;
+}
+
+/* About */
+
+.about{
+padding:80px 20px;
+text-align:center;
+}
+
+.about h2{
+font-size:30px;
+margin-bottom:20px;
+}
+
+.about p{
+max-width:800px;
+margin:auto;
+margin-bottom:30px;
+}
+
+.about img{
+width:420px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Avantages */
+
+.avantages{
+padding:80px 20px;
+background:#f9fbfd;
+text-align:left;
+width:80%;
+margin:auto;
+}
+
+.avantages h2{
+font-size:28px;
+margin-bottom:20px;
+}
+
+.avantages p{
+color:#555;
+}
+
+/* Assessment */
+
+.assessment{
+padding:70px 20px;
+background:#ffffff;
+text-align:left;
+width:80%;
+margin:auto;
+}
+
+.assessment h2{
+font-size:28px;
+margin-bottom:20px;
+color:#2b7de9;
+}
+
+/* Discussions */
+
+.discussions{
+padding:80px 20px;
+background:#f4d39e;
+text-align:left;
+width:80%;
+margin:auto;
+}
+
+.discussions h2{
+font-size:28px;
+margin-bottom:20px;
+}
+
+/* Footer */
+
+footer{
+background:#0c1e36;
+color:white;
+text-align:center;
+padding:40px 20px;
+margin-top:80px;
+}
+
+footer h5{
+margin-bottom:10px;
+font-size:18px;
+}
+
+footer p{
+opacity:0.8;
+margin:5px 0;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+.hero-content{
+flex-direction:column;
+text-align:center;
+}
+
+.hero-img img{
+width:300px;
+}
+
+.feature-container{
+flex-direction:column;
+align-items:center;
+}
+
+.avantages,
+.assessment,
+.discussions{
+text-align:center;
+}
+
+}
