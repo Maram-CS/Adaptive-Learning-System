@@ -524,3 +524,43 @@ body {
     text-align: center;
   }
 }
+/* Sidebar List Links Styling */
+.sidebar ul {
+  list-style: none;
+  margin-top: 30px;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Style the <a> inside li */
+.sidebar ul li a {
+  display: block;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+}
+
+/* Active item */
+.sidebar ul li.active,
+.sidebar ul li a.active {
+  background-color: rgba(255,255,255,0.25);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  color: white;
+}
+
+/* Hover effect */
+.sidebar ul li:hover:not(.active),
+.sidebar ul li a:hover {
+  background-color: rgba(255,255,255,0.15);
+  transform: translateX(5px);
+  color: white;
+}
