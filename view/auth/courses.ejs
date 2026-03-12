@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses</title>
+  <link rel="stylesheet" href="/Style/courses.css">
+</head>
+<body>
+
+<div class="page-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="/img/logo.png" alt="Logo" class="logo-img">
+      <span>My Courses</span>
+    </div>
+    <ul>
+      <li class="active">All Courses</li>
+      <li>Dashboard</li>
+      <li>Favorite Courses</li>
+      <li><a href="/App/Profile">Profile</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+
+    <!-- Header -->
+    <div class="main-header">
+      <h2>Courses <span>Dashboard</span></h2>
+      <div class="header-actions">
+        <!-- Added id here -->
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search...">
+        <div class="buttons">
+          <button class="icon-btn notification">🔔</button>
+          <button class="icon-btn chat">💬</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Container -->
+    <div class="courses-container" id="coursesContainer">
+  <div class="item">
+    <img src="/img/html-css.png" alt="HTML & CSS" class="course-img">
+    <h3>HTML & CSS</h3>
+    <p>Learn the fundamentals of web development using HTML and CSS.</p>
+  </div>
+  <div class="item">
+    <img src="/img/javascript.png" alt="JavaScript Basics" class="course-img">
+    <h3>JavaScript Basics</h3>
+    <p>Understand the core concepts of JavaScript programming.</p>
+  </div>
+  <div class="item">
+    <img src="/img/react.png" alt="React JS" class="course-img">
+    <h3>React JS</h3>
+    <p>Build dynamic user interfaces with React library.</p>
+  </div>
+  <div class="item">
+    <img src="/img/node.png" alt="Node.js" class="course-img">
+    <h3>Node.js</h3>
+    <p>Learn backend development using Node.js and Express.</p>
+  </div>
+  <div class="item">
+    <img src="/img/python.png" alt="Python Basics" class="course-img">
+    <h3>Python Basics</h3>
+    <p>Get started with Python programming language.</p>
+  </div>
+  <div class="item">
+    <img src="/img/django.png" alt="Django" class="course-img">
+    <h3>Django</h3>
+    <p>Develop web applications using Django framework.</p>
+  </div>
+</div>
+  </div>
+</div>
+<div class="footer">
+    © 2026 Eduphin. All rights reserved.
+</div>
+
+<!-- JS Functionality for Search -->
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const coursesContainer = document.getElementById('coursesContainer');
+  const items = coursesContainer.getElementsByClassName('item');
+
+  searchInput.addEventListener('keyup', function() {
+    const filter = searchInput.value.toLowerCase();
+    for (let i = 0; i < items.length; i++) {
+      const text = items[i].textContent || items[i].innerText;
+      if (text.toLowerCase().includes(filter)) {
+        items[i].style.display = "flex"; // show the item
+      } else {
+        items[i].style.display = "none"; // hide the item
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
