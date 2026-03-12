@@ -15,12 +15,12 @@
 
     <ul>
       <li class="active">My profile</li>
-      <li><a href="/App/Home">Home</a></li>
-      <li><a href="/App/courses">My courses</a></li>
-      <li><a href="/App/studentDashboard">Dashboard</a></li>
+      <li><a href="/App/Home">Dashboard</a></li>
+      <li><a href="/App/courses">All Courses</a></li>
+      <li><a href="/App/studentDashboard">Favorite Courses</a></li>
     </ul>
 
-    <button class="logout">Sign out</button>
+    <a href="/App/home"><button class="logout">Sign out</button></a>
   </div>
 
   <!-- Main Content -->
@@ -29,7 +29,7 @@
     <h2>Student <span>Profile</span></h2>
 
     <!-- الفورم تحتوي على كل المحتوى -->
-    <form class="profile-form" method="POST" action="/profile/create" enctype="multipart/form-data">
+    <form class="profile-form" method="POST" action="/profile/edit" enctype="multipart/form-data">
       
       <!-- صورة المستخدم والـ Bio داخل الفورم -->
       <div class="profile-header">
@@ -154,7 +154,13 @@
     document.getElementById('profileImage').src = 'https://via.placeholder.com/90';
     document.getElementById('imageUpload').value = '';
   });
-</script>
 
+
+</script>
+<% if (typeof error !== "undefined") { %>
+<script>
+  alert("<%= error %>");
+</script>
+<% } %>
 </body>
 </html>
