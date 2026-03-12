@@ -28,20 +28,6 @@ const profileSchema = new Schema({
         type : String,
         required : false,
     },
-    university : {
-        type : String,
-        required : false,
-    },
-    specialty : {
-        type : String,
-        required : false,
-        enum: ['Computer Science','Information Technology','Software Engineering','Artificial Intelligence','Data Science','Cybersecurity','Other'],
-    },
-    yearOfStudy : {
-        type : String,
-        required : false,
-        enum: ['1st Year','2nd Year','3rd Year','4th Year','Master\'s','PhD','Other'],
-    },
     mainTrack : {
         type : String,
         required : false,

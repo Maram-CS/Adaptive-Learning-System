@@ -21,4 +21,11 @@ AppRouter.get("/profile",(req,res)=>{
     res.render("auth/profile");
 });
 
+AppRouter.get("/infoProfile",(req,res)=>{
+    res.render("auth/Profile-view");
+});
+
+AppRouter.get("/courses",(req,res)=>{
+    res.render("auth/courses");
+});
 export default AppRouter;
