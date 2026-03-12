@@ -1,27 +1,30 @@
-/* Reset */
+/* RESET */
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family: "Segoe UI", sans-serif;
+font-family:'Segoe UI',sans-serif;
 }
 
 body{
-background:#f9fbfd;
-color:#333;
+background:#f8fbff;
+color:#1f2d3d;
 line-height:1.6;
 }
 
-/* Container */
+/* CONTAINER */
+
 .container{
 width:90%;
 max-width:1200px;
 margin:auto;
 }
 
-/* Navbar */
+/* NAVBAR */
+
 header{
-background:white;
+background:rgb(239, 239, 235);
 padding:15px 0;
 box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
@@ -32,84 +35,99 @@ justify-content:space-between;
 align-items:center;
 }
 
+/* LOGO */
+
 .logo{
-color:#2b7de9;
+display:flex;
+align-items:center;
+gap:8px;
 font-weight:700;
+
 }
+nav{
+display:flex;
+align-items:center;
+gap: 20px;
+}
+
+.logo img{
+width:120px;
+height:auto;
+}
+
+/* NAV LINKS */
 
 nav a{
 text-decoration:none;
+color:#333;
 margin-left:20px;
+font-weight:500;
 }
+
+nav a:hover{
+color:#2b7de9;
+}
+
+/* BUTTON */
 
 .btn{
 background:#f4a640;
 border:none;
-padding:10px 18px;
+padding:10px 20px;
 border-radius:20px;
 color:white;
 cursor:pointer;
-transition:0.3s;
+font-weight:600;
 }
 
-.btn:hover{
-background:#e4912c;
-}
-
-/* Hero */
+/* HERO */
 
 .hero{
-padding:80px 0;
+padding:90px 0;
+background: beige;
 }
 
 .hero-content{
 display:flex;
 align-items:center;
 justify-content:space-between;
-gap:40px;
+gap:50px;
 }
 
 .hero-text h1{
-font-size:45px;
-color:#1f2d3d;
+font-size:46px;
 margin-bottom:20px;
 }
 
-.hero-text p{
-font-size:18px;
-color:#555;
-margin-bottom:25px;
+.hero-text span{
+color:#f4a640;
 }
 
+.hero-text p{
+color:#555;
+font-size:18px;
+margin-bottom:25px;
+}
+.hero-img img{
+width: 480px;
+max-width: 100%;
+height:auto;
+}
 .start-btn{
 background:#2b7de9;
 color:white;
 border:none;
 padding:14px 28px;
 border-radius:30px;
-font-size:16px;
 cursor:pointer;
-transition:0.3s;
 }
 
-.start-btn:hover{
-background:#1f66c1;
-}
-
-.hero-img img{
-width:420px;
-border-radius:20px;
-}
-.discussions img{
-width:420px;
-border-radius:20px;
-}
-/* Features */
+/* FEATURES */
 
 .features{
-text-align:center;
 padding:80px 20px;
 background:#f4f7fb;
+text-align:center;
 }
 
 .features h2{
@@ -125,6 +143,8 @@ gap:30px;
 flex-wrap:wrap;
 }
 
+/* CARDS */
+
 .card{
 background:white;
 padding:30px;
@@ -132,6 +152,7 @@ border-radius:15px;
 width:300px;
 box-shadow:0 10px 25px rgba(0,0,0,0.05);
 transition:0.3s;
+text-align:center;
 }
 
 .card:hover{
@@ -144,93 +165,95 @@ margin-bottom:15px;
 color:#2b7de9;
 }
 
-/* About */
-
-.about{
-padding:80px 20px;
-text-align:center;
+.card p{
+color:#555;
+font-size:15px;
 }
 
-.about h2{
+/* SECTIONS WITH IMAGE PLACEHOLDER */
+
+.section{
+width:85%;
+margin:90px auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:60px;
+}
+
+.section.reverse{
+flex-direction:row-reverse;
+}
+
+/* TEXT SIDE */
+
+.section-text{
+flex:1;
+}
+
+.section-text h2{
 font-size:30px;
 margin-bottom:20px;
 }
 
-.about p{
-max-width:800px;
-margin:auto;
-margin-bottom:30px;
-}
+/* BLUE / ORANGE TITLE */
 
-.about img{
-width:420px;
-border-radius:15px;
-box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-
-/* Avantages */
-
-.avantages{
-padding:80px 20px;
-background:#f9fbfd;
-text-align:left;
-width:80%;
-margin:auto;
-}
-
-.avantages h2{
-font-size:28px;
-margin-bottom:20px;
-}
-
-.avantages p{
-color:#555;
-}
-
-/* Assessment */
-
-.assessment{
-padding:70px 20px;
-background:#ffffff;
-text-align:left;
-width:80%;
-margin:auto;
-}
-
-.assessment h2{
-font-size:28px;
-margin-bottom:20px;
+.blue{
 color:#2b7de9;
 }
 
-/* Discussions */
+.orange{
+color:#f4a640;
+}
+
+.section-text p{
+color:#555;
+max-width:450px;
+}
+
+/* IMAGE PLACEHOLDER */
+
+.section-img{
+flex:1;
+height:auto;
+border-radius:20px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:14px;
+}
+.section-img img{
+width:100%;
+max-width: 420px;
+height:auto;
+}
+
+/* DISCUSSIONS */
 
 .discussions{
-padding:80px 20px;
-background:#f4d39e;
-text-align:left;
-width:80%;
-margin:auto;
+width:85%;
+margin:90px auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:60px;
 }
 
-.discussions h2{
-font-size:28px;
-margin-bottom:20px;
-}
-
-/* Footer */
+/* FOOTER */
 
 footer{
 background:#0c1e36;
 color:white;
 text-align:center;
-padding:40px 20px;
+padding:50px 20px;
 margin-top:80px;
 }
 
 footer h5{
-margin-bottom:10px;
 font-size:18px;
+margin-bottom:10px;
 }
 
 footer p{
@@ -238,7 +261,7 @@ opacity:0.8;
 margin:5px 0;
 }
 
-/* Responsive */
+/* RESPONSIVE */
 
 @media(max-width:900px){
 
@@ -247,19 +270,58 @@ flex-direction:column;
 text-align:center;
 }
 
-.hero-img img{
-width:300px;
-}
-
-.feature-container{
+.section,
+.section.reverse{
 flex-direction:column;
-align-items:center;
-}
-
-.avantages,
-.assessment,
-.discussions{
 text-align:center;
 }
 
+.section-text p{
+margin:auto;
+}
+
+}
+
+
+.student-card{
+    position: relative;
+    width: 360px;
+    max-width: 40px auto;
+    
+}
+
+.student-card img{
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+/* الكتابة فوق */
+.title{
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* الزر في الوسط */
+.btn-signin{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #007BFF;
+    color: white;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-signin:hover{
+    background: #0056b3;
 }
