@@ -8,19 +8,17 @@
 <body>
 
 <div class="container">
-
-  <!-- Sidebar -->
-  <div class="sidebar">
+ <div class="sidebar">
     <h3 class="logo">My profile</h3>
 
     <ul>
       <li class="active">My profile</li>
-      <li>Home</li>
-      <li>My courses</li>
-      <li>Dashboard</li>
+      <li><a href="/App/Home">Dashboard</a></li>
+      <li><a href="/App/courses">All Courses</a></li>
+      <li><a href="/App/studentDashboard">Favorite Courses</a></li>
     </ul>
 
-    <button class="logout">Sign out</button>
+    <a href="/App/home"><button class="logout">Sign out</button></a>
   </div>
 
   <!-- Main Content -->
@@ -46,9 +44,7 @@
         </div>
 
        <div class="header-buttons">
-          <button type="button" class="edit-button" onclick="window.location.href='/App/profile'">
-            Edit Profile
-          </button>
+        <a href="/App/editProfile"><button type="button" class="edit-button""> Edit Profile  </button></a>
         </div>
       </div>
       

@@ -17,8 +17,8 @@ AppRouter.get("/studentDashboard",(req,res)=>{
     res.render("auth/studentDashboard");
 });
 
-AppRouter.get("/profile",(req,res)=>{
-    res.render("auth/profile");
+AppRouter.get("/createProfile",(req,res)=>{
+    res.render("auth/createProfile");
 });
 
 AppRouter.get("/infoProfile",(req,res)=>{
@@ -27,5 +27,9 @@ AppRouter.get("/infoProfile",(req,res)=>{
 
 AppRouter.get("/courses",(req,res)=>{
     res.render("auth/courses");
+});
+
+AppRouter.get("/editProfile",(req,res)=>{
+    res.render("auth/editProfile");
 });
 export default AppRouter;

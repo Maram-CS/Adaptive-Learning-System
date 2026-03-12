@@ -16,7 +16,7 @@ const loginUser = async (req, res) => {
         if(user) {
             const token = createToken(user._id);
             res.cookie("token",token,{httpOnly : true, maxAge : 3*24*60*60*1000});
-            res.render("auth/studentDashboard");
+            res.render("auth/courses");
         }else {
             res.status(400).json({message: "Invalid email or password"});
         }
