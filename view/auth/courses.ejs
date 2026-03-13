@@ -1,140 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Courses</title>
-  <link rel="stylesheet" href="/Style/courses.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courses</title>
+<link rel="stylesheet" href="/Style/courses.css">
+
+<style>
+/* Filter buttons */
+.filter-buttons{
+  margin:20px 0;
+}
+
+.filter-buttons button{
+  padding:8px 15px;
+  margin-right:10px;
+  border:none;
+  background:#4f46e5;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.filter-buttons button:hover{
+  background:#3730a3;
+}
+</style>
+
 </head>
 <body>
 
 <div class="page-container">
 
- <div class="sidebar">
+<div class="sidebar">
 
-  <div class="logo">
-    <img src="/img/logo.png" class="logo-img">
-    <span>My Courses</span>
-  </div>
-
-  <div class="menu">
-    <ul>
-      <li class="active">All Courses</li>
-      <li>Dashboard</li>
-      <li>Favorite Courses</li>
-      <li><a href="/App/createProfile">My Profile</a></li>
-    </ul>
-  </div>
-   <a href="/App/home"><button class="logout">Sign out</button></a>
+<div class="logo">
+<img src="/img/logo.png" class="logo-img">
+<span>My Courses</span>
 </div>
 
-  <!-- Main Content -->
-  <div class="main">
-
-    <!-- Header -->
-    <div class="main-header">
-      <h2>Courses <span>Dashboard</span></h2>
-      <div class="header-actions">
-        <!-- Added id here -->
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search...">
-        <div class="buttons">
-          <button class="icon-btn notification">🔔</button>
-          <button class="icon-btn chat">💬</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Courses Container -->
-    <div class="courses-container" id="coursesContainer">
-  <div class="item">
-    <img src="/img/html-css.png" alt="HTML & CSS" class="course-img">
-    <h3>HTML & CSS</h3>
-    <p>Learn the fundamentals of web development using HTML and CSS.</p>
-  </div>
-  <div class="item">
-    <img src="/img/javascript.png" alt="JavaScript Basics" class="course-img">
-    <h3>JavaScript Basics</h3>
-    <p>Understand the core concepts of JavaScript programming.</p>
-  </div>
-  <div class="item">
-    <img src="/img/react.png" alt="React JS" class="course-img">
-    <h3>React JS</h3>
-    <p>Build dynamic user interfaces with React library.</p>
-  </div>
-  <div class="item">
-    <img src="/img/node.png" alt="Node.js" class="course-img">
-    <h3>Node.js</h3>
-    <p>Learn backend development using Node.js and Express.</p>
-  </div>
-  <div class="item">
-    <img src="/img/python.png" alt="Python Basics" class="course-img">
-    <h3>Python Basics</h3>
-    <p>Get started with Python programming language.</p>
-  </div>
-  <div class="item">
-    <img src="/img/Django.png" alt="Django" class="course-img">
-    <h3>Django</h3>
-    <p>Develop web applications using Django framework.</p>
-  </div>
-  <div class="item">
-    <img src="/img/PHP.png" alt="PHP" class="course-img">
-    <h3>PHP</h3>
-    <p>Learn web development with the PHP programming language.</p>
-  </div>
-  <div class="item">
-    <img src="/img/GitHub.png" alt="GitHub" class="course-img">
-    <h3>GitHub</h3>
-    <p>Learn version control with Git and GitHub.</p>
-  </div>
-  <div class="item">
-    <img src="/img/Git.png" alt="Git" class="course-img">
-    <h3>Git</h3>
-    <p>Learn version control with Git.</p>
-  </div>
-  <div class="item">
-    <img src="/img/Figma.png" alt="Figma" class="course-img">
-    <h3>Figma</h3>
-    <p>Learn UI/UX design with Figma.</p>
-  </div>
-  <div class="item">
-    <img src="/img/MySQL.png" alt="MySQL" class="course-img">
-    <h3>MySQL</h3>
-    <p>Learn SQL database management with MySQL.</p>
-  </div>
-  <div class="item">
-    <img src="/img/MongoDB.png" alt="MongoDB" class="course-img">
-    <h3>MongoDB</h3>
-    <p>Learn NoSQL database management with MongoDB.</p>
-  </div>
-  <div class="item">
-    <img src="/img/Vercel.png" alt="Vercel" class="course-img">
-    <h3>Vercel</h3>
-    <p>Deploy and host web applications with Vercel.</p>
-  </div>
+<div class="menu">
+<ul>
+<li class="active">All Courses</li>
+<li>Dashboard</li>
+<li>Favorite Courses</li>
+<li><a href="/App/createProfile">My Profile</a></li>
+</ul>
 </div>
-  </div>
+
+<a href="/App/home">
+<button class="logout">Sign out</button>
+</a>
+
 </div>
+
+
+<!-- Main -->
+<div class="main">
+
+<!-- Header -->
+<div class="main-header">
+<h2>Courses <span>Dashboard</span></h2>
+
+<div class="header-actions">
+<input type="text" id="searchInput" class="search-bar" placeholder="Search...">
+
+<div class="buttons">
+<button class="icon-btn notification">🔔</button>
+<button class="icon-btn chat">💬</button>
+</div>
+
+</div>
+</div>
+
+
+<!-- FILTER BUTTONS -->
+<div class="filter-buttons">
+
+<button onclick="filterCourses('all')">All</button>
+<button onclick="filterCourses('frontend')">Frontend</button>
+<button onclick="filterCourses('backend')">Backend</button>
+<button onclick="filterCourses('database')">Database</button>
+<button onclick="filterCourses('tools')">Tools</button>
+<button onclick="filterCourses('design')">Design</button>
+<button onclick="filterCourses('deployment')">Deployment</button>
+
+</div>
+
+
+
+<!-- COURSES -->
+<div class="courses-container" id="coursesContainer">
+
+<div class="item" data-category="frontend">
+<img src="/img/html.png" class="course-img">
+<h3>HTML & CSS</h3>
+<p>Learn the fundamentals of web development using HTML and CSS.</p>
+</div>
+
+<div class="item" data-category="frontend">
+<img src="/img/javascript.png" class="course-img">
+<h3>JavaScript Basics</h3>
+<p>Understand the core concepts of JavaScript programming.</p>
+</div>
+
+<div class="item" data-category="frontend">
+<img src="/img/react.png" class="course-img">
+<h3>React JS</h3>
+<p>Build dynamic user interfaces with React library.</p>
+</div>
+
+<div class="item" data-category="backend">
+<img src="/img/node.png" class="course-img">
+<h3>Node.js</h3>
+<p>Learn backend development using Node.js and Express.</p>
+</div>
+
+<div class="item" data-category="backend">
+<img src="/img/python.png" class="course-img">
+<h3>Python Basics</h3>
+<p>Get started with Python programming language.</p>
+</div>
+
+<div class="item" data-category="backend">
+<img src="/img/Django.png" class="course-img">
+<h3>Django</h3>
+<p>Develop web applications using Django framework.</p>
+</div>
+
+<div class="item" data-category="backend">
+<img src="/img/PHP.png" class="course-img">
+<h3>PHP</h3>
+<p>Learn web development with the PHP programming language.</p>
+</div>
+
+<div class="item" data-category="tools">
+<img src="/img/GitHub.png" class="course-img">
+<h3>GitHub</h3>
+<p>Learn version control with GitHub.</p>
+</div>
+
+<div class="item" data-category="tools">
+<img src="/img/Git.png" class="course-img">
+<h3>Git</h3>
+<p>Learn version control with Git.</p>
+</div>
+
+<div class="item" data-category="design">
+<img src="/img/Figma.png" class="course-img">
+<h3>Figma</h3>
+<p>Learn UI/UX design with Figma.</p>
+</div>
+
+<div class="item" data-category="database">
+<img src="/img/MySQL.png" class="course-img">
+<h3>MySQL</h3>
+<p>Learn SQL database management with MySQL.</p>
+</div>
+
+<div class="item" data-category="database">
+<img src="/img/MongoDB.png" class="course-img">
+<h3>MongoDB</h3>
+<p>Learn NoSQL database management with MongoDB.</p>
+</div>
+
+<div class="item" data-category="deployment">
+<img src="/img/Vercel.png" class="course-img">
+<h3>Vercel</h3>
+<p>Deploy and host web applications with Vercel.</p>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
 <div class="footer">
-    © 2026 Eduphin. All rights reserved.
+© 2026 Eduphin. All rights reserved.
 </div>
 
-<!-- JS Functionality for Search -->
-<script>
-  const searchInput = document.getElementById('searchInput');
-  const coursesContainer = document.getElementById('coursesContainer');
-  const items = coursesContainer.getElementsByClassName('item');
 
-  searchInput.addEventListener('keyup', function() {
-    const filter = searchInput.value.toLowerCase();
-    for (let i = 0; i < items.length; i++) {
-      const text = items[i].textContent || items[i].innerText;
-      if (text.toLowerCase().includes(filter)) {
-        items[i].style.display = "flex"; // show the item
-      } else {
-        items[i].style.display = "none"; // hide the item
-      }
-    }
-  });
+<script>
+
+const searchInput = document.getElementById('searchInput');
+const items = document.querySelectorAll('.item');
+
+
+/* SEARCH FUNCTION */
+
+searchInput.addEventListener('keyup', function(){
+
+const filter = searchInput.value.toLowerCase();
+
+items.forEach(item => {
+
+const text = item.textContent.toLowerCase();
+
+if(text.includes(filter)){
+item.style.display="flex";
+}else{
+item.style.display="none";
+}
+
+});
+
+});
+
+
+/* CATEGORY FILTER */
+
+function filterCourses(category){
+
+items.forEach(item => {
+
+const itemCategory = item.getAttribute("data-category");
+
+if(category === "all" || itemCategory === category){
+item.style.display="flex";
+}else{
+item.style.display="none";
+}
+
+});
+
+}
+
 </script>
 
 </body>
