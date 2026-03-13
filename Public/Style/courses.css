@@ -175,11 +175,11 @@ body{
   width:25%;
   min-width:220px;
 
-  background:#219EBC;
+  background:white;
   border-radius:15px;
   padding:20px;
   text-align:center;
-  color:white;
+  color:orange;
 
   display:flex;
   flex-direction:column;
