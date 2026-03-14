@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Eduphin</title>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="/Style/style.css">
 
 </head>
@@ -21,14 +21,14 @@
 <div class="container nav">
 
 <div class="logo">
-<img src="/uploads/logo.png" alt="logo">
+<img src="/img/logo.png" alt="logo">
 
 </div>
 
 <nav>
 
-<a href="/App/home">Home</a>
-<a href="#">Contact Us</a>
+<a href="/App/home" class="nav-btn" >Home</a>
+<a href="#" class="nav-btn">Contact Us</a>
 <a href="/App/login">
     <button class="btn">Sign In</button>
 </a>
@@ -56,14 +56,14 @@ for Future <br> Developers
   Achieve Your Full Potential!
 <br> Every step you take today brings you closer to success.
  </p>
-
-<button class="start-btn">Start Learning</button>
-
+<a href="/App/login">
+<button class="btn">Start Learning</button>
+</a>
 </div>
 
 <div class="hero-img">
 
-<img src="/uploads/EduphinFille.png" alt="student">
+<img src="/img/EduphinFille.png" alt="student">
 
 </div>
 
@@ -84,8 +84,13 @@ Eduphin is a smart adaptive learning system designed for programming <br> educat
 <div class="feature-container">
 
 <div class="card">
+  <div class="icon">
+    <i class="feature-icon icon-blue">
+      <i class="fas fa-file-lines"></i>
+    </i>
+  </div>
 
-<h3>Personalized Learning Paths</h3>
+<h3> <span class="blue">Personalized Learning Paths </span></h3>
 
 <p>
   Adaptive algorithms tailor lessons and coding exercises based on each learner’s level, pace, and performance to ensure efficient skill development in programming.
@@ -94,8 +99,12 @@ Eduphin is a smart adaptive learning system designed for programming <br> educat
 </div>
 
 <div class="card">
-
-<h3>Intelligent Chatbot Assistance</h3>
+<div class="icon">
+    <i class="feature-icon icon-orange">
+      <i class=" fa-solid fa-robot"></i>
+    </i>
+  </div>
+<h3> <span class="blue">Intelligent Chatbot Assistance </span></h3>
 
 <p>
  Offer instant support through an AI-powered chatbot that guides students, answers questions, and provides personalized feedback during their learning journey.
@@ -104,8 +113,13 @@ Eduphin is a smart adaptive learning system designed for programming <br> educat
 </div>
 
 <div class="card">
-
-<h3>Quizzes</h3>
+ <div class="icon">
+    <i class="feature-icon icon-cryan">
+      <i class="fa-solid fa-list-check"></i>
+       
+    </i>
+  </div>
+<h3> <span class="blue">Quizzes</span></h3>
 
 <p>
 Provide hands-on coding challenges, quizzes, and auto-evaluated tasks that help learners practice and master programming concepts effectively.
@@ -118,9 +132,9 @@ Provide hands-on coding challenges, quizzes, and auto-evaluated tasks that help 
 </section>
 <!-- About -->
  
-<section class="features">
+<section class="what">
 
-<h2>What is Eduphin?</h2>
+<h2> <span class="blue"> What  is</span><span class="orange"> Eduphin?</span></h2>
 
 <p>
 Eduphin is an adaptive learning platform designed for programming languages, enabling learners to follow personalized learning paths, access structured course content, complete coding exercises and quizzes, track their progress in real time, and receive intelligent feedback tailored to their performance — all in one smart environment.
@@ -129,7 +143,7 @@ Eduphin is an adaptive learning platform designed for programming languages, ena
 <br>
 <!-- <a href="/App/login"><img src="/uploads/ForStudents.png" alt="ForStudents"></a> -->
  <div class="student-card">
-    <img src="/uploads/ForStudents.png" alt="For Students">
+    <img src="/img/ForStudents.png" alt="For Students">
 
     <h2 class="title">For Students</h2>
 
@@ -163,7 +177,7 @@ Eduphin's adaptive learning platform enables learners to follow <br> personalize
 <div class="section-img">
 
 <!-- IMAGE PLACE -->
- <img src="/uploads/StudentClass.png" alt="For Teachers">
+ <img src="/img/StudentClass.png" alt="For Teachers" class="student-img">
 
 </div>
 
@@ -194,7 +208,7 @@ Student <br> results are automatically entered in the online gradebook.
 <div class="section-img">
 
 <!-- IMAGE PLACE -->
-<img src="/uploads/assessment.png" alt="Assessments">
+<img src="/img/assessment.png" alt="Assessments">
 </div>
 
 </section>
@@ -222,7 +236,7 @@ Students can interact privately with the intelligent <br> chatbot, receiving ins
 <div class="section-img">
 
 <!-- IMAGE PLACE -->
-<img src="/uploads/chat.png" alt="Chat">
+<img src="/img/chat.png" alt="Chat">
 </div>
 
 </section>
@@ -247,31 +261,35 @@ Careers | Privacy Policy | Terms & Conditions
 
 const cards = document.querySelectorAll(".card");
 
+/* animation كي نسكرو الصفحة */
+cards.forEach(card=>{
+card.style.opacity="0";
+card.style.transform="translateY(40px)";
+card.style.transition="0.6s";
+});
+
 window.addEventListener("scroll", () => {
 
 cards.forEach(card => {
 
 const position = card.getBoundingClientRect().top;
-
 const screen = window.innerHeight;
 
 if(position < screen - 100){
-
 card.style.opacity = "1";
 card.style.transform = "translateY(0)";
-
 }
 
 });
 
 });
 
-cards.forEach(card=>{
+/* تكبير وتصغير الكارد كي نضغط عليها */
 
-card.style.opacity="0";
-card.style.transform="translateY(40px)";
-card.style.transition="0.6s";
-
+cards.forEach(card => {
+card.addEventListener("click", () => {
+card.classList.toggle("active");
+});
 });
 
 </script>
