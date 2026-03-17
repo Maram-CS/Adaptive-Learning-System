@@ -27,7 +27,7 @@
     <h2>Student <span>Profile</span></h2>
 
     <!-- الفورم تحتوي على كل المحتوى -->
-    <form class="profile-form"  enctype="multipart/form-data">
+    <form class="profile-form"  enctype="multipart/form-data" ">
       
       <!-- صورة المستخدم والـ Bio داخل الفورم -->
       <div class="profile-header">
@@ -44,7 +44,7 @@
         </div>
 
        <div class="header-buttons">
-        <a href="/App/editProfile"><button type="button" class="edit-button""> Edit Profile  </button></a>
+        <a href="/App/editProfile"><button type="button" class="icon-btn"> Edit Profile  </button></a>
         </div>
       </div>
       
@@ -117,6 +117,10 @@
   </div>
 
 </div>
-
+<% if (typeof error !== "undefined") { %>
+<script>
+  alert("<%= error %>");
+</script>
+<% } %>
 </body>
 </html>

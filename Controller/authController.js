@@ -8,23 +8,24 @@ const  createToken = (id)=> {
     return jwt.sign({id},password,{expiresIn: "3d"});
 }
 
-
 const loginUser = async (req, res) => {
-    const {email,password} = req.body;
+    const { email, password } = req.body;
+
     try {
-        const user = await UserModel.login(email,password);
-        if(user) {
-            const token = createToken(user._id);
-            res.cookie("token",token,{httpOnly : true, maxAge : 3*24*60*60*1000});
-            res.render("auth/courses");
-        }else {
-            res.status(400).json({message: "Invalid email or password"});
-        }
-    }catch(err) {
-        console.error(err);
-        res.status(500).json({message: "Error logging in"});
+        const user = await UserModel.login(email, password);
+
+        const token = createToken(user._id);
+        res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 3 * 24 * 60 * 60 * 1000
+        });
+
+        res.render("auth/courses");
+
+    } catch (err) {
+        res.render("auth/login", { error: err.message });
     }
-}
+};
 
 
 export {loginUser};
