@@ -1,6 +1,6 @@
 import profileModel from "../Model/profileModel.js";
 import userModel from "../Model/userModel.js";
-
+import authRequest from "../midalware/authMidalware.js";
 
  
 // maram choufi work flow ta3k kifah rai7 ykoun hna 
@@ -73,4 +73,16 @@ const editProfile = async (req, res,next) => {
     }
 };
 
-export { createProfile, editProfile };
+const viewProfile = async (req, res,next) => {
+    try {
+        const profile = await profileModel.findOne({user:req.id});
+        if(!profile) return res.render("auth/createProfile",{error: "Profile not found. Please create a profile first."});
+        res.render("auth/Profile-view",{profile});
+        return next();
+    } catch(err) {
+        console.error(err);
+        res.render("auth/Profile-view",{error: "Error viewing profile."});
+    }
+};
+
+export { createProfile, editProfile, viewProfile };
