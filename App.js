@@ -5,6 +5,7 @@ import { config } from "dotenv";
 import { join, dirname } from "path";
 import profileRouter from "./Router/profileRouter.js";
 import { fileURLToPath } from "url";
+import cookieParser from "cookie-parser";
 config();
 
 const App = express();
@@ -14,6 +15,7 @@ const __dirname = import.meta.dirname;
 
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
+App.use(cookieParser());
 App.use('/uploads', express.static('uploads'));
 
 App.use("/auth", RouterLogin);
