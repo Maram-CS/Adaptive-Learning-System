@@ -12,7 +12,7 @@ const createProfile = async (req, res,next) => {
         console.log(req.file);
         const { email, firstName, lastName, userName, PhoneNumber, mainTrack, skillLevel,bio } = req.body;
         // verify if the user exists(has an account) before creating the profile
-        const user = await userModel.findById({user: req.id});  // req.id is the user id that we attached to the request object in the authRequest middleware after verifying the token
+        const user = await userModel.findById(req.id);  // req.id is the user id that we attached to the request object in the authRequest middleware after verifying the token
 
         if(!user) return res.render("auth/createProfile",{error: "User not found. Please create an account first."});
         // check if the profile already exists for the user
@@ -77,14 +77,14 @@ const viewProfile = async (req, res) => {
         const profile = await profileModel.findOne({ user: req.id });
 
         if (!profile) {
-            return res.redirect("/profile/create");
+            return res.render("auth/createProfile");
         }
 
         return res.render("auth/Profile-view", { profile });
 
     } catch (err) {
         console.error(err);
-        return res.redirect("/profile/create");
+        return res.render("auth/editProfile");
     }
 };
 
