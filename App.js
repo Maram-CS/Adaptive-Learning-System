@@ -20,7 +20,7 @@ App.use(cookieParser());
 App.use('/uploads', express.static('uploads'));
 
 App.use("/auth", RouterLogin);
-App.use("/App", authRequest, AppRouter);
+App.use("/App", AppRouter);
 App.use("/profile", authRequest, profileRouter);
 
 App.set("view engine", "ejs");
