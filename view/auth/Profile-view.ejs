@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,9 @@
 <body>
 
 <div class="container">
- <div class="sidebar">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
     <h3 class="logo">My profile</h3>
 
     <ul>
@@ -18,7 +20,10 @@
       <li><a href="/App/studentDashboard">Favorite Courses</a></li>
     </ul>
 
-    <a href="/App/home"><button class="logout">Sign out</button></a>
+    <!-- Logout صحيح -->
+    <a href="/App/home">
+      <button class="logout">Sign out</button>
+    </a>
   </div>
 
   <!-- Main Content -->
@@ -26,101 +31,103 @@
 
     <h2>Student <span>Profile</span></h2>
 
-    <!-- الفورم تحتوي على كل المحتوى -->
-    <form class="profile-form"  enctype="multipart/form-data" ">
-      
-      <!-- صورة المستخدم والـ Bio داخل الفورم -->
-      <div class="profile-header">
-        <div class="profile-info">
-          <div class="avatar-container">
-            <img id="profileImage" class="avatar" src="<%= profile.profilePicture %>" alt="Profile">
-            <input type="file" id="imageUpload" accept="image/*" style="display: none;" name="profilePicture" >
-          </div>
-          
-          <div class="user-details">
-            <input type="text" class="username-input" placeholder="Enter username" value="<%= profile.userName %>" name="username">
-            <textarea class="bio-input" placeholder="Write a short bio..." name="bio"><%= profile.bio %></textarea>
-          </div>
+    <!-- Profile Header -->
+    <div class="profile-header">
+
+      <div class="profile-info">
+
+        <!-- صورة -->
+        <div class="avatar-container">
+          <% if (profile && profile.profilePicture) { %>
+            <img class="avatar" src="<%= profile.profilePicture %>" alt="Profile">
+          <% } else { %>
+            <img class="avatar" src="/images/default.png" alt="Default Profile">
+          <% } %>
         </div>
 
-       <div class="header-buttons">
-        <a href="/App/editProfile"><button type="button" class="icon-btn"> Edit Profile  </button></a>
-        </div>
-      </div>
-      
-     
-      <!-- Personal Information Box -->
-      <div class="info-box">
-        <div class="box-header">
-          <h3 class="box-title">Personal Information</h3>
-          <span class="box-icon">👤</span>
+        <!-- معلومات -->
+        <div class="user-details">
+          <h3><%= profile?.userName || 'No username' %></h3>
+          <p><%= profile?.bio || 'No bio available' %></p>
         </div>
 
-        <div class="box-content">
-          <div class="row">
-            <div class="input-group">
-              <label>First Name</label>
-              <div class="info-value"><%= profile.firstName %></div>
-            </div>
-
-            <div class="input-group">
-              <label>Last Name</label>
-              <div class="info-value"><%= profile.lastName %></div>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>User Name</label>
-            <div class="info-value"><%= profile.userName %></div>
-          </div>
-
-          <div class="row">
-            <div class="input-group">
-              <label>Email Address</label>
-              <div class="info-value"><%= profile.email %></div>
-            </div>
-
-            <div class="input-group">
-              <label>Phone Number</label>
-              <div class="info-value"><%= profile.PhoneNumber %></div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <!-- Skills & Track Box -->
-      <div class="info-box">
-        <div class="box-header">
-          <h3 class="box-title">Skills & Track</h3>
-          <span class="box-icon">⚡️</span>
-        </div>
-
-        <div class="box-content">
-          <div class="row">
-            <div class="input-group">
-              <label>Main track</label>
-              <div class="info-value"><%= profile.mainTrack %></div>
-            </div>
-
-            <div class="input-group">
-              <label>Skill level</label>
-              <div class="info-value"><%= profile.skillLevel %></div>
-            </div>
-          </div>
-        </div>
+      <!-- زر edit -->
+      <div class="header-buttons">
+        <a href="/App/editProfile">
+          <button class="icon-btn">Edit Profile</button>
+        </a>
       </div>
 
     </div>
 
-    </form>
+    <!-- Personal Info -->
+    <div class="info-box">
+      <div class="box-header">
+        <h3 class="box-title">Personal Information</h3>
+        <span class="box-icon">👤</span>
+      </div>
+
+      <div class="box-content">
+
+        <div class="row">
+          <div class="input-group">
+            <label>First Name</label>
+            <div class="info-value"><%= profile?.firstName || '' %></div>
+          </div>
+
+          <div class="input-group">
+            <label>Last Name</label>
+            <div class="info-value"><%= profile?.lastName || '' %></div>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>User Name</label>
+          <div class="info-value"><%= profile?.userName || '' %></div>
+        </div>
+
+        <div class="row">
+          <div class="input-group">
+            <label>Email Address</label>
+            <div class="info-value"><%= profile?.email || '' %></div>
+          </div>
+
+          <div class="input-group">
+            <label>Phone Number</label>
+            <div class="info-value"><%= profile?.PhoneNumber || '' %></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="info-box">
+      <div class="box-header">
+        <h3 class="box-title">Skills & Track</h3>
+        <span class="box-icon">⚡️</span>
+      </div>
+
+      <div class="box-content">
+        <div class="row">
+          <div class="input-group">
+            <label>Main track</label>
+            <div class="info-value"><%= profile?.mainTrack || '' %></div>
+          </div>
+
+          <div class="input-group">
+            <label>Skill level</label>
+            <div class="info-value"><%= profile?.skillLevel || '' %></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
 </div>
-<% if (typeof error !== "undefined") { %>
-<script>
-  alert("<%= error %>");
-</script>
-<% } %>
+
 </body>
 </html>
