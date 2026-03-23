@@ -7,7 +7,7 @@ import profileRouter from "./Router/profileRouter.js";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import authRequest from "./middleware/authMiddleware.js";
-import publicRouter from "./Router/publicRouter.js";    
+import publicRouter from "./Router/publicRouter.js";
 config();
 
 const App = express();
@@ -21,9 +21,10 @@ App.use(cookieParser());
 App.use('/uploads', express.static('uploads'));
 
 App.use("/auth", RouterLogin);
-App.use("/App", authRequest, AppRouter);
+App.use("/App",authRequest,AppRouter);
 App.use("/profile", authRequest, profileRouter);
-App.use("/public",publicRouter);
+App.use("/", publicRouter);
+
 
 App.set("view engine", "ejs");
 App.set("views", join(__dirname, "view"));

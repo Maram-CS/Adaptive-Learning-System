@@ -25,8 +25,8 @@ const courseSchema = new Schema({
     },
     rating : [
         {
-            userId : string,
-            value : number,
+            userId : String,
+            value : Number,
         }
     ]
 

@@ -4,8 +4,8 @@ import {config} from "dotenv";
 config();
 
 const password = process.env.secret;
-const  createToken = (id)=> {
-    return jwt.sign({id},password,{expiresIn: "3d"});
+const  createToken = (id, role)=> {
+    return jwt.sign({id, role},password,{expiresIn: "3d"});
 }
 
 const loginUser = async (req, res) => {
@@ -14,7 +14,7 @@ const loginUser = async (req, res) => {
     try {
         const user = await UserModel.login(email, password);
 
-        const token = createToken(user._id);
+        const token = createToken(user._id, user.role);
         res.cookie("token", token, {
             httpOnly: true,
             maxAge: 3 * 24 * 60 * 60 * 1000
