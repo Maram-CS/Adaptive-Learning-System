@@ -1,4 +1,5 @@
-import { Router } from "express";
+import {Router} from 'express';
+
 
 const publicRouter = Router();
 
@@ -13,5 +14,6 @@ publicRouter.get("/register",(req,res)=>{
 publicRouter.get("/home",(req,res)=>{
     res.render("auth/home");
 });
- 
+
+
 export default publicRouter;

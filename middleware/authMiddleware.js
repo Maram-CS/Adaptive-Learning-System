@@ -18,6 +18,7 @@ const authRequest = (req,res,next)=>{
       const decoded = jwt.verify(token,password);
 
       req.id = decoded.id; // Attach the user ID to the request object for further use in controllers
+      req.role = decoded.role; // Attach the user role to the request object for further use in controllers
 
       next();
 
