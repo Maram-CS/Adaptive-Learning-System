@@ -220,7 +220,12 @@ body {
   transition: 0.3s;
 }
 
-.upload,.icon-btn:hover {
+.upload:hover {
+  background: var(--orange);
+  color: var(--navy);
+  transform: scale(1.05);
+}
+.icon-btn:hover {
   background: var(--blue-main);
   transform: scale(1.05);
 }
