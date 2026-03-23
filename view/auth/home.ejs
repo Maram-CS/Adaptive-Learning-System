@@ -292,7 +292,351 @@ card.classList.toggle("active");
 });
 });
 
+/* ============================================================
+   EDUPHIN — Dynamic JS
+   1. Dark / Light Mode Toggle
+   2. Live Theme Panel (colors, font, border-radius)
+   3. Scroll Animations (IntersectionObserver)
+   4. Sticky header shadow on scroll
+   ============================================================ */
+
+(function () {
+  'use strict';
+
+  /* ── DEFAULTS ─────────────────────────────────────────────── */
+  const DEFAULTS = {
+    theme:        'light',
+    blueDark:     '#053672',
+    orange:       '#f4a640',
+    fontBody:     "'Plus Jakarta Sans', sans-serif",
+    fontDisplay:  "'Sora', sans-serif",
+    radiusMd:     16,
+  };
+
+  /* ── STORAGE HELPERS ──────────────────────────────────────── */
+  const save  = (k, v) => localStorage.setItem('eduphin_' + k, v);
+  const load  = (k)    => localStorage.getItem('eduphin_' + k);
+
+  /* ── APPLY THEME VARIABLES ────────────────────────────────── */
+  function applyVars(vars) {
+    const r = document.documentElement;
+    if (vars.blueDark) {
+      r.style.setProperty('--blue-dark', vars.blueDark);
+      // Derive lighter tones automatically
+      r.style.setProperty('--blue-mid',  vars.blueDark + 'cc');
+    }
+    if (vars.orange) {
+      r.style.setProperty('--orange', vars.orange);
+    }
+    if (vars.fontBody)    r.style.setProperty('--font-body',    vars.fontBody);
+    if (vars.fontDisplay) r.style.setProperty('--font-display', vars.fontDisplay);
+    if (vars.radiusMd !== undefined) {
+      const rm = vars.radiusMd;
+      r.style.setProperty('--radius-sm', Math.round(rm * 0.5)  + 'px');
+      r.style.setProperty('--radius-md', rm                     + 'px');
+      r.style.setProperty('--radius-lg', Math.round(rm * 1.75) + 'px');
+      r.style.setProperty('--radius-xl', Math.round(rm * 2.5)  + 'px');
+    }
+  }
+
+  /* ── DARK MODE ────────────────────────────────────────────── */
+  function setTheme(mode) {
+    document.documentElement.setAttribute('data-theme', mode);
+    save('theme', mode);
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.textContent = mode === 'dark' ? '☀️' : '🌙';
+  }
+
+  function initTheme() {
+    const saved = load('theme') || DEFAULTS.theme;
+    setTheme(saved);
+  }
+
+  /* ── INJECT NAVBAR CONTROLS ───────────────────────────────── */
+  function injectNavControls() {
+    const nav = document.querySelector('header nav');
+    if (!nav) return;
+
+    /* Dark mode toggle */
+    const toggleWrap = document.createElement('div');
+    toggleWrap.className = 'theme-toggle-wrap';
+    toggleWrap.innerHTML = `
+      <span id="theme-icon">🌙</span>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"></button>
+    `;
+    nav.appendChild(toggleWrap);
+
+    /* Theme panel open button */
+    const panelBtn = document.createElement('button');
+    panelBtn.className = 'theme-panel-btn';
+    panelBtn.id = 'theme-panel-btn';
+    panelBtn.title = 'Customize theme';
+    panelBtn.textContent = '⚙️';
+    nav.appendChild(panelBtn);
+
+    /* Wire dark toggle */
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    /* Wire panel open button */
+    panelBtn.addEventListener('click', () => {
+      document.getElementById('theme-panel')?.classList.toggle('open');
+    });
+  }
+
+  /* ── BUILD THEME PANEL ────────────────────────────────────── */
+  function buildThemePanel() {
+    const panel = document.createElement('div');
+    panel.className = 'theme-panel';
+    panel.id = 'theme-panel';
+
+    panel.innerHTML = `
+      <h4>
+        🎨 Customize Theme
+        <button id="close-panel" aria-label="Close panel">✕</button>
+      </h4>
+
+      <div class="panel-group">
+        <label>Primary Color</label>
+        <div class="color-row">
+          <span>Brand Blue</span>
+          <input type="color" id="pick-blue" value="${load('blueDark') || DEFAULTS.blueDark}">
+        </div>
+        <div class="color-row">
+          <span>Accent Orange</span>
+          <input type="color" id="pick-orange" value="${load('orange') || DEFAULTS.orange}">
+        </div>
+      </div>
+
+      <div class="panel-group">
+        <label>Body Font</label>
+        <select id="pick-font-body">
+          <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans</option>
+          <option value="'Inter', sans-serif">Inter</option>
+          <option value="'DM Sans', sans-serif">DM Sans</option>
+          <option value="'Nunito', sans-serif">Nunito</option>
+          <option value="'Poppins', sans-serif">Poppins</option>
+        </select>
+      </div>
+
+      <div class="panel-group">
+        <label>Display Font</label>
+        <select id="pick-font-display">
+          <option value="'Sora', sans-serif">Sora</option>
+          <option value="'Clash Display', sans-serif">Clash Display</option>
+          <option value="'Raleway', sans-serif">Raleway</option>
+          <option value="'Montserrat', sans-serif">Montserrat</option>
+          <option value="'Outfit', sans-serif">Outfit</option>
+        </select>
+      </div>
+
+      <div class="panel-group">
+        <label>Border Radius — <span id="radius-val">${load('radiusMd') || DEFAULTS.radiusMd}px</span></label>
+        <div class="slider-row">
+          <input type="range" id="pick-radius" min="0" max="32" step="2"
+                 value="${load('radiusMd') || DEFAULTS.radiusMd}">
+          <span id="radius-val-right">${load('radiusMd') || DEFAULTS.radiusMd}px</span>
+        </div>
+      </div>
+
+      <button class="reset-btn" id="reset-theme">↺ Reset to Default</button>
+    `;
+
+    document.body.appendChild(panel);
+
+    /* Close button */
+    document.getElementById('close-panel').addEventListener('click', () => {
+      panel.classList.remove('open');
+    });
+
+    /* Close on outside click */
+    document.addEventListener('click', (e) => {
+      if (!panel.contains(e.target) && e.target.id !== 'theme-panel-btn') {
+        panel.classList.remove('open');
+      }
+    });
+
+    /* ── Color pickers ── */
+    const pickBlue = document.getElementById('pick-blue');
+    pickBlue.addEventListener('input', (e) => {
+      applyVars({ blueDark: e.target.value });
+      save('blueDark', e.target.value);
+    });
+
+    const pickOrange = document.getElementById('pick-orange');
+    pickOrange.addEventListener('input', (e) => {
+      applyVars({ orange: e.target.value });
+      save('orange', e.target.value);
+    });
+
+    /* ── Font selectors ── */
+    const fontBodySel = document.getElementById('pick-font-body');
+    const savedFontBody = load('fontBody');
+    if (savedFontBody) {
+      [...fontBodySel.options].forEach(o => { if (o.value === savedFontBody) o.selected = true; });
+    }
+    fontBodySel.addEventListener('change', (e) => {
+      applyVars({ fontBody: e.target.value });
+      save('fontBody', e.target.value);
+      loadGoogleFont(e.target.value);
+    });
+
+    const fontDisplaySel = document.getElementById('pick-font-display');
+    const savedFontDisplay = load('fontDisplay');
+    if (savedFontDisplay) {
+      [...fontDisplaySel.options].forEach(o => { if (o.value === savedFontDisplay) o.selected = true; });
+    }
+    fontDisplaySel.addEventListener('change', (e) => {
+      applyVars({ fontDisplay: e.target.value });
+      save('fontDisplay', e.target.value);
+      loadGoogleFont(e.target.value);
+    });
+
+    /* ── Radius slider ── */
+    const radiusSlider = document.getElementById('pick-radius');
+    const updateRadiusLabel = (v) => {
+      document.getElementById('radius-val').textContent = v + 'px';
+      document.getElementById('radius-val-right').textContent = v + 'px';
+    };
+    radiusSlider.addEventListener('input', (e) => {
+      const v = parseInt(e.target.value);
+      applyVars({ radiusMd: v });
+      save('radiusMd', v);
+      updateRadiusLabel(v);
+    });
+
+    /* ── Reset ── */
+    document.getElementById('reset-theme').addEventListener('click', () => {
+      ['blueDark','orange','fontBody','fontDisplay','radiusMd'].forEach(k => {
+        localStorage.removeItem('eduphin_' + k);
+      });
+      document.documentElement.removeAttribute('style');
+      pickBlue.value   = DEFAULTS.blueDark;
+      pickOrange.value = DEFAULTS.orange;
+      fontBodySel.value    = DEFAULTS.fontBody;
+      fontDisplaySel.value = DEFAULTS.fontDisplay;
+      radiusSlider.value   = DEFAULTS.radiusMd;
+      updateRadiusLabel(DEFAULTS.radiusMd);
+    });
+  }
+
+  /* ── LOAD SAVED VARS ON INIT ──────────────────────────────── */
+  function loadSavedVars() {
+    const saved = {};
+    if (load('blueDark'))   saved.blueDark  = load('blueDark');
+    if (load('orange'))     saved.orange    = load('orange');
+    if (load('fontBody'))   saved.fontBody  = load('fontBody');
+    if (load('fontDisplay'))saved.fontDisplay = load('fontDisplay');
+    if (load('radiusMd'))   saved.radiusMd  = parseInt(load('radiusMd'));
+    if (Object.keys(saved).length) applyVars(saved);
+  }
+
+  /* ── DYNAMIC GOOGLE FONT LOADER ───────────────────────────── */
+  function loadGoogleFont(fontValue) {
+    const name = fontValue.replace(/['"]/g, '').split(',')[0].trim();
+    const id   = 'gf-' + name.replace(/\s+/g, '-').toLowerCase();
+    if (document.getElementById(id)) return;
+    const link   = document.createElement('link');
+    link.id      = id;
+    link.rel     = 'stylesheet';
+    link.href    = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}:wght@400;600;700&display=swap`;
+    document.head.appendChild(link);
+  }
+
+  /* ── ADD ANIMATION CLASSES TO HTML ───────────────────────── */
+  function addAnimationClasses() {
+    /* Hero */
+    document.querySelector('.hero-text')?.classList.add('fade-left');
+    document.querySelector('.hero-img')?.classList.add('fade-right');
+
+    /* Features heading */
+    document.querySelector('.features h2')?.classList.add('fade-up');
+    document.querySelector('.features > p')?.classList.add('fade-up');
+
+    /* Cards — staggered */
+    const fc = document.querySelector('.feature-container');
+    if (fc) {
+      fc.classList.add('stagger');
+      fc.querySelectorAll('.card').forEach(c => c.classList.add('fade-up'));
+    }
+
+    /* What section */
+    document.querySelector('.what h2')?.classList.add('fade-up');
+    document.querySelector('.what > p')?.classList.add('fade-up');
+    document.querySelector('.student-card')?.classList.add('fade-scale');
+
+    /* Content sections */
+    document.querySelectorAll('.section').forEach((sec, i) => {
+      const txt = sec.querySelector('.section-text');
+      const img = sec.querySelector('.section-img');
+      if (sec.classList.contains('reverse')) {
+        txt?.classList.add('fade-right');
+        img?.classList.add('fade-left');
+      } else {
+        txt?.classList.add('fade-left');
+        img?.classList.add('fade-right');
+      }
+    });
+
+    /* Footer */
+    document.querySelector('footer h5')?.classList.add('fade-up');
+  }
+
+  /* ── INTERSECTION OBSERVER ────────────────────────────────── */
+  function initScrollAnimations() {
+    document.body.classList.add('anim-ready');
+    addAnimationClasses();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); // animate only once
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-up, .fade-left, .fade-right, .fade-scale')
+      .forEach(el => observer.observe(el));
+  }
+
+  /* ── STICKY HEADER SCROLL SHADOW ─────────────────────────── */
+  function initScrollHeader() {
+    const header = document.querySelector('header');
+    if (!header) return;
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+  }
+
+  /* ── INIT ─────────────────────────────────────────────────── */
+  function init() {
+    initTheme();
+    loadSavedVars();
+    injectNavControls();
+    buildThemePanel();
+    initScrollAnimations();
+    initScrollHeader();
+
+    /* Sync dark mode icon on load */
+    const icon = document.getElementById('theme-icon');
+    if (icon) {
+      icon.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+
 </script>
+
 
 </body>
 

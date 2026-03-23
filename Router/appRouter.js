@@ -1,5 +1,6 @@
 import {Router} from 'express';
-
+import { viewProfile } from '../Controller/profileController.js';
+import authRequest from '../middleware/authMiddleware.js';
 const AppRouter = Router();
 AppRouter.get('/login', (req, res) => {
     res.render('auth/login');
@@ -21,9 +22,7 @@ AppRouter.get("/createProfile",(req,res)=>{
     res.render("auth/createProfile");
 });
 
-AppRouter.get("/infoProfile",(req,res)=>{
-    res.render("auth/Profile-view");
-});
+AppRouter.get("/infoProfile", authRequest, viewProfile);
 
 AppRouter.get("/courses",(req,res)=>{
     res.render("auth/courses");
