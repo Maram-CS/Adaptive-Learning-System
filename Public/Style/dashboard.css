@@ -30,7 +30,7 @@ body {
   min-height: 100vh;
 }
 
-/* ─── SIDEBAR ─────────────────────────────────────── */
+/* ─── SIDEBAR AVEC HOVER AMÉLIORÉ ─────────────────── */
 .sidebar {
   width: 230px;
   background: var(--navy);
@@ -60,25 +60,73 @@ body {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .sidebar .menu ul li {
-  padding: 10px 15px;
-  border-radius: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 500;
   color: rgba(255,255,255,0.75);
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.sidebar .menu ul li:hover,
+/* Effet de fond glissant au hover */
+.sidebar .menu ul li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(43,125,233,0.3), transparent);
+  transition: left 0.4s ease;
+}
+
+.sidebar .menu ul li:hover::before {
+  left: 100%;
+}
+
+/* Effet de bordure gauche */
+.sidebar .menu ul li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 60%;
+  background: var(--orange);
+  border-radius: 3px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar .menu ul li:hover::after,
+.sidebar .menu ul li.active::after {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.sidebar .menu ul li:hover {
+  background: rgba(43,125,233,0.2);
+  color: white;
+  transform: translateX(5px);
+}
+
 .sidebar .menu ul li.active {
   background: var(--blue-main);
   color: white;
 }
 
-.sidebar .menu ul li a { text-decoration: none; color: inherit; }
+.sidebar .menu ul li a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
 
 .sidebar .logout {
   margin-top: auto;
@@ -90,14 +138,32 @@ body {
   font-weight: 700;
   cursor: pointer;
   font-size: 15px;
-  transition: 0.3s;
+  transition: all 0.3s;
   width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar .logout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.4s;
+}
+
+.sidebar .logout:hover::before {
+  left: 100%;
 }
 
 .sidebar .logout:hover {
   background: var(--blue-main);
   color: white;
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(43,125,233,0.4);
 }
 
 /* ─── MAIN ────────────────────────────────────────── */
@@ -107,7 +173,7 @@ body {
   padding: 30px 40px;
 }
 
-/* ─── HEADER ──────────────────────────────────────── */
+/* ─── HEADER AVEC RECHERCHE AMÉLIORÉE ─────────────── */
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -124,19 +190,28 @@ body {
 
 .header-actions { display: flex; align-items: center; gap: 15px; }
 
+/* Barre de recherche améliorée avec icône et animation */
 .search-bar {
-  padding: 9px 16px;
+  padding: 9px 16px 9px 38px;
   border: 2px solid var(--blue-main);
-  border-radius: 20px;
+  border-radius: 25px;
   outline: none;
   font-size: 14px;
-  background: white;
-  transition: 0.3s;
+  background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 12px center;
+  transition: all 0.3s ease;
+  width: 240px;
 }
 
 .search-bar:focus {
   border-color: var(--orange);
   box-shadow: 0 0 0 3px rgba(244,166,64,0.2);
+  width: 280px;
+  background-color: white;
+}
+
+.search-bar::placeholder {
+  color: #aaa;
+  font-style: italic;
 }
 
 .buttons { display: flex; gap: 8px; }
@@ -190,6 +265,23 @@ body {
   backdrop-filter: blur(10px);
   cursor: pointer;
   transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.streak-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.4s;
+}
+
+.streak-badge:hover::before {
+  left: 100%;
 }
 
 .streak-badge:hover {
@@ -274,6 +366,23 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   cursor: pointer;
   transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(43,125,233,0.1), transparent);
+  transition: left 0.4s;
+}
+
+.stat-card:hover::before {
+  left: 100%;
 }
 
 .stat-card:hover {
@@ -354,7 +463,24 @@ body {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.continue-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.4s;
+}
+
+.continue-btn:hover::before {
+  left: 100%;
 }
 
 .continue-btn:hover {
@@ -429,10 +555,12 @@ body {
   font-size: 12px;
   cursor: pointer;
   margin-top: 8px;
+  transition: 0.3s;
 }
 
 .small-continue-btn:hover {
   background: var(--orange);
+  transform: scale(1.02);
 }
 
 /* Recommendations List */
@@ -444,6 +572,12 @@ body {
 .recommendations-list li {
   margin-bottom: 12px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.recommendations-list li:hover {
+  transform: translateX(5px);
+  color: var(--blue-main);
 }
 
 .recommendations-list li i {
@@ -482,6 +616,13 @@ body {
 
 .today-path-list li {
   margin-bottom: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.today-path-list li:hover {
+  transform: translateX(5px);
+  color: var(--blue-main);
 }
 
 .today-path-list li i {
@@ -497,6 +638,13 @@ body {
 
 .assessments-list li {
   margin-bottom: 8px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.assessments-list li:hover {
+  transform: translateX(5px);
+  color: var(--blue-main);
 }
 
 .assessments-list li i {
@@ -545,5 +693,7 @@ body {
   .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; padding: 15px; }
   .main { margin-left: 0; padding: 20px; }
   .main-header { flex-direction: column; gap: 15px; text-align: center; }
+  .search-bar { width: 100%; }
+  .search-bar:focus { width: 100%; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
