@@ -281,6 +281,26 @@ body {
   color: var(--orange);
 }
 
+/* ─── VIEW DETAILS BUTTON ─────────────────────────── */
+.view-details-btn {
+  margin-top: 8px;
+  padding: 8px 16px;
+  background: var(--blue-main);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 100%;
+}
+
+.view-details-btn:hover {
+  background: var(--orange);
+  transform: scale(1.05);
+}
+
 /* ─── FOOTER ──────────────────────────────────────── */
 .footer {
   background: var(--navy);
