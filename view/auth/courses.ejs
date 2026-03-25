@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Courses</title>
 <link rel="stylesheet" href="/Style/courses.css">
-
+</head>
+<body>
 
 <div class="page-container">
 
@@ -63,6 +64,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="html-css"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('HTML & CSS', 'Learn the fundamentals of web development using HTML and CSS.', 'frontend', '/img/html.png')">View Details</button>
       </div>
 
       <div class="item" data-category="frontend">
@@ -72,6 +74,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="javascript"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('JavaScript Basics', 'Understand the core concepts of JavaScript programming.', 'frontend', '/img/javascript.png')">View Details</button>
       </div>
 
       <div class="item" data-category="frontend">
@@ -81,6 +84,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="react"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('React JS', 'Build dynamic user interfaces with React library.', 'frontend', '/img/react.png')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
@@ -90,6 +94,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="nodejs"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('Node.js', 'Learn backend development using Node.js and Express.', 'backend', '/img/node.png')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
@@ -99,6 +104,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="python"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('Python Basics', 'Get started with Python programming language.', 'backend', '/img/python.png')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
@@ -108,6 +114,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="django"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('Django', 'Develop web applications using Django framework.', 'backend', '/img/Django.png')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
@@ -117,6 +124,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="php"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('PHP', 'Learn web development with the PHP programming language.', 'backend', '/img/PHP.png')">View Details</button>
       </div>
 
       <div class="item" data-category="tools">
@@ -126,6 +134,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="github"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('GitHub', 'Learn version control with GitHub.', 'tools', '/img/GitHub.png')">View Details</button>
       </div>
 
       <div class="item" data-category="tools">
@@ -135,6 +144,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="git"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('Git', 'Learn version control with Git.', 'tools', '/img/Git.png')">View Details</button>
       </div>
 
       <div class="item" data-category="design">
@@ -144,6 +154,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="figma"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('Figma', 'Learn UI/UX design with Figma.', 'design', '/img/Figma.png')">View Details</button>
       </div>
 
       <div class="item" data-category="database">
@@ -153,6 +164,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="mysql"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('MySQL', 'Learn SQL database management with MySQL.', 'database', '/img/MySQL.png')">View Details</button>
       </div>
 
       <div class="item" data-category="database">
@@ -162,6 +174,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="mongodb"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('MongoDB', 'Learn NoSQL database management with MongoDB.', 'database', '/img/MongoDB.png')">View Details</button>
       </div>
 
       <div class="item" data-category="deployment">
@@ -171,6 +184,7 @@
         <div class="card-divider"></div>
         <div class="star-rating" data-course="vercel"></div>
         <div class="rating-label">Tap to rate</div>
+        <button class="view-details-btn" onclick="viewCourseDetails('Vercel', 'Deploy and host web applications with Vercel.', 'deployment', '/img/Vercel.png')">View Details</button>
       </div>
 
     </div>
@@ -180,7 +194,6 @@
 <div class="footer">© 2026 Eduphin. All rights reserved.</div>
 
 <script>
-
 /* ── RATING TEXT ─────────────────────────────────── */
 const ratingText = {
   0: 'Tap to rate',
@@ -250,9 +263,20 @@ function highlightStars(container, value) {
   });
 }
 
+/* ── VIEW COURSE DETAILS FUNCTION ─────────────────── */
+function viewCourseDetails(title, description, category, image) {
+  // You can customize this function to show details in a modal or navigate to a details page
+  alert(`Course Details:\n\nTitle: ${title}\nCategory: ${category}\nDescription: ${description}\n\nYou can navigate to the course page or open a modal with more information.`);
+  
+  // Alternative: redirect to a details page with course info in URL
+  // window.location.href = `/App/courseDetails?title=${encodeURIComponent(title)}&category=${category}`;
+  
+  // Alternative: show a modal with details (you can create a modal element)
+  // showModal(title, description, category, image);
+}
+
 /* ── INIT ────────────────────────────────────────── */
 document.querySelectorAll('.star-rating').forEach(buildStars);
-
 
 /* ── SEARCH ──────────────────────────────────────── */
 const searchInput = document.getElementById('searchInput');
@@ -264,7 +288,6 @@ searchInput.addEventListener('keyup', function () {
     item.style.display = item.textContent.toLowerCase().includes(filter) ? 'flex' : 'none';
   });
 });
-
 
 /* ── CATEGORY FILTER ─────────────────────────────── */
 function filterCourses(category, btn) {
