@@ -98,26 +98,16 @@ header.scrolled { box-shadow: var(--shadow-md); }
 }
 
 /* ─── LOGO ───────────────────────────────────────────────────── */
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--blue-dark);
-  text-decoration: none;
-  height: 72px;
-  padding: 10px 0;
-  transition: color var(--transition);
-}
-
-.logo img {
-  height: 100%;
-  width: auto;
-  max-width: 140px;
-  object-fit: contain;
-}
+ .logo h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0f3b5c;
+            letter-spacing: -0.5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .logo span {
+            color: #f59e0b;
+        }
 
 /* ─── NAV LINKS ─────────────────────────────────────────────── */
 nav { display: flex; align-items: center; gap: 8px; }
@@ -602,34 +592,98 @@ nav { display: flex; align-items: center; gap: 8px; }
   display: flex; align-items: center;
   justify-content: space-between; gap: 60px;
 }
+.send-btn {
+            background-color: #f59e0b;
+            color: #1e293b;
+            font-weight: bold;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .send-btn:hover {
+             background-color: #0f3b5c;
+            color: white;
+        }
 
-/* ─── FOOTER ─────────────────────────────────────────────────── */
-footer {
-  background: linear-gradient(135deg, #0c1e36 0%, #0a2952 100%);
-  color: #fff;
-  text-align: center;
-  padding: 60px 20px;
-  margin-top: 80px;
-  position: relative; overflow: hidden;
-}
-
-[data-theme="dark"] footer {
-  background: linear-gradient(135deg, #070e1a 0%, #0a1628 100%);
-}
-
-footer::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--blue-mid), var(--orange), var(--blue-mid));
-}
-
-footer h5 {
-  font-family: var(--font-display);
-  font-size: 18px; font-weight: 700;
-  margin-bottom: 14px; letter-spacing: 0.01em;
-}
-
-footer p { color: rgba(255,255,255,0.6); font-size: 14px; margin: 6px 0; }
+/* ========== FOOTER ========== */
+        .footer {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .footer-col h4 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .footer-col p, .footer-col a {
+            color: #cbd5e1;
+            text-decoration: none;
+            line-height: 1.6;
+            display: block;
+            margin-bottom: 10px;
+            transition: 0.2s;
+        }
+        .footer-col a:hover {
+            color: #f59e0b;
+        }
+        .footer-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        .footer-logo span {
+            color: #f59e0b;
+        }
+        .social-icons {
+            margin-top: 15px;
+        }
+        .social-icons i {
+            font-size: 1.3rem;
+            margin-right: 16px;
+            cursor: pointer;
+            color: #94a3b8;
+            }
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .subscribe-form input {
+            padding: 12px;
+            border-radius: 40px;
+            border: none;
+            background-color: #1e293b;
+            color: white;
+            padding-left: 18px;
+        }
+        .subscribe-form button {
+            background-color: #f59e0b;
+            border: none;
+            padding: 10px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .copyright {
+            text-align: center;
+            border-top: 1px solid #334155;
+            padding-top: 28px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
 
 /* ─── SCROLL ANIMATIONS ──────────────────────────────────────── */
 body.anim-ready .fade-up {
