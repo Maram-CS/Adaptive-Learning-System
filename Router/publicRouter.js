@@ -14,6 +14,10 @@ publicRouter.get("/register",(req,res)=>{
 publicRouter.get("/home",(req,res)=>{
     res.render("auth/home");
 });
+publicRouter.get("/contact",(req,res)=>{
+    res.render("auth/contactUs");
+});
+
 
 
 export default publicRouter;
