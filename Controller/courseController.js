@@ -54,9 +54,22 @@ const editCourse = async (req,res) => {
     }
 }
 
+const getCourseByTitle = async(req,res) => {
+    try {
+        const {Title} = req.params.Title || req.query.Title;
+        const course = await courseModel.findOne({Title}).populate('Instructor','userName email');
+        if(!course) {
+            return res.status(404).json({message: "course not found"});
+        }
+        res.render("auth/coursesDetail",{course});
+    }catch (err) {
+        return res.status(500).json({message: "Internal server error"});
+    }
+}
+
 const deleteCourse = async (req,res) => {
     try {
-        const course = await courseModel.findById(req.params.id);
+        const course = await courseModel.findById(req.params.id).populate('Instructor');
         if(!course) {
             return res.status(404).json({message: "Course not found"});
         }
@@ -67,4 +80,4 @@ const deleteCourse = async (req,res) => {
     }
 }
 
-export {createCourse, getAllCourses, editCourse, deleteCourse};
+export {createCourse, getAllCourses, editCourse, deleteCourse,getCourseByTitle};
