@@ -1,4 +1,4 @@
-import UserModel from "../Model/userModel.js";
+import userModel from "../Model/userModel.js";
 import jwt from "jsonwebtoken";
 import {config} from "dotenv";
 config();
@@ -9,23 +9,26 @@ const  createToken = (id, role)=> {
 }
 
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    try {
-        const user = await UserModel.login(email, password);
+  try {
+    const user = await userModel.login(email, password);
 
-        const token = createToken(user._id, user.role);
-        res.cookie("token", token, {
-            httpOnly: true,
-            maxAge: 3 * 24 * 60 * 60 * 1000
-        });
+    if (user) {
+      // nkhasan user f cookie
+      res.cookie("userId", user._id);
 
-        res.render("auth/courses");
-
-    } catch (err) {
-        res.render("auth/login", { error: err.message });
+      //  check role
+      if (user.role === "teacher") {
+        return res.redirect("/App/teacherDashboard");
+      } else {
+        return res.redirect("/App/infoProfile");
+      }
     }
+
+  } catch (err) {
+  console.log("ERROR LOGIN:", err.message);
+  res.send(err.message);
+}
 };
-
-
 export {loginUser};
