@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduphin | Teacher Dashboard</title>
+    <link rel="stylesheet" href="/Style/teacherdashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="page-container">
+
+    <!-- SIDEBAR (same style as student dashboard) -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/img/logoBleu.png" class="logo-img" alt="logo">
+            <span>Eduphin</span>
+        </div>
+        <div class="menu">
+            <ul>
+              
+                <li class="active"><a href="/App/teacherDashboard">Home</a></li>
+                  <li><a href="#">My Profile</a></li>
+                <li><a href="#">Create Quiz </a></li>
+                 <li><a href="#">Create Course </a></li>
+                <li><a href="#">Student Analytics</a></li>
+            </ul>
+        </div>
+        <button class="logout">Sign out</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- HEADER -->
+        <div class="main-header">
+            <h2>Teacher <span>Dashboard</span></h2>
+            <div class="header-actions">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search courses or students...">
+                <div class="buttons">
+                    <button class="icon-btn">👤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD CONTENT -->
+        <div id="dashboard-container"></div>
+
+        <!-- FOOTER -->
+        <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
+
+    </div>
+</div>
+<script>const profileData = JSON.parse('<%- JSON.stringify(profile) %>');
+</script>
+<script>
+    
+   
+    
+
+
+    const teacherData = {
+       
+        totalCourses: 50,
+        activeCourses: 11,
+        totalQuizzes: 47,
+        quizzesThisWeek: 17,
+        quizzesThisMonth: 30,
+        totalStudents: 147,
+        avgProgress: 72
+    };
+
+    const courses = [
+        {
+            id: 1,
+            title: "Mastering Full-Stack",
+            icon: "fab fa-react",
+            enrolled: 42,
+            progress: 68,
+            description: "Entire entire course",
+            lastActive: "2 hours ago"
+        },
+        {
+            id: 2,
+            title: "Data Science Track",
+            icon: "fab fa-python",
+            enrolled: 47,
+            progress: 73,
+            description: "Entire entire class",
+            lastActive: "Yesterday"
+        },
+        {
+            id: 3,
+            title: "Mobile Dev Specialization",
+            icon: "fab fa-android",
+            enrolled: 38,
+            progress: 60,
+            description: "Entire entire course",
+            lastActive: "3 hours ago"
+        },
+        {
+            id: 4,
+            title: "API Design Specialization",
+            icon: "fas fa-plug",
+            enrolled: 29,
+            progress: 55,
+            description: "Advanced track",
+            lastActive: "1 day ago"
+        }
+    ];
+
+    const recentActivities = [
+        { student: "Sarah Ahmed", course: "Full-Stack", action: "completed quiz", score: "92%", time: "5 min ago" },
+        { student: "Youssef Mansour", course: "Data Science", action: "submitted project", score: "88%", time: "2 hours ago" },
+        { student: "Leila Benali", course: "Mobile Dev", action: "started lesson", score: "", time: "3 hours ago" },
+        { student: "Omar Farid", course: "API Design", action: "completed assignment", score: "95%", time: "Yesterday" }
+    ];
+
+    const weeklyQuizData = [12, 15, 18, 22, 17, 20, 24];
+    // ============================================
+    // FUNCTIONS
+    // ============================================
+    
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+
+    function editCourse(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        showToast(`✏️ Editing: ${course.title}`);
+    }
+
+    function openQuizHub(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        showToast(`📚 Quiz Hub for ${course.title} - Total quizzes: ${Math.floor(Math.random() * 30) + 15}`);
+    }
+
+    function viewPerformance(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        showToast(`📊 Student Performance: ${course.title} - Avg: ${course.progress}%`);
+    }
+
+    function manageContent(courseId) {
+        const course = courses.find(c => c.id === courseId);
+        showToast(`📄 Content Manager: ${course.title} - 8 modules available`   );
+    }
+
+    function addNewQuiz() {
+        teacherData.totalQuizzes++;
+        teacherData.quizzesThisWeek++;
+        teacherData.quizzesThisMonth++;
+        updateStats();
+        showToast(`✅ New quiz added! Total quizzes: ${teacherData.totalQuizzes}`);
+    }
+
+    function viewAllStudents() {
+        showToast(`👨‍🎓 Total enrolled students: ${teacherData.totalStudents}`);
+    }
+
+    function animateNumbers() {
+        const numbers = document.querySelectorAll('.stat-number');
+        numbers.forEach(el => {
+            const target = parseInt(el.getAttribute('data-target'));
+            let current = 0;
+            const increment = target / 50;
+            const updateNumber = () => {
+                current += increment;
+                if (current < target) {
+                    el.textContent = Math.floor(current);
+                    requestAnimationFrame(updateNumber);
+                } else {
+                    el.textContent = target;
+                }
+            };
+            updateNumber();
+        });
+    }
+
+    function updateStats() {
+        document.getElementById('totalCoursesCount').innerText = teacherData.totalCourses;
+        document.getElementById('activeCoursesCount').innerText = teacherData.activeCourses;
+        document.getElementById('totalQuizzesCount').innerText = teacherData.totalQuizzes;
+        document.getElementById('weeklyQuizzes').innerText = teacherData.quizzesThisWeek;
+        document.getElementById('monthlyQuizzes').innerText = teacherData.quizzesThisMonth;
+        document.getElementById('totalStudentsCount').innerText = teacherData.totalStudents;
+    }
+
+    function renderDashboard() {
+        const container = document.getElementById('dashboard-container');
+        
+        container.innerHTML = `
+            <!-- Welcome Card -->
+            <div class="welcome-card">
+                <div class="welcome-text">
+                   <h1>Welcome, ${profileData.name}</h1>
+                    <p>Manage your classes, build adaptive content, and track student progress.</p>
+                </div>
+                <div class="streak-badge" onclick="showToast('📈 Overall class average: ${teacherData.avgProgress}%')">
+                    <i class="fas fa-chart-line"></i> Avg Progress: ${teacherData.avgProgress}%
+                </div>
+            </div>
+
+            <!-- Stats Grid - 4 Cards -->
+            <div class="stats-grid">
+                <div class="stat-card" onclick="showToast('📚 ${teacherData.totalCourses} total courses, ${teacherData.activeCourses} active')">
+                    <i class="fas fa-book-open"></i>
+                    <div class="stat-number" data-target="${teacherData.totalCourses}">0</div>
+                    <div class="stat-label">Total Courses</div>
+                    <div class="stat-sub"><i class="fas fa-chart-line"></i> ${teacherData.activeCourses} active courses</div>
+                </div>
+                <div class="stat-card" onclick="showToast('📝 ${teacherData.totalQuizzes} total quizzes')">
+                    <i class="fas fa-database"></i>
+                    <div class="stat-number" data-target="${teacherData.totalQuizzes}">0</div>
+                    <div class="stat-label">Quiz Repository</div>
+                    <div class="stat-sub"><i class="fas fa-calendar-week"></i> ${teacherData.quizzesThisWeek} this week</div>
+                </div>
+                <div class="stat-card" onclick="showToast('👨‍🎓 ${teacherData.totalStudents} active students')">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-number" data-target="${teacherData.totalStudents}">0</div>
+                    <div class="stat-label">Active Students</div>
+                    <div class="stat-sub"><i class="fas fa-user-plus"></i> Total enrolled</div>
+                </div>
+                <div class="stat-card" onclick="addNewQuiz()">
+                    <i class="fas fa-plus-circle"></i>
+                    <div class="stat-number" style="font-size: 28px;">+</div>
+                    <div class="stat-label">Add Quiz</div>
+                    <div class="stat-sub"><i class="fas fa-arrow-right"></i> Click to create</div>
+                </div>
+            </div>
+
+            <!-- Courses Section -->
+            <div class="dashboard-card courses-section">
+                <div class="card-header">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>Course Section (${courses.length})</h3>
+                    <button class="btn-outline-sm" onclick="showToast('🔄 Syncing all course data...')"><i class="fas fa-sync-alt"></i> Sync</button>
+                </div>
+                ${courses.map(course => `
+                    <div class="course-card">
+                        <div class="course-header">
+                            <div class="course-title">
+                                <i class="${course.icon}"></i> 
+                                <strong>${course.title}</strong>
+                            </div>
+                            <div class="course-progress-badge">${course.progress}% complete</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${course.progress}%"></div>
+                        </div>
+                        <div class="course-actions">
+                            <button class="action-btn" onclick="editCourse(${course.id})"><i class="fas fa-edit"></i> Edit Course</button>
+                            <button class="action-btn" onclick="openQuizHub(${course.id})"><i class="fas fa-question-circle"></i> Quiz Hub</button>
+                            <button class="action-btn" onclick="viewPerformance(${course.id})"><i class="fas fa-chart-simple"></i> Student Performance</button>
+                            <button class="action-btn" onclick="manageContent(${course.id})"><i class="fas fa-layer-group"></i> Content</button>
+                        </div>
+                        <div class="course-stats">
+                            <div class="enroll-info">
+                                <i class="fas fa-user-friends"></i> ${course.enrolled} enrolled students
+                            </div>
+                            <div class="course-desc">
+                                <i class="fas fa-tag"></i> ${course.description}
+                            </div>
+                            <div class="last-active">
+                                <i class="fas fa-clock"></i> Last activity: ${course.lastActive}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <!-- Analytics Row: Chart + Recent Activity -->
+            <div class="dashboard-grid-2">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Weekly Quiz Creation</h3>
+                    </div>
+                    <canvas id="quizChart" style="max-height: 200px; width: 100%;"></canvas>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-clock"></i>
+                        <h3>Recent Student Activity</h3>
+                    </div>
+                    <ul class="activity-list">
+                        ${recentActivities.map(act => `
+                            <li onclick="showToast('${act.student} - ${act.action} ${act.score ? act.score : ''}')">
+                                <i class="fas fa-user-graduate"></i>
+                                <div class="activity-details">
+                                    <strong>${act.student}</strong> ${act.action} in <em>${act.course}</em>
+                                    ${act.score ? `<span class="score-badge">${act.score}</span>` : ''}
+                                    <span class="time">${act.time}</span>
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <button class="btn-outline-sm full-width" onclick="viewAllStudents()">View All Students</button>
+                </div>
+            </div>
+
+            <!-- Bottom Row: Top Performers & Quick Actions -->
+            <div class="dashboard-grid-2">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Top Performing Students</h3>
+                    </div>
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr><th>Rank</th><th>Student</th><th>Course</th><th>Avg Score</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr onclick="showToast('Sarah Ahmed - 96% average')"><td>🥇</td><td>Sarah Ahmed</td><td>Full-Stack</td><td>96%</td></tr>
+                            <tr onclick="showToast('Youssef Mansour - 92% average')"><td>🥈</td><td>Youssef Mansour</td><td>Data Science</td><td>92%</td></tr>
+                            <tr onclick="showToast('Leila Benali - 89% average')"><td>🥉</td><td>Leila Benali</td><td>Mobile Dev</td><td>89%</td></tr>
+                            <tr onclick="showToast('Omar Farid - 87% average')"><td>4</td><td>Omar Farid</td><td>API Design</td><td>87%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions-grid">
+                        <button class="quick-action-btn" onclick="addNewQuiz()"><i class="fas fa-plus-circle"></i> Create Quiz</button>
+                        <button class="quick-action-btn" onclick="showToast('📊 Generating performance report...')"><i class="fas fa-file-alt"></i> Generate Report</button>
+                        <button class="quick-action-btn" onclick="showToast('📧 Sending notifications to students...')"><i class="fas fa-bell"></i> Send Announcement</button>
+                        <button class="quick-action-btn" onclick="showToast('📈 Analytics dashboard loading...')"><i class="fas fa-chart-pie"></i> View Analytics</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Initialize Chart.js
+        const ctx = document.getElementById('quizChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Quizzes Created',
+                    data: weeklyQuizData,
+                    borderColor: '#2b7de9',
+                    backgroundColor: 'rgba(43,125,233,0.05)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#f4a640',
+                    pointBorderColor: 'white',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        setTimeout(animateNumbers, 500);
+        updateStats();
+    }
+
+    renderDashboard();
+</script>
+</body>
+</html>
