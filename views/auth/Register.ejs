@@ -118,15 +118,15 @@ form.addEventListener("submit", async function(e) {
 
     if(result.status === "exists"){
         alert("This email already exists");
-        window.location.href = "/App/login";
+        window.location.href = "/login";
     }
     else if(result.status === "user Added"){
         alert("Account created successfully!");
-        window.location.href = "/App/login";
+        window.location.href = "/login";
     }
     else if(result.status === "error"){
         alert(result.message);
-        window.location.href = "/App/register";
+        window.location.href = "/register";
     }
 
 });

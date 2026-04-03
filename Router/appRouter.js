@@ -20,4 +20,12 @@ AppRouter.get("/courses",(req,res)=>{
 AppRouter.get("/editProfile",(req,res)=>{
     res.render("auth/editProfile");
 });
+
+AppRouter.get("/course",(req,res)=>{
+    res.render("auth/course");
+});
+
+AppRouter.get("/favoriteCourses",(req,res)=>{
+    res.render("auth/favoriteCourses");
+});
 export default AppRouter;
