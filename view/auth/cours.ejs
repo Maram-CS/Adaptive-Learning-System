@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Stack Development | Course Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/Style/course.css">
+</head>
+<body>
+
+<div class="page-container">
+
+    <button class="sidebar-hidden-toggle" id="sidebarHiddenToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo" id="logoToggle">
+            <div class="logo-content">
+                <img src="/img/logoBleu.png" class="logo-img" alt="logo">
+                <span>My Courses</span>
+            </div>
+            <i class="fas fa-chevron-left toggle-icon"></i>
+        </div>
+        <div class="menu">
+            <ul>
+                <li><a href="/App/courses">All Courses</a></li>
+                <li><a href="/App/studentDashboard">Dashboard</a></li>
+                <li><a href="/App/favoriteCourses">Favorite Courses</a></li>
+                <li><a href="/App/infoProfile">My Profile</a></li>
+            </ul>
+        </div>
+        <a href="/home"><button class="logout">Sign out</button></a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main" id="mainContent">
+        <div class="main-header">
+            <h2>Course <span>Details</span></h2>
+            <div class="header-actions">
+                <div class="buttons">
+                    <button class="icon-btn">🔔</button>
+                    <button class="icon-btn">💬</button>
+                    <button class="icon-btn">👤</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-container">
+            <div class="course-header">
+                <h1>Full-Stack Development</h1>
+                <div class="course-meta">
+                    <span><i class="fas fa-chalkboard-user"></i> pr.Belguidoum Meriem</span>
+                    <span><i class="fas fa-star" style="color: var(--orange);"></i> 4.8 (245 ratings)</span>
+                    <span><i class="fas fa-book"></i> 6 lessons | 3 quizzes</span>
+                </div>
+                <p class="course-description">
+                    Master modern web development with React, Node.js, Express, and MongoDB. 
+                    Build real-world full-stack applications from scratch and deploy them to production.
+                </p>
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>Your Progress</span>
+                        <span><strong id="progressPercent">0%</strong></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-full-width">
+                <h3><i class="fas fa-chart-simple"></i> Quick Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Lessons Completed</span>
+                        <strong id="completedCount">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-fire"></i>
+                        <span>Current Streak</span>
+                        <strong>5 days</strong>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span>Time Spent</span>
+                        <strong>4h 20m</strong>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-trophy"></i>
+                        <span>Quiz Average</span>
+                        <strong>85%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title"><i class="fas fa-list"></i> Course Content</h2>
+                
+                <div class="lesson-item completed" data-progress="100">
+                    <div class="lesson-info">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>Lesson 1: JavaScript Basics</h4>
+                            <p>Variables, functions, loops, and ES6 features</p>
+                        </div>
+                    </div>
+                    <div class="lesson-progress">100%</div>
+                    <button class="btn-review"><i class="fas fa-eye"></i> Review</button>
+                </div>
+
+                <div class="lesson-item completed" data-progress="100">
+                    <div class="lesson-info">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>Lesson 2: DOM Manipulation</h4>
+                            <p>Selectors, events, and dynamic content</p>
+                        </div>
+                    </div>
+                    <div class="lesson-progress">100%</div>
+                    <button class="btn-review"><i class="fas fa-eye"></i> Review</button>
+                </div>
+
+                <div class="quiz-item completed" data-progress="100">
+                    <div class="quiz-info">
+                        <i class="fas fa-star"></i>
+                        <div>
+                            <h4>📝 Quiz 1: JavaScript Basics</h4>
+                            <p>10 questions · 15 minutes</p>
+                        </div>
+                    </div>
+                    <div class="quiz-score">Score: 85%</div>
+                    <button class="btn-review"><i class="fas fa-eye"></i> Review</button>
+                </div>
+
+                <div class="lesson-item in-progress" data-progress="60">
+                    <div class="lesson-info">
+                        <i class="fas fa-play-circle"></i>
+                        <div>
+                            <h4>Lesson 3: React Components</h4>
+                            <p>Props, state, and component lifecycle</p>
+                        </div>
+                    </div>
+                    <div class="lesson-progress">60%</div>
+                    <button class="btn-continue"><i class="fas fa-play"></i> Continue</button>
+                </div>
+
+                <div class="lesson-item locked" data-progress="0">
+                    <div class="lesson-info">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <h4>Lesson 4: React Hooks</h4>
+                            <p>useState, useEffect, custom hooks</p>
+                        </div>
+                    </div>
+                    <div class="lesson-progress">0%</div>
+                    <button class="btn-locked" disabled><i class="fas fa-lock"></i> Locked</button>
+                </div>
+
+                <div class="quiz-item locked" data-progress="0">
+                    <div class="quiz-info">
+                        <i class="fas fa-star"></i>
+                        <div>
+                            <h4>📝 Quiz 2: React Fundamentals</h4>
+                            <p>15 questions · 20 minutes</p>
+                            <span class="lock-reason">Complete Lesson 4 first</span>
+                        </div>
+                    </div>
+                    <div class="quiz-score">Locked</div>
+                    <button class="btn-locked" disabled><i class="fas fa-lock"></i> Start</button>
+                </div>
+
+                <div class="lesson-item locked" data-progress="0">
+                    <div class="lesson-info">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <h4>Lesson 5: State Management</h4>
+                            <p>Redux, Context API, and state patterns</p>
+                        </div>
+                    </div>
+                    <div class="lesson-progress">0%</div>
+                    <button class="btn-locked" disabled><i class="fas fa-lock"></i> Locked</button>
+                </div>
+
+                <div class="lesson-item locked" data-progress="0">
+                    <div class="lesson-info">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <h4>Lesson 6: API Integration</h4>
+                            <p>REST APIs, Axios, and data fetching</p>
+                        </div>
+                    </div>
+                    <div class="lesson-progress">0%</div>
+                    <button class="btn-locked" disabled><i class="fas fa-lock"></i> Locked</button>
+                </div>
+
+                <div class="quiz-item locked" data-progress="0">
+                    <div class="quiz-info">
+                        <i class="fas fa-star"></i>
+                        <div>
+                            <h4>📝 Quiz 3: Advanced React</h4>
+                            <p>20 questions · 25 minutes</p>
+                            <span class="lock-reason">Complete Lessons 5-6 first</span>
+                        </div>
+                    </div>
+                    <div class="quiz-score">Locked</div>
+                    <button class="btn-locked" disabled><i class="fas fa-lock"></i> Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="course-details.js"></script>
+</body>
+</html>

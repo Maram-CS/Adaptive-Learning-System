@@ -1,6 +1,7 @@
 import userModel from "../Model/userModel.js";
 import UserDB from "../ConfigDB/userDB.js";
 import profileModel from "../Model/profileModel.js";
+import courseModel from "../Model/courseModel.js";
 import {config} from "dotenv";
 config();
 
