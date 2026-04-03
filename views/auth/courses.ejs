@@ -58,138 +58,154 @@
     <div class="courses-container" id="coursesContainer">
 
       <div class="item" data-category="frontend">
+        <button class="heart-btn" data-id="html-css" title="Add to favorites" onclick="toggleFavorite('html-css', this)">❤️</button>
         <img src="/img/html.png" class="course-img">
         <h3>HTML & CSS</h3>
         <p>Learn the fundamentals of web development using HTML and CSS.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="html-css"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('HTML & CSS', 'Learn the fundamentals of web development using HTML and CSS.', 'frontend', '/img/html.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('HTML & CSS')">View Details</button>
       </div>
 
       <div class="item" data-category="frontend">
+        <button class="heart-btn" data-id="javascript" title="Add to favorites" onclick="toggleFavorite('javascript', this)">❤️</button>
         <img src="/img/javascript.png" class="course-img">
         <h3>JavaScript Basics</h3>
         <p>Understand the core concepts of JavaScript programming.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="javascript"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('JavaScript Basics', 'Understand the core concepts of JavaScript programming.', 'frontend', '/img/javascript.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('JavaScript Basics')">View Details</button>
       </div>
 
       <div class="item" data-category="frontend">
+        <button class="heart-btn" data-id="react" title="Add to favorites" onclick="toggleFavorite('react', this)">❤️</button>
         <img src="/img/react.png" class="course-img">
         <h3>React JS</h3>
         <p>Build dynamic user interfaces with React library.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="react"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('React JS', 'Build dynamic user interfaces with React library.', 'frontend', '/img/react.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('React JS')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
+        <button class="heart-btn" data-id="nodejs" title="Add to favorites" onclick="toggleFavorite('nodejs', this)">❤️</button>
         <img src="/img/node.png" class="course-img">
         <h3>Node.js</h3>
         <p>Learn backend development using Node.js and Express.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="nodejs"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('Node.js', 'Learn backend development using Node.js and Express.', 'backend', '/img/node.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('Node.js')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
+        <button class="heart-btn" data-id="python" title="Add to favorites" onclick="toggleFavorite('python', this)">❤️</button>
         <img src="/img/python.png" class="course-img">
         <h3>Python Basics</h3>
         <p>Get started with Python programming language.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="python"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('Python Basics', 'Get started with Python programming language.', 'backend', '/img/python.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('Python Basics')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
+        <button class="heart-btn" data-id="django" title="Add to favorites" onclick="toggleFavorite('django', this)">❤️</button>
         <img src="/img/Django.png" class="course-img">
         <h3>Django</h3>
         <p>Develop web applications using Django framework.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="django"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('Django', 'Develop web applications using Django framework.', 'backend', '/img/Django.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('Django')">View Details</button>
       </div>
 
       <div class="item" data-category="backend">
+        <button class="heart-btn" data-id="php" title="Add to favorites" onclick="toggleFavorite('php', this)">❤️</button>
         <img src="/img/PHP.png" class="course-img">
         <h3>PHP</h3>
         <p>Learn web development with the PHP programming language.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="php"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('PHP', 'Learn web development with the PHP programming language.', 'backend', '/img/PHP.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('PHP')">View Details</button>
       </div>
 
       <div class="item" data-category="tools">
+        <button class="heart-btn" data-id="github" title="Add to favorites" onclick="toggleFavorite('github', this)">❤️</button>
         <img src="/img/GitHub.png" class="course-img">
         <h3>GitHub</h3>
         <p>Learn version control with GitHub.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="github"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('GitHub', 'Learn version control with GitHub.', 'tools', '/img/GitHub.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('GitHub')">View Details</button>
       </div>
 
       <div class="item" data-category="tools">
+        <button class="heart-btn" data-id="git" title="Add to favorites" onclick="toggleFavorite('git', this)">❤️</button>
         <img src="/img/Git.png" class="course-img">
         <h3>Git</h3>
         <p>Learn version control with Git.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="git"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('Git', 'Learn version control with Git.', 'tools', '/img/Git.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('Git')">View Details</button>
       </div>
 
       <div class="item" data-category="design">
+        <button class="heart-btn" data-id="figma" title="Add to favorites" onclick="toggleFavorite('figma', this)">❤️</button>
         <img src="/img/Figma.png" class="course-img">
         <h3>Figma</h3>
         <p>Learn UI/UX design with Figma.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="figma"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('Figma', 'Learn UI/UX design with Figma.', 'design', '/img/Figma.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('Figma')">View Details</button>
       </div>
 
       <div class="item" data-category="database">
+        <button class="heart-btn" data-id="mysql" title="Add to favorites" onclick="toggleFavorite('mysql', this)">❤️</button>
         <img src="/img/MySQL.png" class="course-img">
         <h3>MySQL</h3>
         <p>Learn SQL database management with MySQL.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="mysql"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('MySQL', 'Learn SQL database management with MySQL.', 'database', '/img/MySQL.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('MySQL')">View Details</button>
       </div>
 
       <div class="item" data-category="database">
+        <button class="heart-btn" data-id="mongodb" title="Add to favorites" onclick="toggleFavorite('mongodb', this)">❤️</button>
         <img src="/img/MongoDB.png" class="course-img">
         <h3>MongoDB</h3>
         <p>Learn NoSQL database management with MongoDB.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="mongodb"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('MongoDB', 'Learn NoSQL database management with MongoDB.', 'database', '/img/MongoDB.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('MongoDB')">View Details</button>
       </div>
 
       <div class="item" data-category="deployment">
+        <button class="heart-btn" data-id="vercel" title="Add to favorites" onclick="toggleFavorite('vercel', this)">❤️</button>
         <img src="/img/Vercel.png" class="course-img">
         <h3>Vercel</h3>
         <p>Deploy and host web applications with Vercel.</p>
         <div class="card-divider"></div>
         <div class="star-rating" data-course="vercel"></div>
         <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('Vercel', 'Deploy and host web applications with Vercel.', 'deployment', '/img/Vercel.png')">View Details</button>
+        <button class="view-details-btn" onclick="viewCourseDetails('Vercel')">View Details</button>
       </div>
 
     </div>
   </div>
 </div>
+
+<!-- Toast Notification -->
+<div class="fav-toast" id="favToast"></div>
 
 <div class="footer">© 2026 Eduphin. All rights reserved.</div>
 
@@ -204,11 +220,49 @@ const ratingText = {
   5: 'Excellent! 🎉'
 };
 
+/* ── FAVORITES ───────────────────────────────────── */
+function getFavorites() {
+  try { return JSON.parse(localStorage.getItem('favorites') || '[]'); }
+  catch { return []; }
+}
+
+function toggleFavorite(courseId, btn) {
+  let favs = getFavorites();
+  const idx = favs.indexOf(courseId);
+  if (idx === -1) {
+    favs.push(courseId);
+    btn.classList.add('active');
+    showToast('❤️ Added to favorites!');
+  } else {
+    favs.splice(idx, 1);
+    btn.classList.remove('active');
+    showToast('💔 Removed from favorites');
+  }
+  localStorage.setItem('favorites', JSON.stringify(favs));
+}
+
+/* Sync heart states from localStorage on page load */
+function syncHearts() {
+  const favs = getFavorites();
+  document.querySelectorAll('.heart-btn').forEach(btn => {
+    const courseId = btn.getAttribute('data-id');
+    btn.classList.toggle('active', favs.includes(courseId));
+  });
+}
+
+/* ── TOAST ───────────────────────────────────────── */
+function showToast(msg) {
+  const toast = document.getElementById('favToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
 /* ── BUILD STARS FOR ONE CARD ────────────────────── */
 function buildStars(container) {
   const course   = container.getAttribute('data-course');
   const saved    = parseInt(localStorage.getItem('rating_' + course)) || 0;
-  const label    = container.nextElementSibling; // .rating-label
+  const label    = container.nextElementSibling;
 
   container.innerHTML = '';
 
@@ -219,7 +273,6 @@ function buildStars(container) {
     star.dataset.value = i;
     if (i <= saved) star.classList.add('filled');
 
-    /* Hover in */
     star.addEventListener('mouseenter', () => {
       const val = parseInt(star.dataset.value);
       highlightStars(container, val);
@@ -227,7 +280,6 @@ function buildStars(container) {
       label.classList.remove('rated');
     });
 
-    /* Hover out — restore saved */
     star.addEventListener('mouseleave', () => {
       const cur = parseInt(localStorage.getItem('rating_' + course)) || 0;
       highlightStars(container, cur);
@@ -235,7 +287,6 @@ function buildStars(container) {
       label.classList.toggle('rated', cur > 0);
     });
 
-    /* Click — save */
     star.addEventListener('click', () => {
       const val = parseInt(star.dataset.value);
       localStorage.setItem('rating_' + course, val);
@@ -243,7 +294,6 @@ function buildStars(container) {
       label.textContent = ratingText[val];
       label.classList.add('rated');
 
-      /* Bounce */
       star.style.transform = 'scale(1.6)';
       setTimeout(() => { star.style.transform = ''; }, 220);
     });
@@ -251,7 +301,6 @@ function buildStars(container) {
     container.appendChild(star);
   }
 
-  /* Restore saved state */
   highlightStars(container, saved);
   label.textContent  = ratingText[saved];
   label.classList.toggle('rated', saved > 0);
@@ -263,20 +312,15 @@ function highlightStars(container, value) {
   });
 }
 
-/* ── VIEW COURSE DETAILS FUNCTION ─────────────────── */
-function viewCourseDetails(title, description, category, image) {
-  // You can customize this function to show details in a modal or navigate to a details page
-  alert(`Course Details:\n\nTitle: ${title}\nCategory: ${category}\nDescription: ${description}\n\nYou can navigate to the course page or open a modal with more information.`);
-  
-  // Alternative: redirect to a details page with course info in URL
-  // window.location.href = `/App/courseDetails?title=${encodeURIComponent(title)}&category=${category}`;
-  
-  // Alternative: show a modal with details (you can create a modal element)
-  // showModal(title, description, category, image);
+/* ── VIEW COURSE DETAILS FUNCTION ────────────────── */
+function viewCourseDetails(title) {
+  localStorage.setItem('selectedCourse', title);
+  window.location.href = `/App/course`;
 }
 
 /* ── INIT ────────────────────────────────────────── */
 document.querySelectorAll('.star-rating').forEach(buildStars);
+syncHearts();
 
 /* ── SEARCH ──────────────────────────────────────── */
 const searchInput = document.getElementById('searchInput');
