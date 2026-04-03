@@ -1,4 +1,4 @@
-/* ─── COLOR VARIABLES ─────────────────────────────── */
+ /* ─── COLOR VARIABLES ─────────────────────────────── */
 :root {
   --blue-light:  #deeaf9;
   --blue-main:   #2b7de9;
@@ -220,8 +220,7 @@ body {
   background: var(--blue-main);
   transform: scale(1.05);
 }
-
-.sidebar-hidden-toggle.visible {
+ .sidebar-hidden-toggle.visible {
   display: flex;
 }
 
@@ -432,8 +431,7 @@ body {
   border-bottom: 2px solid var(--blue-main);
   display: inline-block;
 }
-
-/* ========== LESSON & QUIZ ITEMS ========== */
+ /* ========== LESSON & QUIZ ITEMS ========== */
 .lesson-item {
   background: #f8f9fa;
   border-radius: 16px;

@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import slugify from "slugify"; // npm install slugify
+import userModel from "./userModel.js";
 
 // Lesson Schema
 const lessonSchema = new Schema({
@@ -43,7 +45,7 @@ const courseSchema = new Schema({
     },
     Instructor: {
         type: Schema.Types.ObjectId,
-        ref: "userModel",
+        ref: "User",
         required: true,
     },
     category: {
@@ -68,6 +70,13 @@ const courseSchema = new Schema({
         type: Number,
         default: 0
     },
+
+    // ⭐ Average Rating
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+
     rating: [
         {
             userId: String,
@@ -75,17 +84,52 @@ const courseSchema = new Schema({
             createdAt: { type: Date, default: Date.now }
         }
     ],
+
     chapters: [chapterSchema],
     resources: [resourceSchema],
+
     enrolledStudents: [{
         type: Schema.Types.ObjectId,
-        ref: "userModel"
+        ref: "User"
     }],
+
     isPublished: {
         type: Boolean,
         default: true
     },
+    slug: {
+    type: String,
+    unique: true,
+    required: false,
+    lowercase: true,
+    trim: true
+}
+
 }, { timestamps: true });
+
+
+//Calculate Average Rating Automatically
+courseSchema.pre("save", function () {
+    if (this.rating.length === 0) {
+        this.averageRating = 0;
+    } else {
+        const total = this.rating.reduce(
+            (acc, item) => acc + item.value,
+            0
+        );
+
+        this.averageRating = total / this.rating.length;
+    }
+
+});
+
+courseSchema.pre("save", function(){
+    if(!this.slug){
+        this.slug = slugify(this.Title, { lower: true, strict: true });
+    }
+    
+});
+
 
 //for better query performance
 courseSchema.index({ Title: 1 });

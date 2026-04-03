@@ -7,6 +7,7 @@ import profileRouter from "./Router/profileRouter.js";
 import cookieParser from "cookie-parser";
 import authRequest from "./middleware/authMiddleware.js";
 import publicRouter from "./Router/publicRouter.js";
+import coursesRouter from "./Router/courseRouter.js";
 config();
 
 const App = express();
@@ -23,12 +24,12 @@ App.use("/auth", RouterLogin);
 App.use("/App",authRequest,AppRouter);
 App.use("/profile", authRequest, profileRouter);
 App.use("/", publicRouter);
-
+App.use("/courses", coursesRouter);
 
 App.set("view engine", "ejs");
-App.set("views", join(__dirname, "view"));
-App.use(express.static(join(__dirname, "Public")));
+App.set("views", join(__dirname, "views"));
+App.use(express.static(join(__dirname, "Public")));         
 
 App.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-});
+}); 
