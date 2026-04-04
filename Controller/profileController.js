@@ -79,13 +79,18 @@ const viewProfile = async (req, res) => {
         if (!profile) {
             return res.render("auth/createProfile");
         }
-
-        return res.render("auth/Profile-view", { profile });
+        //nfara9 bin teacher w student
+        if (req.role === "teacher") {
+      return res.render("auth/viewProfileTeacher", { profile });
+    } else {
+      return res.render("auth/Profile-view", { profile });
+    }
 
     } catch (err) {
         console.error(err);
         return res.render("auth/editProfile");
     }
 };
+// lyna hdi hiya view profile for teacher 
 
 export { createProfile, editProfile, viewProfile };
