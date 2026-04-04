@@ -15,8 +15,12 @@ const loginUser = async (req, res) => {
     const user = await userModel.login(email, password);
 
     if (user) {
+      //ndir token
+      const token = createToken(user._id, user.role);
       // nkhasan user f cookie
-      res.cookie("userId", user._id);
+       res.cookie("token", token, {
+        httpOnly: true,
+      });
 
       //  check role
       if (user.role === "teacher") {
