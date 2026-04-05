@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import authRequest from "./middleware/authMiddleware.js";
 import publicRouter from "./Router/publicRouter.js";
 import coursesRouter from "./Router/courseRouter.js";
+import teacherDashBoardRouter from "./Router/teacherDashBoardRouter.js";
 config();
 
 const App = express();
@@ -25,6 +26,7 @@ App.use("/App",authRequest,AppRouter);
 App.use("/profile", authRequest, profileRouter);
 App.use("/", publicRouter);
 App.use("/courses", coursesRouter);
+App.use("/teacherDashboard", authRequest, teacherDashBoardRouter);
 
 App.set("view engine", "ejs");
 App.set("views", join(__dirname, "views"));

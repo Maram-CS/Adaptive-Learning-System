@@ -30,32 +30,8 @@ AppRouter.get("/course",(req,res)=>{
 AppRouter.get("/favoriteCourses",(req,res)=>{
     res.render("auth/favoriteCourses");
 });
-//teacherdashboard route
 
-AppRouter.get("/teacherDashboard", async (req, res) => {
-  try {
-    const userId = req.cookies.userId;
-    const user = await userModel.findById(userId);
-    res.render("auth/teacherDashboard", {
-      profile: user
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
-//view profile teacher route
-AppRouter.get("/viewProfileTeacher", async (req, res) => {
-  try {
-    const userId = req.cookies.userId;
-    const user = await userModel.findById(userId);
-    if (!user || user.role !== "teacher") {
-      return res.redirect("/App/teacherDashboard");
-    }
-    res.render("auth/viewProfileTeacher", {
-      profile: user
-    });
-  } catch (err) {
-    console.log(err);
-  }
+AppRouter.get("/teacherDashboard",(req,res)=>{
+    res.render("auth/teacherDashboard");
 });
 export default AppRouter;
