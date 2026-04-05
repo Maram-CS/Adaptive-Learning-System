@@ -15,18 +15,21 @@ const loginUser = async (req, res) => {
     const user = await userModel.login(email, password);
 
     if (user) {
-      //ndir token
+
       const token = createToken(user._id, user.role);
-      // nkhasan user f cookie
+      
        res.cookie("token", token, {
         httpOnly: true,
+        maxAge: 3 * 24 * 60 * 60 * 1000, 
       });
 
       //  check role
       if (user.role === "teacher") {
-        return res.redirect("/App/teacherDashboard");
+        return res.redirect("/teacherDashboard/get");
+      } else if (user.role === "student") {
+        return res.redirect("/auth/courses");// Redirect to student dashboard or courses page(/studentDashboard/get)
       } else {
-        return res.redirect("/App/infoProfile");
+        return res.redirect("/login");
       }
     }
 
