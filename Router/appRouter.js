@@ -5,8 +5,24 @@ import userModel from "../Model/userModel.js";
 
 const AppRouter = Router();
 
-AppRouter.get("/studentDashboard",(req,res)=>{
-    res.render("auth/studentDashboard");
+// ============================================
+// Student Dashboard Route
+// ============================================
+AppRouter.get("/studentDashboard", async (req, res) => {
+    try {
+        // جلب أول مستخدم من قاعدة البيانات (للتجربة)
+        const user = await userModel.findOne({ role: "student" });
+        if (user) {
+            console.log('Found user:', user.userName, 'ID:', user._id);
+            res.render("auth/studentDashboard", { userId: user._id.toString() });
+        } else {
+            console.log('No student found in database');
+            res.render("auth/studentDashboard", { userId: null });
+        }
+    } catch (error) {
+        console.error('Error rendering dashboard:', error);
+        res.render("auth/studentDashboard", { userId: null });
+    }
 });
 
 AppRouter.get("/createProfile",(req,res)=>{
@@ -31,7 +47,31 @@ AppRouter.get("/favoriteCourses",(req,res)=>{
     res.render("auth/favoriteCourses");
 });
 
-AppRouter.get("/teacherDashboard",(req,res)=>{
-    res.render("auth/teacherDashboard");
+AppRouter.get("/teacherDashboard", async (req, res) => {
+  try {
+    const userId = req.cookies.userId;
+    const user = await userModel.findById(userId);
+    res.render("auth/teacherDashboard", {
+      profile: user
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
+//view profile teacher route
+AppRouter.get("/viewProfileTeacher", async (req, res) => {
+  try {
+    const userId = req.cookies.userId;
+    const user = await userModel.findById(userId);
+    if (!user || user.role !== "teacher") {
+      return res.redirect("/App/teacherDashboard");
+    }
+    res.render("auth/viewProfileTeacher", {
+      profile: user
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 export default AppRouter;
