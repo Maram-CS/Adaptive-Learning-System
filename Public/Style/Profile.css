@@ -665,3 +665,13 @@ body {
     width: 100%;
   }
 }
+/* Footer */
+.footer {
+  background: var(--navy);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-radius: 16px;
+  font-size: 14px;
+}
