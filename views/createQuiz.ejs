@@ -21,7 +21,7 @@
             <ul>
                 <li><a href="/teacherDashboard/get">Home</a></li>
                 <li><a href="/App/viewProfileTeacher">My Profile</a></li>
-                <li class="active"><a href="#">Create Quiz</a></li>
+                <li class="active"><a href="/App/createQuiz">Create Quiz</a></li>
                 <li><a href="/App/createCourse">Create Course</a></li>
                 <li><a href="#">Student Analytics</a></li>
             </ul>
@@ -37,11 +37,13 @@
 
         <!-- HEADER -->
         <div class="main-header">
-            <h2>Create <span>Quiz</span></h2|>
-                
+            <h2>Create <span>Quiz</span></h2>
+            <div class="header-actions">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search for quizzes...">
+            
                 <div class="buttons">
-                    <button class="icon-btn">👤</button>
-                </div>
+                   <a href="/profile/Profile-view"><button class="icon-btn" onclick="getProfile">👤</button></a>
+                </div> 
             </div>
         </div>
 
@@ -356,6 +358,20 @@ function importFromJSON(file) {
     reader.readAsText(file);
 }
 
+function searchQuizzes() {
+    const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+    const saved = JSON.parse(localStorage.getItem("eduphin_quizzes") || "[]");
+    if (keyword === "") {
+        showToastMessage(`📚 Total saved quizzes: ${saved.length}`);
+        return;
+    }
+    const filtered = saved.filter(q => q.title.toLowerCase().includes(keyword));
+    if (filtered.length) {
+        showToastMessage(`🔍 Found ${filtered.length} quiz(zes) matching "${keyword}"`);
+    } else {
+        showToastMessage(`❌ No quizzes found containing "${keyword}"`);
+    }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     updateDynamicFields();
