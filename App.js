@@ -9,6 +9,8 @@ import authRequest from "./middleware/authMiddleware.js";
 import publicRouter from "./Router/publicRouter.js";
 import coursesRouter from "./Router/courseRouter.js";
 import teacherDashboardRouter from "./Router/teacherDashBoardRouter.js";
+import dashboardRoutes from "./Router/dashboardRoutes.js";
+
 config();
 
 const App = express();
@@ -35,11 +37,8 @@ App.use("/App",authRequest,AppRouter);
 App.use("/profile", authRequest, profileRouter);
 App.use("/", publicRouter);
 App.use("/courses", coursesRouter);
-App.use("/teacherDashboard", teacherDashboardRouter);
-
-
-
-
+App.use("/teacherDashboard", authRequest, teacherDashboardRouter);
+App.use("/api/dashboard", authRequest, dashboardRoutes);
 
 App.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
