@@ -4,7 +4,6 @@ import authRequest from '../middleware/authMiddleware.js';
 import userModel from "../Model/userModel.js";
 
 const AppRouter = Router();
-const __dirname = import.meta.dirname;
 
 // ============================================
 // Student Dashboard Route
@@ -59,7 +58,9 @@ AppRouter.get("/createCourse", async (req, res) => {
 });
 
 AppRouter.get("/createQuiz", (req, res) => {
-    res.sendFile(join(__dirname, "../views/createQuiz.html"));
+    res.render("createQuiz");
 });
+
+AppRouter.get("/viewProfileTeacher", viewProfile);
 
 export default AppRouter;
