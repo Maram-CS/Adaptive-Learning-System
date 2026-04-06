@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eduphin | Create Course</title>
-    <link rel="stylesheet" href="/Style/createCourse.css">
->
-   </head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eduphin | Create Course</title>
+<link rel="stylesheet" href="/Style/createCourse.css">
+</head>
 <body>
 
 <div class="page-container">
@@ -19,7 +18,7 @@
         </div>
         <div class="menu">
             <ul>
-                 <li class="active"><a href="/App/createCourse">Create Course</a></li>
+                <li class="active">Create Course</li>
                 <li><a href="/teacherDashboard/get">Home</a></li>
                 <li><a href="/profile/Profile-view">My Profile</a></li>
                 <li><a href="#">Create Quiz</a></li>
@@ -38,12 +37,6 @@
         <!-- HEADER -->
         <div class="main-header">
             <h2>Create <span>Course</span></h2>
-            <div class="header-actions">
-                <input type="text" id="searchInput" class="search-bar" placeholder="Search for courses...">
-                <div class="buttons">
-                   <a href="/profile/Profile-view"> <button class="icon-btn">👤</button></a>
-                </div>
-            </div>
         </div>
 
         <br>
@@ -58,36 +51,26 @@
 
         <div style="padding: 0 2rem 2rem;">
 
-            <!-- ── BASIC INFO ── -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fa-solid fa-circle-info"></i>
-                    Basic info
-                    <span class="form-badge required">required</span>
-                </div>
+            <!-- ── FORM START ── -->
+            <form id="create-course-form" action="/courses/create" method="POST" enctype="multipart/form-data">
 
-                <div class="field" style="margin-bottom:14px">
-                    <label for="title">Course Title <span class="req">*</span></label>
-                    <input type="text" id="title" placeholder="e.g. Complete Node.js Bootcamp" oninput="autoSlug(); updatePreview()">
-                    <span class="err-msg" id="err-title">Title is required</span>
-                </div>
+                <!-- ── BASIC INFO ── -->
+                <div class="form-section">
+                    <div class="form-section-title">Basic info</div>
 
-                <div class="field" style="margin-bottom:14px">
-                    <label for="description">Description <span class="req">*</span></label>
-                    <textarea id="description" placeholder="What will students learn in this course?" oninput="updatePreview()"></textarea>
-                    <span class="err-msg" id="err-description">Description is required</span>
-                </div>
-
-                <div class="form-grid-2">
                     <div class="field">
-                        <label for="instructor">Instructor ID <span class="req">*</span></label>
-                        <input type="text" id="instructor" placeholder="ObjectId — from auth session" oninput="updatePreview()">
-                        <span class="hint">Ref: User model</span>
-                        <span class="err-msg" id="err-instructor">Instructor ID is required</span>
+                        <label for="title">Course Title *</label>
+                        <input type="text" id="title" name="Title" placeholder="Complete Node.js Bootcamp" required>
                     </div>
+
                     <div class="field">
-                        <label for="category">Category <span class="req">*</span></label>
-                        <select id="category" onchange="updatePreview()">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="Description" placeholder="What will students learn?" required></textarea>
+                    </div>
+
+                    <div class="field">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
                             <option value="" disabled selected>Select category</option>
                             <option value="frontend">Frontend</option>
                             <option value="backend">Backend</option>
@@ -96,137 +79,107 @@
                             <option value="design">Design</option>
                             <option value="deployment">Deployment</option>
                         </select>
-                        <span class="err-msg" id="err-category">Category is required</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- ── COURSE DETAILS ── -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fa-solid fa-sliders"></i>
-                    Course details
-                </div>
+                <!-- ── COURSE DETAILS ── -->
+                <div class="form-section">
+                    <div class="form-section-title">Course details</div>
 
-                <div class="form-grid-3" style="margin-bottom:14px">
-                    <div class="field">
-                        <label>Level</label>
-                        <div class="level-tags" id="level-tags">
-                            <span class="level-tag active-beg" onclick="setLevel('beginner',this,'active-beg')">Beginner</span>
-                            <span class="level-tag" onclick="setLevel('intermediate',this,'active-int')">Intermediate</span>
-                            <span class="level-tag" onclick="setLevel('advanced',this,'active-adv')">Advanced</span>
+                    <div class="form-grid-3">
+                        <div class="field">
+                            <label>Level</label>
+                            <select id="level" name="level" required>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
                         </div>
-                        <input type="hidden" id="level" value="beginner">
-                    </div>
 
-                    <div class="field">
-                        <label for="totalDuration">Total Duration</label>
-                        <input type="text" id="totalDuration" placeholder="e.g. 12h 30m" oninput="updatePreview()">
-                        <span class="hint">Default: "Coming soon"</span>
-                    </div>
-
-                    <div class="field">
-                        <label for="price">Price (USD)</label>
-                        <div class="price-wrap">
-                            <span class="sym">$</span>
-                            <input type="number" id="price" min="0" step="0.01" value="0" oninput="updatePreview()">
+                        <div class="field">
+                            <label for="totalDuration">Total Duration</label>
+                            <input type="text" id="totalDuration" name="totalDuration" placeholder="12h 30m">
                         </div>
-                        <span class="hint">0 = free course</span>
+
+                        <div class="field">
+                            <label for="price">Price (USD)</label>
+                            <input type="number" id="price" name="price" min="0" step="0.01" value="0">
+                        </div>
                     </div>
-                </div>
 
-                <div class="field">
-                    <label for="slug">Slug</label>
-                    <input type="text" id="slug" placeholder="auto-generated from title" oninput="updatePreview()">
-                    <span class="hint">Auto-filled · lowercase · strict (slugify compatible)</span>
-                </div>
-            </div>
-
-            <!-- ── MEDIA ── -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fa-solid fa-image"></i>
-                    Media
-                    <span class="form-badge required">required</span>
-                </div>
-
-                <div class="form-grid-2">
                     <div class="field">
-                        <label for="image">Thumbnail URL <span class="req">*</span></label>
-                        <input type="text" id="image" placeholder="https://example.com/thumbnail.jpg" oninput="previewImg(); updatePreview()">
-                        <span class="hint">Course cover image</span>
-                        <span class="err-msg" id="err-image">Image URL is required</span>
-                    </div>
-                    <div class="img-preview-box" id="img-preview" onclick="document.getElementById('image').focus()">
-                        <i class="fa-regular fa-image" style="font-size:22px"></i>
-                        <span>Image preview</span>
+                        <label for="slug">Slug</label>
+                        <input type="text" id="slug" name="slug" placeholder="auto-generated from title">
                     </div>
                 </div>
-            </div>
 
-            <!-- ── RATING ── -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fa-solid fa-star"></i>
-                    Rating
-                    <span class="form-badge optional">optional</span>
-                </div>
+                <!-- ── MEDIA ── -->
+                <div class="form-section">
+                    <div class="form-section-title">Media</div>
 
-                <div class="field">
-                    <label>Average Rating</label>
-                    <div class="stars-row" id="stars">
-                        <span class="star" onclick="setRating(1)">★</span>
-                        <span class="star" onclick="setRating(2)">★</span>
-                        <span class="star" onclick="setRating(3)">★</span>
-                        <span class="star" onclick="setRating(4)">★</span>
-                        <span class="star" onclick="setRating(5)">★</span>
-                        <span style="font-size:13px;color:#bbb;margin-left:6px" id="rating-label">No rating yet</span>
+                    <div class="field">
+                        <label>Course Thumbnail *</label>
+
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <label for="image" style="
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 8px;
+                                padding: 8px 16px;
+                                background: transparent;
+                                border: 1px solid #ccc;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                font-size: 14px;
+                                color: inherit;
+                            ">
+                                &#8593; Upload Image
+                                <input type="file" id="image" name="image" accept="image/*" required
+                                       style="display: none;" onchange="previewImg()">
+                            </label>
+
+                            <span id="file-name" style="font-size: 13px; color: #888;">No file chosen</span>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div id="img-preview" style="
+                            margin-top: 12px;
+                            width: 180px;
+                            height: 110px;
+                            border: 1px dashed #ccc;
+                            border-radius: 8px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            color: #aaa;
+                            font-size: 13px;
+                            gap: 6px;
+                            overflow: hidden;
+                        ">
+                            &#128247; Image preview
+                        </div>
                     </div>
-                    <span class="hint">averageRating is auto-calculated from rating[] via pre-save hook · default: 0</span>
-                </div>
-            </div>
-
-            <!-- ── VISIBILITY ── -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fa-solid fa-eye"></i>
-                    Visibility
                 </div>
 
-                <div class="toggle-row">
-                    <div class="toggle-info">
-                        <div class="toggle-label">Publish immediately</div>
-                        <div class="toggle-sub">isPublished · default: true</div>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="isPublished" checked onchange="updatePreview()">
-                        <span class="toggle-slider"></span>
+                <!-- ── VISIBILITY ── -->
+                <div class="form-section">
+                    <label>
+                        <input type="checkbox" id="isPublished" name="isPublished" checked>
+                        Publish immediately
                     </label>
                 </div>
-            </div>
 
-            <!-- ── PAYLOAD PREVIEW ── -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fa-solid fa-code"></i>
-                    Payload preview
+                <!-- ── ACTIONS ── -->
+                <div class="form-actions">
+                    <button type="reset" class="btn-reset" onclick="resetForm()">Reset</button>
+                    <button type="submit" class="btn-create">Create Course</button>
                 </div>
-                <div class="payload-box">
-                    <pre id="preview">{}</pre>
-                </div>
-            </div>
 
-            <!-- ── ACTIONS ── -->
-            <div class="form-actions">
-                <button class="btn-reset" onclick="resetForm()">
-                    <i class="fa-solid fa-rotate-left" style="margin-right:6px"></i>Reset
-                </button>
-                <button class="btn-create" onclick="submitForm()">
-                    <i class="fa-solid fa-plus"></i> Create Course
-                </button>
-            </div>
+            </form>
+            <!-- ── FORM END ── -->
 
-        </div><!-- /inner padding -->
+        </div>
 
         <!-- FOOTER -->
         <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
@@ -236,161 +189,101 @@
 </div><!-- /page-container -->
 
 <script>
-    let ratingVal = 0;
-
-    // Sidebar active state
-    const items = document.querySelectorAll(".sidebar li");
-    items.forEach(item => {
-        item.addEventListener("click", () => {
-            items.forEach(i => i.classList.remove("active"));
-            item.classList.add("active");
-        });
-    });
-
-    // Auto slug from title (mirrors slugify behavior)
-    function autoSlug() {
-        const t = document.getElementById('title').value;
-        document.getElementById('slug').value = t
+    // Auto slug from title
+    document.getElementById('title').addEventListener('input', function () {
+        document.getElementById('slug').value = this.value
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-|-$/g, '');
-    }
-
-    // Level tag picker
-    function setLevel(val, el, activeClass) {
-        document.getElementById('level').value = val;
-        document.querySelectorAll('#level-tags .level-tag').forEach(t =>
-            t.classList.remove('active-beg', 'active-int', 'active-adv')
-        );
-        el.classList.add(activeClass);
         updatePreview();
-    }
+    });
 
-    // Star rating
-    function setRating(n) {
-        ratingVal = n;
-        document.querySelectorAll('#stars .star').forEach((s, i) =>
-            s.classList.toggle('lit', i < n)
-        );
-        document.getElementById('rating-label').textContent = n + ' / 5';
-        updatePreview();
-    }
-
-    // Image URL preview
+    // Image preview
     function previewImg() {
-        const url = document.getElementById('image').value.trim();
-        const el  = document.getElementById('img-preview');
-        if (url) {
-            el.style.backgroundImage    = 'url(' + url + ')';
-            el.style.backgroundSize     = 'cover';
-            el.style.backgroundPosition = 'center';
-            el.innerHTML = '';
+        const input = document.getElementById('image');
+        const el    = document.getElementById('img-preview');
+        const label = document.getElementById('file-name');
+
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            label.textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                el.style.backgroundImage    = 'url(' + e.target.result + ')';
+                el.style.backgroundSize     = 'cover';
+                el.style.backgroundPosition = 'center';
+                el.innerHTML = '';
+            };
+            reader.readAsDataURL(file);
         } else {
+            label.textContent = 'No file chosen';
             el.style.backgroundImage = '';
-            el.innerHTML = '<i class="fa-regular fa-image" style="font-size:22px"></i><span>Image preview</span>';
+            el.innerHTML = '&#128247; Image preview';
         }
     }
 
-    // Live JSON payload preview
+    // Live preview JSON
     function updatePreview() {
         const obj = {
-            Title:          document.getElementById('title').value       || undefined,
-            Description:    document.getElementById('description').value || undefined,
-            Instructor:     document.getElementById('instructor').value  || undefined,
-            category:       document.getElementById('category').value    || undefined,
-            image:          document.getElementById('image').value       || undefined,
-            totalDuration:  document.getElementById('totalDuration').value || 'Coming soon',
-            level:          document.getElementById('level').value,
-            price:          parseFloat(document.getElementById('price').value) || 0,
-            averageRating:  ratingVal,
-            slug:           document.getElementById('slug').value        || undefined,
-            isPublished:    document.getElementById('isPublished').checked,
-            chapters:         [],
-            resources:        [],
-            enrolledStudents: [],
-            rating: ratingVal ? [{ userId: '<current_user>', value: ratingVal }] : []
+            Title:         document.getElementById('title').value || undefined,
+            Description:   document.getElementById('description').value || undefined,
+            category:      document.getElementById('category').value || undefined,
+            totalDuration: document.getElementById('totalDuration').value || 'Coming soon',
+            level:         document.getElementById('level').value,
+            price:         parseFloat(document.getElementById('price').value) || 0,
+            slug:          document.getElementById('slug').value || undefined,
+            isPublished:   document.getElementById('isPublished').checked,
+            chapters:      [],
+            resources:     [],
+            enrolledStudents: []
         };
         Object.keys(obj).forEach(k => obj[k] === undefined && delete obj[k]);
-        document.getElementById('preview').textContent = JSON.stringify(obj, null, 2);
+        console.log(JSON.stringify(obj, null, 2));
     }
 
-    // Error helpers
-    function clearErrors() {
-        document.querySelectorAll('.err-msg').forEach(e => e.style.display = 'none');
-        document.querySelectorAll('.input-error').forEach(e => e.classList.remove('input-error'));
-    }
-
-    function showError(fieldId, msgId) {
-        const input = document.getElementById(fieldId);
-        const msg   = document.getElementById(msgId);
-        if (input) input.classList.add('input-error');
-        if (msg)   msg.style.display = 'block';
-    }
-
-    // Submit handler
-    function submitForm() {
-        clearErrors();
-        let valid = true;
-
-        [
-            { field: 'title',       msg: 'err-title'       },
-            { field: 'description', msg: 'err-description'  },
-            { field: 'instructor',  msg: 'err-instructor'   },
-            { field: 'category',    msg: 'err-category'     },
-            { field: 'image',       msg: 'err-image'        },
-        ].forEach(({ field, msg }) => {
-            if (!document.getElementById(field).value.trim()) {
-                showError(field, msg);
-                valid = false;
-            }
-        });
-
-        if (!valid) return;
-
-        const payload = JSON.parse(document.getElementById('preview').textContent);
-        console.log('✅ Course payload:', payload);
-
-        // 👇 Replace alert with your fetch call:
-        // fetch('/api/courses', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(payload)
-        // }).then(res => res.json()).then(data => console.log(data));
-
-        alert('Course created!\nSee the browser console for the full payload.');
-    }
-
-    // Reset all fields
+    // Reset form
     function resetForm() {
-        ['title', 'description', 'instructor', 'image', 'totalDuration', 'slug']
-            .forEach(id => document.getElementById(id).value = '');
-        document.getElementById('price').value        = '0';
-        document.getElementById('category').value     = '';
+        document.getElementById('title').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('totalDuration').value = '';
+        document.getElementById('slug').value = '';
+        document.getElementById('price').value = '0';
+        document.getElementById('category').value = '';
         document.getElementById('isPublished').checked = true;
-        document.getElementById('level').value        = 'beginner';
-
-        document.querySelectorAll('#level-tags .level-tag').forEach((t, i) => {
-            t.classList.remove('active-beg', 'active-int', 'active-adv');
-            if (i === 0) t.classList.add('active-beg');
-        });
-
-        ratingVal = 0;
-        document.querySelectorAll('#stars .star').forEach(s => s.classList.remove('lit'));
-        document.getElementById('rating-label').textContent = 'No rating yet';
-
-        clearErrors();
-        previewImg();
+        document.getElementById('level').value = 'beginner';
+        document.getElementById('file-name').textContent = 'No file chosen';
+        document.getElementById('img-preview').style.backgroundImage = '';
+        document.getElementById('img-preview').innerHTML = '&#128247; Image preview';
         updatePreview();
     }
 
-    // Attach live update to all inputs
     document.querySelectorAll('input, select, textarea').forEach(el => {
-        el.addEventListener('input',  updatePreview);
+        el.addEventListener('input', updatePreview);
         el.addEventListener('change', updatePreview);
     });
 
     updatePreview();
+
+    // Form submit via fetch
+    document.getElementById('create-course-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('/courses/create', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => { alert('Course created!'); console.log(data); resetForm(); })
+        .catch(err => { alert('Error creating course'); console.error(err); });
+    });
 </script>
+
+<% if (typeof error !== "undefined") { %>
+<script>
+  alert("<%= error %>");
+</script>
+<% } %>
 
 </body>
 </html>

@@ -71,7 +71,7 @@
         <div class="menu">
             <ul>
                 <li><a href="/App/courses">All Courses</a></li>
-                <li class="active"><a href="/App/studentDashboard">Dashboard</a></li>
+                <li class="active">Dashboard</li>
                 <li><a href="/App/favoriteCourses">Favorite Courses</a></li>
                 <li><a href="/profile/Profile-view">My Profile</a></li>
             </ul>
@@ -107,15 +107,7 @@
 </div>
 
 <script>
-    // ============================================
-    // CONFIGURATION
-    // ============================================
-    const API_BASE_URL = '';
-    const USER_ID = '<%= userId %>';
-
-    // ============================================
-    // FUNCTIONS
-    // ============================================
+    
     function showToast(message) {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -158,7 +150,9 @@
 
     async function fetchLeaderboard() {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/dashboard/leaderboard`);
+            const response = await fetch(`/studentDashboard/leaderboard`, {
+                credentials: "include"
+            });
             const data = await response.json();
             return data.success ? data.leaderboard : [];
         } catch (error) {
@@ -196,7 +190,9 @@
         container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading your dashboard...</div>';
         
         try {
-            const dashboardRes = await fetch(`${API_BASE_URL}/api/dashboard/data/${USER_ID}`);
+            const dashboardRes = await fetch(`/studentDashboard/get`, {
+                credentials: "include" // مهم باش يبعث cookie
+            });
             const dashboardData = await dashboardRes.json();
             
             if (!dashboardData.success) throw new Error(dashboardData.message);
