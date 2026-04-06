@@ -2,31 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Profile</title>
+  <title>Teacher Profile</title>
   <link rel="stylesheet" href="/Style/Profile.css">
 </head>
 <body>
 
 <div class="container">
-
   <!-- Sidebar -->
-  <div class="sidebar">
-    <h3 class="logo">My profile</h3>
-
-    <ul>
-      <li class="active">My profile</li>
-      <li><a href="/App/studentDashboard">Dashboard</a></li>
-      <li><a href="/App/courses">All Courses</a></li>
-      <li><a href="/App/favoriteCourses">Favorite Courses</a></li>
-    </ul>
-
-    <a href="/home"><button class="logout">Sign out</button></a>
+    <div class="sidebar">
+        <div class="logo">
+            <span>My Profile</span>
+        </div>
+   <div class="menu">
+            <ul>
+                  <li class="active">My profile</li>
+                <li><a href="/App/teacherDashboard">Home</a></li>
+                <li><a href="#">Create Quiz </a></li>
+                 <li><a href="/App/createCourse">Create Course </a></li>
+                <li><a href="#">Student Analytics</a></li>
+            </ul>
+        </div>
+        <br> <br> <br> <br> <br>
+    <a href="/home">
+      <button class="logout">Sign out</button>
+    </a>
   </div>
 
   <!-- Main Content -->
   <div class="main">
 
-    <h2>Student <span>Profile</span></h2>
+    <h2>Teacher <span>Profile</span></h2>
 
     <!-- الفورم تحتوي على كل المحتوى -->
     <form class="profile-form" method="POST" action="/profile/edit" enctype="multipart/form-data">
@@ -40,8 +45,8 @@
           </div>
           
           <div class="user-details">
-            <input type="text" class="username-input" placeholder="Enter username" value="frontend developer" name="username">
-            <textarea class="bio-input" placeholder="Write a short bio..." name="bio">Frontend developer passionate about creating beautiful and responsive web applications</textarea>
+            <input type="text" class="username-input" placeholder="Enter username" value="Professor" name="username">
+            <textarea class="bio-input" placeholder="Write a short teaching bio..." name="bio">Experienced teacher passionate about helping students learn and grow. Specialized in computer science and adaptive learning.</textarea>
           </div>
         </div>
 
@@ -90,40 +95,6 @@
       </div>
 
       <!-- Skills & Track Box -->
-      <div class="info-box">
-        <div class="box-header">
-          <h3 class="box-title">Skills & Track</h3>
-          <span class="box-icon">⚡️</span>
-        </div>
-        <div class="box-content">
-          <div class="row">
-            <div class="input-group">
-              <label>Main track</label>
-              <select name="mainTrack">
-                <option>- Select main track -</option>
-                <option>Web Development</option>
-                <option>Mobile Development</option>
-                <option>Frontend Development</option>
-                <option>Backend Development</option>
-                <option>Full Stack Development</option>
-                <option>DevOps</option>
-                <option>Cloud Computing</option>
-              </select>
-            </div>
-
-            <div class="input-group">
- <label>Skill level</label>
-              <select name="skillLevel">
-                <option>- Select skill level -</option>
-                <option>Beginner</option>
-                <option>Intermediate</option>
-                <option>Advanced</option>
-                <option>Expert</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div class="form-buttons">
         <button type="button" class="cancel">Cancel</button>
@@ -133,7 +104,6 @@
     </form>
      <!-- FOOTER -->
         <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
-
 
   </div>
 

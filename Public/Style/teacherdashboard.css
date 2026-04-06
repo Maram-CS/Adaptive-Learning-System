@@ -170,6 +170,22 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(43,125,233,0.4);
 }
+.icon-btn {
+  background: white;
+  border: 2px solid var(--blue-light);
+  border-radius: 50%;
+  width: 40px; height: 40px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.icon-btn:hover {
+  background: var(--blue-light);
+  border-color: var(--blue-main);
+  transform: scale(1.1);
+}
 
 /* ─── MAIN CONTENT ───────────────────────────────── */
 .main {
@@ -227,22 +243,6 @@ body {
   gap: 10px;
 }
 
-.icon-btn {
-  background: white;
-  border: 2px solid var(--blue-light);
-  border-radius: 50%;
-  width: 40px; height: 40px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
-  display: flex; align-items: center; justify-content: center;
-}
-
-.icon-btn:hover {
-  background: var(--blue-light);
-  border-color: var(--blue-main);
-  transform: scale(1.1);
-}
 
 /* Footer */
 .footer {
