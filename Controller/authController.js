@@ -27,7 +27,7 @@ const loginUser = async (req, res) => {
       if (user.role === "teacher") {
         return res.redirect("/teacherDashboard/get");
       } else if (user.role === "student") {
-        return res.redirect("/auth/courses");// Redirect to student dashboard or courses page(/studentDashboard/get)
+        return res.redirect("/App/courses");// Redirect to student dashboard or courses page(/studentDashboard/get)
       } else {
         return res.redirect("/login");
       }
