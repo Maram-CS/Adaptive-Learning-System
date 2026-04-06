@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduphin | Create Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/Style/createQuiz.css">
+</head>
+<body>
+
+<div class="page-container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="/img/logoBleu.png" class="logo-img">
+            <span>Eduphin</span>
+        </div>
+        <div class="menu">
+            <ul>
+                <li><a href="/teacherDashboard/get">Home</a></li>
+                <li><a href="/App/viewProfileTeacher">My Profile</a></li>
+                <li class="active"><a href="/App/createQuiz">Create Quiz</a></li>
+                <li><a href="/App/createCourse">Create Course</a></li>
+                <li><a href="#">Student Analytics</a></li>
+            </ul>
+        </div>
+        <br><br><br><br><br>
+        <a href="/home">
+            <button class="logout">Sign out</button>
+        </a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- HEADER -->
+        <div class="main-header">
+            <h2>Create <span>Quiz</span></h2>
+            <div class="header-actions">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search for quizzes...">
+            
+                <div class="buttons">
+                   <a href="/profile/Profile-view"><button class="icon-btn" onclick="getProfile">👤</button></a>
+                </div> 
+            </div>
+        </div>
+
+        <br>
+
+        <!-- PAGE TITLE + BREADCRUMB -->
+        <div style="padding: 0 2rem;">
+            <h3><span class="orange">New</span> <span class="blue">Quiz</span></h3>
+            <p class="breadcrumb">
+                <a href="/teacherDashboard/get">Home</a> &rsaquo; Create Quiz
+            </p>
+        </div>
+
+        <!-- QUIZ BUILDER GRID -->
+        <div class="quiz-grid">
+            
+            <!-- LEFT: Question Builder Section -->
+            <div class="quiz-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--orange);"></i>
+                    Build Questions
+                </div>
+
+                <div class="field-group">
+                    <label>Quiz Title <span class="req">*</span></label>
+                    <input type="text" id="quizTitle" placeholder="e.g., JavaScript Fundamentals Quiz">
+                </div>
+
+                <div class="field-group">
+                    <label>Question Text <span class="req">*</span></label>
+                    <textarea id="questionText" rows="3" placeholder="Write your question clearly..."></textarea>
+                </div>
+
+                <label>Question Type</label>
+                <div class="type-selector">
+                    <div class="type-pill active" data-type="mcq">Multiple Choice</div>
+                    <div class="type-pill" data-type="truefalse">True / False</div>
+                    <div class="type-pill" data-type="short">Short Answer</div>
+                </div>
+
+                <div id="dynamicFields"></div>
+
+                <div class="btn-container">
+                    <button id="addBtn" class="btn-primary">
+                        <i class="fa-solid fa-plus"></i> Add Question to Bank
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT: Question Bank & Export Section -->
+            <div class="quiz-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-box-archive" style="color: var(--blue-main);"></i>
+                    Question Bank 
+                    <span id="questionsCount" class="badge-count">0 Questions</span>
+                </div>
+
+                <div id="questionsList" class="questions-list">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <p>No questions added yet. Start by adding a question.</p>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="saveQuizBtn" class="btn-success">
+                        <i class="fa-solid fa-download"></i> Export Quiz as JSON
+                    </button>
+                    <button id="clearAllBtn" class="btn-outline">
+                        <i class="fa-solid fa-trash-can"></i> Clear All
+                    </button>
+                </div>
+
+                <div class="import-section">
+                    <label>Import from JSON File</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="loadQuizFile" accept=".json">
+                        <div class="file-upload-btn" id="fileUploadBtn">
+                            <i class="fa-solid fa-folder-open"></i>
+                            Choose JSON File
+                        </div>
+                        <div class="file-name" id="fileNameDisplay">No file chosen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toastMsg" class="fav-toast"></div>
+
+<script>
+    // Quiz management logic
+let questions = [];
+let currentType = "mcq";
+
+function showToastMessage(msg, isError = false) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = msg;
+    toast.style.background = isError ? '#b91c1c' : 'var(--navy)';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+function updateDynamicFields() {
+    const container = document.getElementById("dynamicFields");
+    if (currentType === "mcq") {
+        container.innerHTML = `
+            <div class="field-group">
+                <label>Options (separate by commas) *</label>
+                <input type="text" id="mcqOptions" placeholder="Option 1, Option 2, Option 3">
+            </div>
+            <div class="field-group">
+                <label>Correct Answer (exact text) *</label>
+                <input type="text" id="mcqCorrect" placeholder="e.g., Option 1">
+            </div>
+        `;
+    } else if (currentType === "truefalse") {
+        container.innerHTML = `
+            <div class="field-group">
+                <label>Correct Answer</label>
+                <select id="tfCorrect">
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <div class="field-group">
+                <label>Model Answer *</label>
+                <input type="text" id="shortCorrect" placeholder="Enter expected answer">
+            </div>
+        `;
+    }
+}
+
+function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function renderQuestionsList() {
+    const container = document.getElementById("questionsList");
+    const countSpan = document.getElementById("questionsCount");
+    countSpan.innerText = `${questions.length} Questions`;
+
+    if (questions.length === 0) {
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-layer-group" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i><p>No questions added yet. Start by adding a question from the left panel.</p></div>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    questions.forEach((q, idx) => {
+        const qDiv = document.createElement("div");
+        qDiv.className = "question-item";
+        let typeText = q.type === "mcq" ? "Multiple Choice" : (q.type === "truefalse" ? "True/False" : "Short Answer");
+        let answerPreview = "";
+        if (q.type === "mcq") answerPreview = `✅ Correct: ${q.correctAnswer}`;
+        else if (q.type === "truefalse") answerPreview = `✅ Correct: ${q.correctAnswer === "True" ? "True" : "False"}`;
+        else answerPreview = `✅ Model Answer: ${q.correctAnswer}`;
+        
+        qDiv.innerHTML = `
+            <div class="question-header">
+                <span class="question-type-badge">${typeText}</span>
+                <button class="delete-question" data-index="${idx}"><i class="fa-solid fa-trash-can"></i></button>
+            </div>
+            <div style="font-weight: 600; margin-bottom: 8px;">Question: ${escapeHtml(q.text)}</div>
+            <div style="font-size: 13px; color: #2b7de9;">${answerPreview}</div>
+            ${q.type === "mcq" && q.options ? `<div style="font-size: 12px; color: #666; margin-top: 6px;">📋 Options: ${q.options.join(" | ")}</div>` : ""}
+        `;
+        container.appendChild(qDiv);
+    });
+
+    document.querySelectorAll(".delete-question").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const idx = parseInt(btn.getAttribute("data-index"));
+            questions.splice(idx, 1);
+            renderQuestionsList();
+            showToastMessage("Question deleted");
+        });
+    });
+}
+
+function addQuestion() {
+    const questionText = document.getElementById("questionText").value.trim();
+    if (!questionText) {
+        showToastMessage("Please enter the question text", true);
+        return;
+    }
+
+    let newQuestion = { text: questionText, type: currentType };
+    
+    if (currentType === "mcq") {
+        const optionsRaw = document.getElementById("mcqOptions").value;
+        const correctAns = document.getElementById("mcqCorrect").value.trim();
+        if (!optionsRaw || !correctAns) {
+            showToastMessage("Please fill in options and correct answer", true);
+            return;
+        }
+        const optionsArr = optionsRaw.split(",").map(opt => opt.trim());
+        if (optionsArr.length < 2) {
+            showToastMessage("Please provide at least two options", true);
+            return;
+        }
+        if (!optionsArr.includes(correctAns)) {
+            showToastMessage("Correct answer must match one of the options", true);
+            return;
+        }
+        newQuestion.options = optionsArr;
+        newQuestion.correctAnswer = correctAns;
+    } 
+    else if (currentType === "truefalse") {
+        const tfValue = document.getElementById("tfCorrect").value;
+        newQuestion.correctAnswer = tfValue;
+    } 
+    else {
+        const shortAns = document.getElementById("shortCorrect").value.trim();
+        if (!shortAns) {
+            showToastMessage("Please provide the model answer", true);
+            return;
+        }
+        newQuestion.correctAnswer = shortAns;
+    }
+    
+    questions.push(newQuestion);
+    renderQuestionsList();
+    document.getElementById("questionText").value = "";
+    if (currentType === "mcq") {
+        document.getElementById("mcqOptions").value = "";
+        document.getElementById("mcqCorrect").value = "";
+    } else if (currentType === "short") {
+        document.getElementById("shortCorrect").value = "";
+    }
+    showToastMessage("Question added successfully");
+}
+
+function exportQuizAsFile() {
+    const quizTitle = document.getElementById("quizTitle").value.trim();
+    if (!quizTitle) {
+        showToastMessage("Please enter a quiz title first", true);
+        return;
+    }
+    if (questions.length === 0) {
+        showToastMessage("Cannot export a quiz with no questions", true);
+        return;
+    }
+    
+    const quizData = {
+        title: quizTitle,
+        createdAt: new Date().toISOString(),
+        totalQuestions: questions.length,
+        questions: questions
+    };
+    
+    const jsonStr = JSON.stringify(quizData, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    
+    let fileName = quizTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    fileName = fileName.substring(0, 50) + ".json";
+    link.download = fileName;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showToastMessage(`Quiz "${quizTitle}" exported successfully!`);
+}
+
+function clearAll() {
+    if (questions.length > 0 && confirm("Are you sure you want to delete all questions?")) {
+        questions = [];
+        renderQuestionsList();
+        showToastMessage("All questions cleared");
+    } else if (questions.length === 0) {
+        showToastMessage("No questions to clear");
+    }
+}
+
+function importFromJSON(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (Array.isArray(imported) && imported.length) {
+                questions.push(...imported);
+                renderQuestionsList();
+                showToastMessage(`Imported ${imported.length} questions successfully`);
+            } else if (imported.questions && Array.isArray(imported.questions)) {
+                questions.push(...imported.questions);
+                renderQuestionsList();
+                showToastMessage(`Imported ${imported.questions.length} questions from quiz file`);
+                
+                if (imported.title && document.getElementById("quizTitle").value.trim() === "") {
+                    document.getElementById("quizTitle").value = imported.title;
+                }
+            } else {
+                showToastMessage("Invalid file: must contain an array of questions or a quiz object", true);
+            }
+        } catch(err) {
+            showToastMessage("Error reading file: invalid JSON format", true);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function searchQuizzes() {
+    const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+    const saved = JSON.parse(localStorage.getItem("eduphin_quizzes") || "[]");
+    if (keyword === "") {
+        showToastMessage(`📚 Total saved quizzes: ${saved.length}`);
+        return;
+    }
+    const filtered = saved.filter(q => q.title.toLowerCase().includes(keyword));
+    if (filtered.length) {
+        showToastMessage(`🔍 Found ${filtered.length} quiz(zes) matching "${keyword}"`);
+    } else {
+        showToastMessage(`❌ No quizzes found containing "${keyword}"`);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateDynamicFields();
+    
+    document.querySelectorAll(".type-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+            document.querySelectorAll(".type-pill").forEach(p => p.classList.remove("active"));
+            pill.classList.add("active");
+            currentType = pill.getAttribute("data-type");
+            updateDynamicFields();
+        });
+    });
+    
+    document.getElementById("addBtn").addEventListener("click", addQuestion);
+    document.getElementById("saveQuizBtn").addEventListener("click", exportQuizAsFile);
+    document.getElementById("clearAllBtn").addEventListener("click", clearAll);
+    
+    const fileInput = document.getElementById("loadQuizFile");
+    const fileNameDisplay = document.getElementById("fileNameDisplay");
+    
+    fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length) {
+            const file = e.target.files[0];
+            fileNameDisplay.textContent = file.name;
+            fileNameDisplay.classList.add("has-file");
+            importFromJSON(file);
+        } else {
+            fileNameDisplay.textContent = "No file chosen";
+            fileNameDisplay.classList.remove("has-file");
+        }
+        fileInput.value = "";
+    });
+    
+    const fileUploadBtn = document.getElementById("fileUploadBtn");
+    fileUploadBtn.addEventListener("click", () => {
+        fileInput.click();
+    });
+    
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") searchQuizzes();
+    });
+    
+    renderQuestionsList();
+});
+</script>
+</body>
+</html>
