@@ -1,5 +1,4 @@
 import {Router} from 'express';
-import { join } from "path";
 import { viewProfile } from '../Controller/profileController.js';
 import authRequest from '../middleware/authMiddleware.js';
 import userModel from "../Model/userModel.js";
@@ -31,14 +30,16 @@ AppRouter.get("/createProfile",(req,res)=>{
     res.render("auth/createProfile");
 });
 
-AppRouter.get("/infoProfile",viewProfile);
-
 AppRouter.get("/courses",(req,res)=>{
     res.render("auth/courses");
 });
 
-AppRouter.get("/editProfile",(req,res)=>{
-    res.render("auth/editProfile");
+AppRouter.get("/editProfile",authRequest,(req,res)=>{
+    if (req.role === "teacher") {
+        return res.render("auth/editProfileTeacher");
+      }else {
+        return res.render("auth/editProfile");
+      }
 });
 
 AppRouter.get("/course",(req,res)=>{
