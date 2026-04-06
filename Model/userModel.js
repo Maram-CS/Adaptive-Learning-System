@@ -46,17 +46,18 @@ UserSchema.pre("save",async function(next) {
     const model = this;
     const user = await model.findOne({email});
     if(user) {
-        try {
+        
             const isUser = await bcrypt.compare(password,user.password);
                 if(isUser) {
                     console.log("you are logged in ");
                     return user;
                 }else {
                     console.log ("your password is wrong");
+                    throw Error ("your password or email is wrong");
                 }
-            }catch(err) {
+            
             console.error(err);
-        }
+        
     }else {
         throw Error ("this user not exist");
     }

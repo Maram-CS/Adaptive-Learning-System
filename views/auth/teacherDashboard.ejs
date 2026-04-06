@@ -21,9 +21,15 @@
         <div class="menu">
             <ul>
               
+<<<<<<< HEAD
                 <li class="active"><a href="/App/teacherDashboard">Home</a></li>
                   <li><a href="/App/viewProfileTeacher">My Profile</a></li>
                 <li><a href="/App/createQuiz">Create Quiz </a></li>
+=======
+                <li class="active">Home</li>
+                  <li><a href="/profile/Profile-view">My Profile</a></li>
+                <li><a href="#">Create Quiz </a></li>
+>>>>>>> 83a0f52 (here i link profile teacher with back end and i did some updates)
                  <li><a href="/App/createCourse">Create Course </a></li>
                 <li><a href="#">Student Analytics</a></li>
             </ul>
@@ -43,7 +49,7 @@
             <div class="header-actions">
                 <input type="text" id="searchInput" class="search-bar" placeholder="Search for courses...">
                 <div class="buttons">
-                    <button class="icon-btn">👤</button>
+                   <a href="/profile/Profile-view"><button class="icon-btn" onclick="getProfile">👤</button></a>
                 </div> 
     </div>
 </div>
@@ -163,6 +169,11 @@ items.forEach(item => {
     item.classList.add("active");
   });
 });
+
+const getProfile = () => {
+  window.location.href = "/profile/Profile-view";
+};
+
 </script>
 
 </body>

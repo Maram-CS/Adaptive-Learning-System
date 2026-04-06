@@ -35,10 +35,13 @@ const createProfile = async (req, res,next) => {
         });
 
         await profile.save();
-        
 
-        res.render("auth/Profile-view",{profile});
-        
+        if(req.role === "teacher") {
+            return res.render("auth/viewProfileTeacher", { profile });
+          } else {
+            return res.render("auth/Profile-view",{profile});
+          }
+          
     } catch(err) {
         console.error(err);
         res.render("auth/createProfile",{error: "Error creating profile. Please try again by filling all the required fields."});  
@@ -64,8 +67,11 @@ const editProfile = async (req, res,next) => {
         profile.bio = bio;
 
         await profile.save();
-
-        res.render("auth/Profile-view",{profile});
+        if(req.role === "teacher") {
+            return res.render("auth/viewProfileTeacher", { profile });
+          } else {
+            return res.render("auth/Profile-view", { profile });
+          }
         
     } catch(err) {
         console.error(err);
@@ -77,9 +83,14 @@ const viewProfile = async (req, res) => {
         const profile = await profileModel.findOne({ user: req.id });
 
         if (!profile) {
-            return res.render("auth/createProfile");
+            // if the profile is not found render the create profile page with an error message prompting the user to create a profile first
+            if (req.role === "teacher") {
+                return res.render("auth/createProfileTeacher", { error: "Profile not found. Please create a profile first." });
+              } else {      
+                return res.render("auth/createProfile");
+              }
         }
-        //nfara9 bin teacher w student
+        // if the user is a teacher render the teacher profile view otherwise render the student profile view
         if (req.role === "teacher") {
       return res.render("auth/viewProfileTeacher", { profile });
     } else {

@@ -1,6 +1,7 @@
 import userModel from "../Model/userModel.js";
 import jwt from "jsonwebtoken";
 import {config} from "dotenv";
+import { render } from "ejs";
 config();
 
 const password = process.env.secret;
@@ -35,7 +36,7 @@ const loginUser = async (req, res) => {
 
   } catch (err) {
   console.log("ERROR LOGIN:", err.message);
-  res.send(err.message);
+  res.render("auth/login", { error: err.message });
 }
 };
 export {loginUser};
