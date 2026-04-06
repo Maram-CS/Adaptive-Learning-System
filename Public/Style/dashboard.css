@@ -697,3 +697,14 @@ body {
   .search-bar:focus { width: 100%; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Footer */
+.footer {
+  background: var(--navy);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-radius: 16px;
+  font-size: 14px;
+}
