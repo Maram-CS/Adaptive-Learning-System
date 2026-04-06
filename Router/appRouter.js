@@ -1,17 +1,19 @@
 import {Router} from 'express';
+import { join } from "path";
 import { viewProfile } from '../Controller/profileController.js';
 import authRequest from '../middleware/authMiddleware.js';
 import userModel from "../Model/userModel.js";
 
 const AppRouter = Router();
+const __dirname = import.meta.dirname;
 
 // ============================================
 // Student Dashboard Route
 // ============================================
 AppRouter.get("/studentDashboard", async (req, res) => {
     try {
-        // جلب أول مستخدم من قاعدة البيانات (للتجربة)
-        const user = await userModel.findOne({ role: "student" });
+        // استخدام المستخدم الحالي من التوكن (authMiddleware يضيف req.id)
+        const user = await userModel.findById(req.id);
         if (user) {
             console.log('Found user:', user.userName, 'ID:', user._id);
             res.render("auth/studentDashboard", { userId: user._id.toString() });
@@ -53,6 +55,10 @@ AppRouter.get("/teacherDashboard", async (req, res) => {
 
 AppRouter.get("/createCourse", async (req, res) => {
     res.render("auth/createCourse");
+});
+
+AppRouter.get("/createQuiz", (req, res) => {
+    res.sendFile(join(__dirname, "../views/createQuiz.html"));
 });
 
 export default AppRouter;
