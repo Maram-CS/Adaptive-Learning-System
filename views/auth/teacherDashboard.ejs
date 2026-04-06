@@ -24,7 +24,7 @@
                 <li class="active"><a href="/App/teacherDashboard">Home</a></li>
                   <li><a href="/App/viewProfileTeacher">My Profile</a></li>
                 <li><a href="#">Create Quiz </a></li>
-                 <li><a href="#">Create Course </a></li>
+                 <li><a href="/App/createCourse">Create Course </a></li>
                 <li><a href="#">Student Analytics</a></li>
             </ul>
         </div>
@@ -51,8 +51,8 @@
 <!-- Welcome -->
     <div class="welcome">
       <div>
-        <h2>Welcome, <%= profile.userName === "Safa" ? "Ms." : "Mr." %>
-        <%= profile.userName %> 👋 </h2>
+        <h2>Welcome, <%= user.userName === "Safa" ? "Ms." : "Mr." %>
+        <%= user.userName %> 👋 </h2>
         <p>Shape the future of learning by building interactive courses, <br> adapting content to every student, and unlocking powerful insights.</p>
       </div>
     </div>

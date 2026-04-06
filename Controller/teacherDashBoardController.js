@@ -5,8 +5,8 @@ import userModel from "../Model/userModel.js";
 
 const getTeacherDashboard = async (req, res) => {
     try {
-        const profile = await userModel.findOne({ _id: req.id });
-        res.render("auth/teacherDashboard", { profile });
+        const user = await userModel.findOne({ _id: req.id });
+        res.render("auth/teacherDashboard", { user });
     } catch (error) {
         console.error("Error fetching teacher dashboard data:", error);
         res.status(500).send("Internal Server Error");
