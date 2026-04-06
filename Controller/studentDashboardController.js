@@ -1,8 +1,9 @@
 import userModel from "../Model/userModel.js";
+import progressModel from "../Model/Progress.js";
 import ProgressModel from "../Model/Progress.js";
 
 // جلب بيانات داشبورد الطالب
-export const getStudentDashboardData = async (req, res) => {
+ const getStudentDashboardData = async (req, res) => {
     try {
         // نحاول استخدام الـ userId من البارامز إن وُجد، وإلا نستخدم req.id من الـ authMiddleware
         const userId = req.params.userId || req.id;
@@ -84,6 +85,57 @@ export const getStudentDashboardData = async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
     }
 }
+
+const getLeaderboardData = async (req, res) => {
+     try {
+            const users = await userModel.find({}, 'userName');
+            
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            const leaderboardData = await ProgressModel.aggregate([
+                { $match: { lastUpdated: { $gte: oneWeekAgo } } },
+                { $group: { _id: "$userId", totalPoints: { $sum: "$pointsEarned" } } },
+                { $sort: { totalPoints: -1 } },
+                { $limit: 5 }
+            ]);
+            
+            const leaderboard = leaderboardData.map((item, index) => {
+                const user = users.find(u => u._id.toString() === item._id.toString());
+                return {
+                    name: user ? user.userName : "Unknown",
+                    points: item.totalPoints,
+                    badge: index === 0 ? "🔥" : (index === 1 ? "⭐" : (index === 2 ? "📈" : "")),
+                    isCurrentUser: false
+                };
+            });
+            
+            res.json({ success: true, leaderboard });
+            
+        } catch (error) {
+            console.error("Leaderboard API Error:", error);
+            res.status(500).json({ success: false, message: "Server Error" });
+        }
+    }
+
+ const getStudentDashboard = async (req, res) => {
+     try {
+            // استخدام المستخدم الحالي من التوكن (authMiddleware يضيف req.id)
+            const user = await userModel.findById(req.id);
+            if (user) {
+                console.log('Found user:', user.userName, 'ID:', user._id);
+                res.render("auth/studentDashboard", { userId: user._id.toString() });
+            } else {
+                console.log('No student found in database');
+                res.render("auth/studentDashboard", { userId: null });
+            }
+        } catch (error) {
+            console.error('Error rendering dashboard:', error);
+            res.render("auth/studentDashboard", { userId: null });
+        }
+    }
+
+export  {getStudentDashboardData, getLeaderboardData, getStudentDashboard};
 
 
 
