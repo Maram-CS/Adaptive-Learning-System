@@ -424,6 +424,74 @@
             transform: translateY(-2px);
         }
 
+        /* ─── STYLED FILE UPLOAD (improved design) ─────────────────────────────────── */
+        .file-upload-wrapper {
+            position: relative;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-upload-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--blue-light), #e8f0fe);
+            border: 2px dashed var(--blue-main);
+            border-radius: 40px;
+            padding: 12px 20px;
+            color: var(--blue-dark);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .file-upload-btn i {
+            font-size: 18px;
+            color: var(--blue-main);
+        }
+
+        .file-upload-btn:hover {
+            background: var(--blue-main);
+            border-color: var(--blue-main);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43,125,233,0.2);
+        }
+
+        .file-upload-btn:hover i {
+            color: white;
+        }
+
+        .file-name {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 6px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .file-name.has-file {
+            background: var(--blue-light);
+            color: var(--blue-dark);
+            font-weight: 500;
+        }
+
         /* Question List */
         .question-item {
             background: #f9fcff;
@@ -613,7 +681,15 @@
 
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2edf7;">
                     <label style="font-size: 12px;">Import from JSON File</label>
-                    <input type="file" id="loadQuizFile" style="font-size: 12px; padding: 8px; border-radius: 12px;">
+                    <!-- Improved file upload styling -->
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="loadQuizFile" accept=".json">
+                        <div class="file-upload-btn" id="fileUploadBtn">
+                            <i class="fa-solid fa-folder-open"></i>
+                            Choose JSON File
+                        </div>
+                        <div class="file-name" id="fileNameDisplay">No file chosen</div>
+                    </div>
                 </div>
             </section>
         </div>
@@ -864,10 +940,27 @@
         document.getElementById("saveQuizBtn").addEventListener("click", saveQuiz);
         document.getElementById("clearAllBtn").addEventListener("click", clearAll);
         
+        // Improved file input handling with styled button
         const fileInput = document.getElementById("loadQuizFile");
+        const fileNameDisplay = document.getElementById("fileNameDisplay");
+        
         fileInput.addEventListener("change", (e) => {
-            if (e.target.files.length) importFromJSON(e.target.files[0]);
+            if (e.target.files.length) {
+                const file = e.target.files[0];
+                fileNameDisplay.textContent = file.name;
+                fileNameDisplay.classList.add("has-file");
+                importFromJSON(file);
+            } else {
+                fileNameDisplay.textContent = "No file chosen";
+                fileNameDisplay.classList.remove("has-file");
+            }
             fileInput.value = "";
+        });
+        
+        // Trigger file input when clicking the styled button
+        const fileUploadBtn = document.getElementById("fileUploadBtn");
+        fileUploadBtn.addEventListener("click", () => {
+            fileInput.click();
         });
         
         const searchInput = document.getElementById("searchQuizInput");
