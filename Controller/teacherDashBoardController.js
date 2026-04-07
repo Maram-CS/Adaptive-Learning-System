@@ -6,22 +6,22 @@ import courseModel from "../Model/courseModel.js";
 const getTeacherDashboard = async (req, res) => {
     try {
         const user = await userModel.findById(req.id);
-        // عدد الكورسات تاع هذا الأستاذ فقط
+        // total courses created by the teacher
         const totalCourses = await courseModel.countDocuments({ Instructor: req.id });
-        // عدد الطلاب (مثلا كامل ولا مربوطين بالكورسات)
+        // total students in the system
         const totalStudents = await userModel.countDocuments({ role: "student" });
 
-        // إذا عندك quizModel
+        // if you have a quizModel, you can count the total quizzes created by the teacher like this:
         // const totalQuizzes = await quizModel.countDocuments({ instructor: req.id });
 
-        //njib courses t3 prof
+        //finally, fetch the courses created by the teacher to display on the dashboard
         const courses = await courseModel.find({ Instructor: req.id });
 
         res.render("auth/teacherDashboard", {
             user,
             totalCourses,
             totalStudents,
-            totalQuizzes: 0 ,// مؤقت حتى تديري quizModel
+            totalQuizzes: 0 ,// default to 0 if you don't have a quizModel, otherwise replace with the actual count
              courses
         });
 
