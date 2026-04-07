@@ -25,7 +25,7 @@ const createCourse = async (req,res)=> {
         const course = new courseModel(courseData);
         const savedCourse = await course.save();
         if(savedCourse) {
-            return res.status(201).json({message: "Course created successfully"});
+           return res.redirect("/teacherDashboard");
         }else {
             return res.status(400).json({message: "Failed to create course"});
         }
