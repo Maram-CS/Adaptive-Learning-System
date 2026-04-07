@@ -18,7 +18,7 @@
     </div>
     <div class="menu">
       <ul>
-        <li><a href="/App/courses">All Courses</a></li>
+        <li><a href="/courses/All">All Courses</a></li>
         <li><a href="/App/studentDashboard">Dashboard</a></li>
         <li class="active"><a href="/App/favoriteCourses">Favorite Courses</a></li>
         <li><a href="/profile/Profile-view">My Profile</a></li>
@@ -74,7 +74,7 @@
       <div class="empty-icon">💔</div>
       <h3>No favorites yet</h3>
       <p>You haven't saved any courses. Browse all courses and click the heart icon to add them here.</p>
-      <a href="/App/courses" class="browse-btn">Browse Courses</a>
+      <a href="/courses/All" class="browse-btn">Browse Courses</a>
     </div>
 
     <!-- Courses Grid -->
@@ -85,24 +85,20 @@
 
 <div class="footer">© 2026 Eduphin. All rights reserved.</div>
 
+<!--
+  All courses from the DB are injected here as JSON so the favorites page
+  can look up any course by its slug — no hardcoded list needed.
+  In your Express route, pass the courses array to the template:
+    res.render('favoriteCourses', { courses });
+-->
 <script>
-/* ── ALL AVAILABLE COURSES DATA ─────────────────────── */
-const allCourses = [
-  { id: 'html-css',    title: 'HTML & CSS',        desc: 'Learn the fundamentals of web development using HTML and CSS.',  category: 'frontend',   img: '/img/html.png' },
-  { id: 'javascript',  title: 'JavaScript Basics',  desc: 'Understand the core concepts of JavaScript programming.',        category: 'frontend',   img: '/img/javascript.png' },
-  { id: 'react',       title: 'React JS',            desc: 'Build dynamic user interfaces with React library.',              category: 'frontend',   img: '/img/react.png' },
-  { id: 'nodejs',      title: 'Node.js',             desc: 'Learn backend development using Node.js and Express.',           category: 'backend',    img: '/img/node.png' },
-  { id: 'python',      title: 'Python Basics',       desc: 'Get started with Python programming language.',                  category: 'backend',    img: '/img/python.png' },
-  { id: 'django',      title: 'Django',              desc: 'Develop web applications using Django framework.',               category: 'backend',    img: '/img/Django.png' },
-  { id: 'php',         title: 'PHP',                 desc: 'Learn web development with the PHP programming language.',       category: 'backend',    img: '/img/PHP.png' },
-  { id: 'github',      title: 'GitHub',              desc: 'Learn version control with GitHub.',                             category: 'tools',      img: '/img/GitHub.png' },
-  { id: 'git',         title: 'Git',                 desc: 'Learn version control with Git.',                                category: 'tools',      img: '/img/Git.png' },
-  { id: 'figma',       title: 'Figma',               desc: 'Learn UI/UX design with Figma.',                                category: 'design',     img: '/img/Figma.png' },
-  { id: 'mysql',       title: 'MySQL',               desc: 'Learn SQL database management with MySQL.',                      category: 'database',   img: '/img/MySQL.png' },
-  { id: 'mongodb',     title: 'MongoDB',             desc: 'Learn NoSQL database management with MongoDB.',                  category: 'database',   img: '/img/MongoDB.png' },
-  { id: 'vercel',      title: 'Vercel',              desc: 'Deploy and host web applications with Vercel.',                  category: 'deployment', img: '/img/Vercel.png' },
-];
+  // All courses from MongoDB, keyed by slug for fast lookup
+  const allCourses = JSON.parse('<%- JSON.stringify(courses) %>');
+  const courseBySlug = {};
+  allCourses.forEach(c => { courseBySlug[c.slug] = c; });
+</script>
 
+<script>
 /* ── RATING TEXT ────────────────────────────────────── */
 const ratingText = { 0: 'Tap to rate', 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very Good', 5: 'Excellent! 🎉' };
 
@@ -112,14 +108,10 @@ function getFavorites() {
   catch { return []; }
 }
 
-function toggleFavorite(courseId) {
+function toggleFavorite(slug) {
   let favs = getFavorites();
-  const idx = favs.indexOf(courseId);
-  if (idx === -1) {
-    favs.push(courseId);
-  } else {
-    favs.splice(idx, 1);
-  }
+  const idx = favs.indexOf(slug);
+  if (idx === -1) { favs.push(slug); } else { favs.splice(idx, 1); }
   localStorage.setItem('favorites', JSON.stringify(favs));
   renderFavorites();
 }
@@ -145,8 +137,8 @@ function buildStars(container) {
     if (i <= saved) star.classList.add('filled');
 
     star.addEventListener('mouseenter', () => {
-      highlightStars(container, parseInt(star.dataset.value));
-      label.textContent = ratingText[parseInt(star.dataset.value)];
+      highlightStars(container, i);
+      label.textContent = ratingText[i];
       label.classList.remove('rated');
     });
     star.addEventListener('mouseleave', () => {
@@ -156,10 +148,9 @@ function buildStars(container) {
       label.classList.toggle('rated', cur > 0);
     });
     star.addEventListener('click', () => {
-      const val = parseInt(star.dataset.value);
-      localStorage.setItem('rating_' + course, val);
-      highlightStars(container, val);
-      label.textContent = ratingText[val];
+      localStorage.setItem('rating_' + course, i);
+      highlightStars(container, i);
+      label.textContent = ratingText[i];
       label.classList.add('rated');
       star.style.transform = 'scale(1.6)';
       setTimeout(() => { star.style.transform = ''; }, 220);
@@ -184,35 +175,33 @@ function highlightStars(container, value) {
 function updateStats() {
   const favs = getFavorites();
   document.getElementById('favCount').textContent = favs.length;
-
   let rated = 0;
-  favs.forEach(id => {
-    if (parseInt(localStorage.getItem('rating_' + id)) > 0) rated++;
-  });
+  favs.forEach(slug => { if (parseInt(localStorage.getItem('rating_' + slug)) > 0) rated++; });
   document.getElementById('ratedCount').textContent = rated;
 }
 
 /* ── RENDER ─────────────────────────────────────────── */
 function renderFavorites(category = 'all') {
-  const container = document.getElementById('favoritesContainer');
+  const container  = document.getElementById('favoritesContainer');
   const emptyState = document.getElementById('emptyState');
-  const favs = getFavorites();
+  const favs       = getFavorites();
 
-  const filtered = allCourses.filter(c =>
-    favs.includes(c.id) && (category === 'all' || c.category === category)
-  );
+  // Filter: must be in favorites AND exist in DB AND match category
+  const filtered = favs
+    .map(slug => courseBySlug[slug])
+    .filter(c => c && (category === 'all' || c.category === category));
 
   container.innerHTML = '';
 
   if (favs.length === 0) {
     emptyState.style.display = 'flex';
-    container.style.display = 'none';
+    container.style.display  = 'none';
     updateStats();
     return;
   }
 
   emptyState.style.display = 'none';
-  container.style.display = 'flex';
+  container.style.display  = 'flex';
 
   if (filtered.length === 0) {
     container.innerHTML = '<div class="no-results">No favorites in this category.</div>';
@@ -226,15 +215,15 @@ function renderFavorites(category = 'all') {
     card.setAttribute('data-category', course.category);
     card.style.animationDelay = (i * 0.06) + 's';
     card.innerHTML = `
-      <button class="heart-btn active" title="Remove from favorites" onclick="toggleFavorite('${course.id}')">❤️</button>
-      <img src="${course.img}" class="course-img" alt="${course.title}" onerror="this.src='/img/default.png'">
-      <h3>${course.title}</h3>
+      <button class="heart-btn active" title="Remove from favorites" onclick="toggleFavorite('${course.slug}')">❤️</button>
+      <img src="${course.image}" class="course-img" alt="${course.Title}" onerror="this.src='/img/default.png'">
+      <h3>${course.Title}</h3>
       <span class="category-tag">${course.category}</span>
-      <p>${course.desc}</p>
+      <p>${course.Description}</p>
       <div class="card-divider"></div>
-      <div class="star-rating" data-course="${course.id}"></div>
+      <div class="star-rating" data-course="${course.slug}"></div>
       <div class="rating-label">Tap to rate</div>
-      <button class="view-details-btn" onclick="viewCourseDetails('${course.title}')">View Details</button>
+      <button class="view-details-btn" onclick="viewCourseDetails('${course._id}')">View Details</button>
     `;
     container.appendChild(card);
   });
@@ -259,9 +248,9 @@ document.getElementById('searchInput').addEventListener('keyup', function () {
 });
 
 /* ── VIEW DETAILS ───────────────────────────────────── */
-function viewCourseDetails(title) {
-  localStorage.setItem('selectedCourse', title);
-  window.location.href = `/coursesDetail?course=${encodeURIComponent(title)}`;
+function viewCourseDetails(id) {
+  localStorage.setItem('selectedCourse', id);
+  window.location.href = '/App/course';
 }
 
 /* ── INIT ───────────────────────────────────────────── */

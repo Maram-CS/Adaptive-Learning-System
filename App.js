@@ -11,6 +11,7 @@ import coursesRouter from "./Router/courseRouter.js";
 import teacherDashboardRouter from "./Router/teacherDashBoardRouter.js";
 import dashboardRoutes from "./Router/dashboardRoutes.js";
 import studentDashboardRouter from "./Router/dashboardRoutes.js";
+import favoriteCourseRouter from "./Router/favoriteCoursesRouter.js";
 
 config();
 
@@ -41,6 +42,7 @@ App.use("/courses", coursesRouter);
 App.use("/teacherDashboard", authRequest, teacherDashboardRouter);
 App.use("/api/dashboard", authRequest, dashboardRoutes);
 App.use("/studentDashboard", authRequest, studentDashboardRouter);
+App.use("/favoriteCourses", authRequest, favoriteCourseRouter);
 
 App.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

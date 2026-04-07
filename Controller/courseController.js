@@ -40,7 +40,7 @@ const getAllCourses = async (req,res) => {
     try {
         const AllCourses = await courseModel.find({isPublished : true});
         if(AllCourses) {
-            return res.status(200).json({courses: AllCourses});
+            return res.render("auth/courses",{courses: AllCourses});
         }else {
             return res.status(404).json({message: "No courses found"});
         }
