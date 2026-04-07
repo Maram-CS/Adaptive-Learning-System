@@ -69,7 +69,8 @@
         <i class="fa-solid fa-book"></i>
       </div>
       <h4> <span class="orange">Total</span> <span class="blue">Courses</span></h4>
-      <p class="big"></p>
+      <p class="big"><%= totalCourses %></p>
+       <span class="small-text">Courses created</span>
     </div>
 
     <!-- CARD 2 -->
@@ -77,8 +78,9 @@
       <div class="feature-icon icon-orange">
         <i class="fa-solid fa-clipboard-list"></i>
       </div>
-      <h4> <span class="orange"> Quiz</span> <span class="blue"> Repository</span></h4>
-      <p class="big"></p>
+      <h4> <span class="orange"> Quiz </span> <span class="blue"> Repository</span></h4>
+      <p class="big"><%= totalQuizzes %></p>
+       <span class="small-text">Available quizzes</span>
     </div>
 
     <!-- CARD 3 -->
@@ -87,64 +89,65 @@
         <i class="fa-solid fa-users"></i>
       </div>
       <h4><span class="orange">Total</span> <span class="blue">Students</span></h4>
-      <p class="big"></p>
-       <a href="">  <button class="btn-student">View All students</button></a>
+      <p class="big"><%= totalStudents %></p>
+       <span class="small-text">Active learners</span>
     </div>
 
   </div>
 </div>
   
+<!-- Courses -->
+<h3>Course Section</h3>
+<div class="courses">
 
-    <!-- Courses -->
-    <h3>Course Section</h3>
-    <div class="courses">
-
-      <div class="course">
-        <h4>Mastering Full-Stack</h4>
-        <div class="buttons">
-          <button>Edit Course</button>
-          <button>Quiz Hub</button>
-        </div>
-        <div class="buttons second">
-          <button class="orange">Student Performance</button>
-          <button class="orange">Content</button>
-        </div>
-        <div class="progress"><span style="width:40%"></span></div>
-        <p>42 enrolled students</p>
-      </div>
+  <% if (courses && courses.length > 0) { %>
+    <% courses.forEach(course => { %>
 
       <div class="course">
-        <h4>Data Science Track</h4>
+        <h4><%= course.Title %></h4>
+        <img src="<%= course.image %>" class="course-img">
+
         <div class="buttons">
-          <button>Edit Course</button>
-          <button>Quiz Hub</button>
+          <button onclick="window.location.href='/App/editCourse/<%= course.slug %>'">
+            Edit Course
+          </button>
+
+          <button onclick="window.location.href='/App/createQuiz/<%= course._id %>'">
+            Create Quiz
+          </button>
         </div>
+
         <div class="buttons second">
-          <button class="orange">Student Performance</button>
-          <button class="orange">Content</button>
+          <button class="orange"
+            onclick="window.location.href='/App/courseContent/<%= course.slug %>'">
+            Content
+          </button>
         </div>
-        <div class="progress"><span style="width:60%"></span></div>
-        <p>47 enrolled students</p>
+
+        <div class="progress">
+          <span style="width:40%"></span>
+        </div>
+
+        <p>
+          <%= course.students ? course.students.length : 0 %> enrolled students
+        </p>
       </div>
 
-      <div class="course">
-        <h4>Mobile Dev Specialization</h4>
-        <div class="buttons">
-          <button>Edit Course</button>
-          <button>Quiz Hub</button>
-        </div>
-        <div class="buttons second">
-          <button class="orange">Student Performance</button>
-          <button class="orange">Content</button>
-        </div>
-        <div class="progress"><span style="width:60%"></span></div>
-        <p>47 enrolled students</p>
-      </div>
-
+    <% }) %>
+  <% } else { %>
+     <!-- Empty State -->
+    <div class="empty-state" >
+      <div class="empty-icon">💔</div>
+      <h3>No Courses yet</h3>
+      <p>Create your first course to get started!</p>
+      <a href="/App/createCourse" class="browse-btn">Create Courses</a>
     </div>
+  <% } %>
+
+</div>
+    
     <!-- FOOTER -->
         <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
-
 
   </main>
 
