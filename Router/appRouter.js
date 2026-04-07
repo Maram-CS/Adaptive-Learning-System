@@ -40,7 +40,7 @@ AppRouter.get("/createQuiz", (req, res) => {
     res.render("createQuiz");
 });
 
-AppRouter.get("/studentAnalystics", (req, res) => {
-    res.render("auth/studentAnalystics");
+AppRouter.get("/studentAnalytics", (req, res) => {
+    res.render("auth/studentAnalytics");
 });
 export default AppRouter;
