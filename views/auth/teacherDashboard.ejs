@@ -57,6 +57,9 @@
     </div>
     
     <!-- Overview -->
+
+<br>
+
     <h3>Overview</h3>
 
 <div class="dashboard-container">
@@ -95,79 +98,111 @@
 
   </div>
 </div>
-  
-<!-- Courses -->
+
+<br>
+
+<!-- COURSES -->
 <h3>Course Section</h3>
+
 <div class="courses">
 
-  <% if (courses && courses.length > 0) { %>
-    <% courses.forEach(course => { %>
+<% if (courses && courses.length > 0) { %>
 
-      <div class="course">
-        <h4><%= course.Title %></h4>
-        <img src="<%= course.image %>" class="course-img">
+  <% courses.forEach(course => { %>
 
-        <div class="buttons">
-          <button onclick="window.location.href='/App/editCourse/<%= course.slug %>'">
-            Edit Course
-          </button>
+    <div class="course">
 
-          <button onclick="window.location.href='/App/createQuiz/<%= course._id %>'">
-            Create Quiz
-          </button>
-        </div>
+      <h4><%= course.Title %></h4>
 
-        <div class="buttons second">
-          <button class="orange"
-            onclick="window.location.href='/App/courseContent/<%= course.slug %>'">
-            Content
-          </button>
-        </div>
+      <img src="<%= course.image %>" class="course-img">
 
-        <div class="progress">
-          <span style="width:40%"></span>
-        </div>
+      <div class="buttons">
 
-        <p>
-          <%= course.students ? course.students.length : 0 %> enrolled students
-        </p>
+        <button onclick="window.location.href='/App/editCourse/<%= course.slug %>'">
+          Edit
+        </button>
+
+        <button onclick="deleteCourse('<%= course.slug %>')">
+          Delete
+        </button>
+
       </div>
 
-    <% }) %>
-  <% } else { %>
-     <!-- Empty State -->
-    <div class="empty-state" >
-      <div class="empty-icon">💔</div>
-      <h3>No Courses yet</h3>
-      <p>Create your first course to get started!</p>
-      <a href="/App/createCourse" class="browse-btn">Create Courses</a>
+      <div class="buttons second">
+
+        <button onclick="window.location.href='/App/courseContent/<%= course.slug %>'">
+          Content
+        </button>
+
+      </div>
+
+      <p>
+        <%= course.students ? course.students.length : 0 %> students
+      </p>
+
     </div>
-  <% } %>
+
+  <% }) %>
+
+<% } else { %>
+
+  <div class="empty-state">
+    <h3>No Courses yet</h3>
+    <a href="/App/createCourse">Create Course</a>
+  </div>
+
+<% } %>
 
 </div>
-    
-    <!-- FOOTER -->
-        <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
-
-  </main>
 
 </div>
+</div>
+
+<!-- SCRIPT -->
 <script>
-    // Example dynamic name
-document.getElementById("teacherName").innerText = "John Doe";
 
-// Sidebar active effect
-const items = document.querySelectorAll(".sidebar li");
+// safe fix (no crash)
+const teacherNameEl = document.getElementById("teacherName");
+if (teacherNameEl) {
+  teacherNameEl.innerText = "John Doe";
+}
 
-items.forEach(item => {
-  item.addEventListener("click", () => {
-    items.forEach(i => i.classList.remove("active"));
-    item.classList.add("active");
-  });
-});
+// delete course
+const deleteCourse = async (slug) => {
+  try {
 
-const getProfile = () => {
-  window.location.href = "/profile/Profile-view";
+    const ok = confirm("Are you sure you want to delete this course?");
+    if (!ok) return;
+
+    const res = await fetch(`/courses/delete/${slug}`, {
+      method: "POST",
+      credentials: "include"// to include cookies for auth
+    });
+
+    const data = await res.json();
+
+    if (data.message === "Course deleted successfully") {
+      alert("Course deleted successfully");
+      window.location.reload();
+      return;
+    }
+
+    if (data.message === "Course not found") {
+      alert("Course not found");
+      return;
+    }
+
+    if (data.message === "Not authorized to delete this course") {
+      alert("Not authorized");
+      return;
+    }
+
+    alert("Something went wrong");
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
 };
 
 </script>

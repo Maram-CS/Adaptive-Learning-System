@@ -101,13 +101,13 @@ const getCourseBySlug = async(req,res) => {
 const deleteCourse = async (req,res) => {
     try {
         
-        const course = await courseModel.findOne({ slug: req.params.slug, Instructor: req.user.id }).populate('Instructor');
+        const course = await courseModel.findOne({ slug: req.params.slug, Instructor: req.id }).populate('Instructor');
         if(!course) {
             return res.status(404).json({message: "Course not found"});
         }
 
         
-        if(course.Instructor._id.toString() !== req.user.id){
+        if(course.Instructor._id.toString() !== req.id){
             return res.status(403).json({ message: "Not authorized to delete this course" });
         }
 
