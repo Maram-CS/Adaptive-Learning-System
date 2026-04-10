@@ -10,6 +10,6 @@ coursesRouter.get("/getCourse/:slug/",getCourseBySlug);
 coursesRouter.get("/All",getAllCourses);
 coursesRouter.post("/create",authRequest,roleRequest, upload.single("image"),createCourse);
 coursesRouter.put("/edit/:slug/",authRequest,roleRequest,editCourse);
-coursesRouter.delete("/delete/:slug/",authRequest,roleRequest,deleteCourse);
+coursesRouter.post("/delete/:slug/",authRequest,roleRequest,deleteCourse);
 
 export default  coursesRouter;
