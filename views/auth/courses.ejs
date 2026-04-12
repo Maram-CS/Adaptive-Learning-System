@@ -6,6 +6,7 @@
 <title>Courses - Eduphin</title>
 <link rel="stylesheet" href="/Style/courses.css">
 </head>
+
 <body>
 
 <div class="page-container">
@@ -16,6 +17,7 @@
     <img src="/img/logoBleu.png" class="logo-img" alt="Eduphin logo">
     <span>My Courses</span>
   </div>
+
   <div class="menu">
     <ul>
       <li class="active"><a href="/courses/All">All Courses</a></li>
@@ -24,170 +26,318 @@
       <li><a href="/profile/Profile-view">My Profile</a></li>
     </ul>
   </div>
-  <a href="/home"><button class="logout">Sign out</button></a>
+
+  <a href="/home">
+    <button class="logout">Sign out</button>
+  </a>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-  <!-- Header -->
-  <div class="main-header">
-    <h2>Courses <span>Dashboard</span></h2>
-    <div class="header-actions">
-      <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
-      <div class="buttons">
-        <button class="icon-btn">🔔</button>
-        <button class="icon-btn">💬</button>
-        <a href="/profile/Profile-view"><button class="icon-btn">👤</button></a>
-      </div>
+<!-- HEADER -->
+<div class="main-header">
+  <h2>Courses <span>Dashboard</span></h2>
+
+  <div class="header-actions">
+    <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
+
+    <div class="buttons">
+      <button class="icon-btn">🔔</button>
+      <button class="icon-btn">💬</button>
+      <a href="/profile/Profile-view">
+        <button class="icon-btn">👤</button>
+      </a>
     </div>
   </div>
+</div>
 
-  <!-- Filter Buttons -->
-  <div class="filter-buttons">
-    <button onclick="filterCourses('all', this)" class="active-filter">All</button>
-    <button onclick="filterCourses('frontend', this)">Frontend</button>
-    <button onclick="filterCourses('backend', this)">Backend</button>
-    <button onclick="filterCourses('database', this)">Database</button>
-    <button onclick="filterCourses('tools', this)">Tools</button>
-    <button onclick="filterCourses('design', this)">Design</button>
-    <button onclick="filterCourses('deployment', this)">Deployment</button>
-  </div>
+<!-- FILTER -->
+<div class="filter-buttons">
+  <button onclick="filterCourses('all', this)" class="active-filter">All</button>
+  <button onclick="filterCourses('frontend', this)">Frontend</button>
+  <button onclick="filterCourses('backend', this)">Backend</button>
+  <button onclick="filterCourses('database', this)">Database</button>
+  <button onclick="filterCourses('tools', this)">Tools</button>
+  <button onclick="filterCourses('design', this)">Design</button>
+  <button onclick="filterCourses('deployment', this)">Deployment</button>
+</div>
 
-  <!-- Courses -->
-  <div class="courses-container" id="coursesContainer">
-    <% courses.forEach(course => { %>
-      <div class="item" data-category="<%= course.category %>">
-        <!-- course.slug is used as the shared key with favoriteCourses page -->
-        <button class="heart-btn" data-id="<%= course.slug %>" onclick="toggleFavorite('<%= course.slug %>', this)">❤️</button>
-        <img src="<%= course.image %>" class="course-img" alt="<%= course.Title %>">
-        <h3><%= course.Title %></h3>
-        <p><%= course.Description %></p>
-        <div class="card-divider"></div>
-        <div class="star-rating" data-course="<%= course.slug %>"></div>
-        <div class="rating-label">Tap to rate</div>
-        <button class="view-details-btn" onclick="viewCourseDetails('<%= course._id %>')">View Details</button>
-      </div>
-    <% }) %>
-  </div>
+<!-- COURSES -->
+<div class="courses-container" id="coursesContainer">
+<% courses.forEach(course => { %>
+
+<div class="item" data-category="<%= course.category %>">
+
+<button 
+class="heart-btn"
+data-id="<%= course._id %>"
+onclick="toggleFavorite('<%= course._id %>', this)">
+❤️
+</button>
+
+<img src="<%= course.image %>" class="course-img">
+
+<h3><%= course.Title %></h3>
+<p><%= course.Description %></p>
+
+<div class="card-divider"></div>
+
+<div class="star-rating" data-course="<%= course._id %>"></div>
+<div class="rating-label">Tap to rate</div>
+
+<button 
+class="view-details-btn"
+onclick="viewCourseDetails('<%= course._id %>')">
+View Details
+</button>
+
+</div>
+
+<% }) %>
+</div>
 
 </div>
 </div>
 
-<!-- Toast -->
+<!-- TOAST -->
 <div class="fav-toast" id="favToast"></div>
 
-<div class="footer">© 2026 Eduphin. All rights reserved.</div>
+<div class="footer">
+© 2026 Eduphin. All rights reserved.
+</div>
 
 <script>
-/* ========== FAVORITES ========== */
-function getFavorites() {
-  try { return JSON.parse(localStorage.getItem('favorites') || '[]'); } catch { return []; }
+
+
+
+
+/* ================= FAVORITES ================= */
+
+function getFavorites(){
+return JSON.parse(localStorage.getItem('favorites')) || [];
 }
 
-function toggleFavorite(slug, btn) {
-  let favs = getFavorites();
-  const idx = favs.indexOf(slug);
-  if (idx === -1) {
-    favs.push(slug);
-    btn.classList.add('active');
-    showToast('Added to favorites ❤️');
-  } else {
-    favs.splice(idx, 1);
-    btn.classList.remove('active');
-    showToast('Removed from favorites');
-  }
-  localStorage.setItem('favorites', JSON.stringify(favs));
+function toggleFavorite(id,btn){
+
+let favs = getFavorites()
+
+if(favs.includes(id)){
+
+favs = favs.filter(f => f !== id)
+btn.classList.remove("active")
+showToast("Removed from favorites")
+
+}else{
+
+favs.push(id)
+btn.classList.add("active")
+showToast("Added to favorites ❤️")
+
 }
 
-function syncHearts() {
-  const favs = getFavorites();
-  document.querySelectorAll('.heart-btn').forEach(btn => {
-    btn.classList.toggle('active', favs.includes(btn.getAttribute('data-id')));
-  });
+localStorage.setItem("favorites",JSON.stringify(favs))
+
 }
 
-/* ========== STARS ========== */
-const ratingText = { 0: 'Tap to rate', 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very Good', 5: 'Excellent 🎉' };
+function syncHearts(){
 
-function buildStars(container) {
-  const course = container.dataset.course;
-  const saved = parseInt(localStorage.getItem('rating_' + course)) || 0;
-  const label = container.nextElementSibling;
-  container.innerHTML = '';
-  for (let i = 1; i <= 5; i++) {
-    const star = document.createElement('span');
-    star.textContent = '★';
-    star.dataset.value = i;
-    star.classList.add('star');
-    if (i <= saved) star.classList.add('filled');
-    star.addEventListener('mouseenter', () => { highlightStars(container, i); label.textContent = ratingText[i]; });
-    star.addEventListener('mouseleave', () => { highlightStars(container, saved); label.textContent = ratingText[saved]; });
-    star.addEventListener('click', () => { localStorage.setItem('rating_' + course, i); highlightStars(container, i); label.textContent = ratingText[i]; });
-    container.appendChild(star);
-  }
-  highlightStars(container, saved);
-  label.textContent = ratingText[saved];
+const favs = getFavorites()
+
+document.querySelectorAll(".heart-btn").forEach(btn=>{
+
+const id = btn.getAttribute("data-id")
+
+if(favs.includes(id)){
+btn.classList.add("active")
+}else{
+btn.classList.remove("active")
 }
 
-function highlightStars(container, val) {
-  container.querySelectorAll('.star').forEach(s => s.classList.toggle('filled', parseInt(s.dataset.value) <= val));
+})
+
 }
 
-/* ========== VIEW DETAILS ========== */
-function viewCourseDetails(id) {
-  localStorage.setItem('selectedCourse', id);
-  window.location.href = "/App/course";
+
+
+/* ================= RATING ================= */
+
+const ratingText = {
+0:"Tap to rate",
+1:"Poor",
+2:"Fair",
+3:"Good",
+4:"Very Good",
+5:"Excellent 🎉"
 }
 
-/* ========== FILTER & SEARCH ========== */
-const items = document.querySelectorAll('.item');
-function filterCourses(cat, btn) {
-  document.querySelectorAll('.filter-buttons button').forEach(b => b.classList.remove('active-filter'));
-  btn.classList.add('active-filter');
-  items.forEach(item => {
-    item.style.display = (cat === 'all' || item.dataset.category === cat) ? 'flex' : 'none';
-  });
+function buildStars(container){
+
+const id = container.dataset.course
+
+const saved = parseInt(localStorage.getItem("rating_"+id)) || 0
+
+const label = container.nextElementSibling
+
+container.innerHTML=""
+
+for(let i=1;i<=5;i++){
+
+const star = document.createElement("span")
+
+star.innerHTML="★"
+
+star.dataset.value=i
+
+star.classList.add("star")
+
+if(i<=saved) star.classList.add("filled")
+
+star.addEventListener("mouseenter",()=>{
+
+highlightStars(container,i)
+label.textContent = ratingText[i]
+
+})
+
+star.addEventListener("mouseleave",()=>{
+
+highlightStars(container,saved)
+label.textContent = ratingText[saved]
+
+})
+
+star.addEventListener("click",()=>{
+
+localStorage.setItem("rating_"+id,i)
+highlightStars(container,i)
+label.textContent = ratingText[i]
+
+})
+
+container.appendChild(star)
+
 }
-document.getElementById('searchInput').addEventListener('keyup', function () {
-  const filter = this.value.toLowerCase();
-  items.forEach(item => { item.style.display = item.textContent.toLowerCase().includes(filter) ? 'flex' : 'none'; });
-});
 
-/* ========== TOAST ========== */
-function showToast(msg) {
-  const toast = document.getElementById('favToast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => { toast.classList.remove('show'); }, 2000);
+highlightStars(container,saved)
+label.textContent = ratingText[saved]
+
 }
 
-/* ========== INIT ========== */
-document.querySelectorAll('.star-rating').forEach(buildStars);
-syncHearts();
+function highlightStars(container,val){
+
+container.querySelectorAll(".star").forEach(star=>{
+
+star.classList.toggle("filled",star.dataset.value<=val)
+
+})
+
+}
 
 
-const result = await response.json();
 
-    if(result.message === "Course not found"){
-        alert("Course not found");
-        window.location.href = "/teacherDashboard/get";
-    }else if(result.message === "Course deleted successfully"){
-        alert("Course deleted successfully");
-        window.location.href = "/teacherDashboard/get";
-    }
-    else if(result.message === "Not authorized to delete this course"){
-        alert("Not authorized to delete this course");
-        window.location.href = "/teacherDashboard/get";
-    }
-    else if(result.message === "Error deleting course"){
-        alert("Error deleting course");
-        window.location.href = "/teacherDashboard/get";
-    }else if(result.message === " Internal server error"){
-        alert("Server error");
-        window.location.href = "/teacherDashboard/get";
-    }
+/* ================= VIEW DETAILS ================= */
+
+function viewCourseDetails(id){
+
+localStorage.setItem("selectedCourse",id)
+window.location.href="/App/course"
+
+}
+
+
+
+/* ================= FILTER ================= */
+
+const items = document.querySelectorAll(".item")
+
+function filterCourses(cat,btn){
+
+document.querySelectorAll(".filter-buttons button")
+.forEach(b=>b.classList.remove("active-filter"))
+
+btn.classList.add("active-filter")
+
+items.forEach(item=>{
+
+item.style.display =
+(cat==="all" || item.dataset.category===cat)
+? "flex"
+: "none"
+
+})
+
+}
+
+
+
+/* ================= SEARCH ================= */
+
+document
+.getElementById("searchInput")
+.addEventListener("keyup",function(){
+
+const val = this.value.toLowerCase()
+
+items.forEach(item=>{
+
+item.style.display =
+item.textContent.toLowerCase().includes(val)
+? "flex"
+: "none"
+
+})
+
+})
+
+
+
+/* ================= TOAST ================= */
+
+function showToast(msg){
+
+const toast=document.getElementById("favToast")
+
+toast.textContent=msg
+
+toast.classList.add("show")
+
+setTimeout(()=>{
+toast.classList.remove("show")
+},2000)
+
+}
+
+
+
+/* ================= INIT ================= */
+
+document
+.querySelectorAll(".star-rating")
+.forEach(buildStars)
+
+syncHearts()
+
+
 </script>
+
+<% if (session.toast) { %>
+<script>
+  const toast = JSON.parse('<%- JSON.stringify(JSON.stringify(session.toast)) %>');
+
+  if (toast.type === "success") {
+    alert("✅ " + toast.text);
+  }
+</script>
+
+<% session.toast = null %>
+<% } %>
+
+<% if (error) { %>
+<script>
+  alert("❌ <%= error.text %>");
+</script>
+<% } %>
 
 </body>
 </html>

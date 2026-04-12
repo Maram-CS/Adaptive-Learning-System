@@ -53,15 +53,15 @@ const editCourse = async (req, res) => {
     try {
         const { Title, Description, category, image, totalDuration, level, price } = req.body;
 
-        // نجيب course بالـ slug و Instructor = req.user.id
-        const course = await courseModel.findOne({ slug: req.params.slug, Instructor: req.user.id });
+        // find course using slug and instructor id
+        const course = await courseModel.findOne({ slug: req.params.slug, Instructor: req.id });
         if (!course) {
             return res.status(404).json({ message: "Course not found or not authorized" });
         }
 
         if (Title) {
             course.Title = Title;
-            course.slug = slugify(Title, { lower: true, strict: true }); // تحديث slug لو Title تغير
+            course.slug = slugify(Title, { lower: true, strict: true }); // update the slug if the title changed
         }
         course.Description = Description || course.Description;
         course.category = category || course.category;
@@ -71,11 +71,11 @@ const editCourse = async (req, res) => {
         course.price = price || course.price;
 
         const updatedCourse = await course.save();
-
-        return res.status(200).json({
-            message: "Course updated successfully",
-            course: updatedCourse
-        });
+        if(updatedCourse) { 
+            return res.redirect("/teacherDashboard/get");
+        } else {
+            return res.status(400).json({ message: "Failed to update course" });
+        }
 
     } catch (err) {
         console.error(err);
@@ -90,8 +90,11 @@ const getCourseBySlug = async(req,res) => {
         if(!course) {
             return res.status(404).json({message: "course not found"});
         }
-
-        res.render("auth/coursesDetail",{course});
+        if(req.role === "student") {
+            return res.render("auth/courseDetailStudent",{course});
+        }else { 
+            res.render("auth/editCourse",{course});
+        }
     }catch (err) {
         console.error(err);
         return res.status(500).json({message: "Internal server error"});
