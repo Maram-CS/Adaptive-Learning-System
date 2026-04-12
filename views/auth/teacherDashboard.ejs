@@ -118,7 +118,7 @@
 
       <div class="buttons">
 
-        <button onclick="window.location.href='/App/editCourse/<%= course.slug %>'">
+        <button onclick="getCourse('<%= course.slug %>')">
           Edit
         </button>
 
@@ -204,6 +204,10 @@ const deleteCourse = async (slug) => {
     alert("Server error");
   }
 };
+
+const getCourse = async (slug) => {
+ window.location.href = `/courses/getCourse/${slug}`;
+}
 
 </script>
 

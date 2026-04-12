@@ -9,7 +9,7 @@ const coursesRouter = Router();
 coursesRouter.get("/getCourse/:slug/",getCourseBySlug);
 coursesRouter.get("/All",getAllCourses);
 coursesRouter.post("/create",authRequest,roleRequest, upload.single("image"),createCourse);
-coursesRouter.put("/edit/:slug/",authRequest,roleRequest,editCourse);
+coursesRouter.post("/edit/:slug/",authRequest,roleRequest,upload.single("image"),editCourse);
 coursesRouter.post("/delete/:slug/",authRequest,roleRequest,deleteCourse);
 
 export default  coursesRouter;
