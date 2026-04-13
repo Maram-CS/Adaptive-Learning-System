@@ -125,12 +125,8 @@
         <button onclick="deleteCourse('<%= course.slug %>')">
           Delete
         </button>
-
-      </div>
-
-      <div class="buttons second">
-
-        <button onclick="window.location.href='/App/courseContent/<%= course.slug %>'">
+        
+        <button class="content-btn" onclick="window.location.href='/App/courseContent/<%= course.slug %>'">
           Content
         </button>
 
@@ -147,13 +143,16 @@
 <% } else { %>
 
   <div class="empty-state">
-    <h3>No Courses yet</h3>
-    <a href="/App/createCourse">Create Course</a>
+    <h3>No Courses yet </h3>
+    <div class="empty-icon">💔</div>
+    <a href="/App/createCourse" class="browse-btn">Create Course</a>
   </div>
 
 <% } %>
 
 </div>
+ <!-- FOOTER -->
+        <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
 
 </div>
 </div>
@@ -164,7 +163,7 @@
 // safe fix (no crash)
 const teacherNameEl = document.getElementById("teacherName");
 if (teacherNameEl) {
-  teacherNameEl.innerText = "John Doe";
+  teacherNameEl.innerText = "Welcome, Professor <%= user.userName %> 👋";
 }
 
 // delete course

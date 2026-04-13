@@ -499,7 +499,7 @@ display: flex;
 }
 
 .empty-icon {
-  font-size: 4rem;
+  font-size: 2rem;
   animation: pulse 1.8s ease-in-out infinite;
 }
 
@@ -598,23 +598,53 @@ display: flex;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
-  transition: 0.3s;
+  font-weight: 700;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  color: var(--navy);
 }
-
-.buttons button.orange {
-  background: var(--orange);
-  color: white;
-}
-
 .buttons button:not(.orange) {
   background: var(--blue-main);
   color: white;
+
+}
+.buttons button:not(.orange):hover {
+  background: var(--orange);
+  color: var(--navy);
+  border: 1px solid rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.buttons button.content-btn {
+  background: var(--orange);
+  color: var(--navy);
+}
+.buttons button.content-btn:hover {
+  background: var(--blue-main);
+  color: white;
+  box-shadow: 0 4px 12px rgba(43,125,233,0.4);
+}
+.buttons button.content-btn:hover::before {
+  left: 100%;
+}
+
+/* ===== HOVER ===== */
+.buttons button:hover::before {
+  left: 100%;
 }
 
 .buttons button:hover {
-  opacity: 0.9;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(43,125,233,0.25);
+  opacity: 1;
+}
+
+/* optional: orange hover override (same spirit as logout) */
+.buttons button.orange:hover {
+  background: var(--blue-main);
+  color: white;
+  box-shadow: 0 4px 12px rgba(43,125,233,0.4);
 }
 
 /* Progress Bar */
