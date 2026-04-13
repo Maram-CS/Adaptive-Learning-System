@@ -21,7 +21,7 @@
   <div class="menu">
     <ul>
       <li class="active"><a href="/courses/All">All Courses</a></li>
-      <li><a href="/studentDashboard/get">Dashboard</a></li>
+      <li><a href="/studentDashboard/">Dashboard</a></li>
       <li><a href="/favoriteCourses/All">Favorite Courses</a></li>
       <li><a href="/profile/Profile-view">My Profile</a></li>
     </ul>
@@ -319,25 +319,8 @@ document
 syncHearts()
 
 
+
 </script>
-
-<% if (session.toast) { %>
-<script>
-  const toast = JSON.parse('<%- JSON.stringify(JSON.stringify(session.toast)) %>');
-
-  if (toast.type === "success") {
-    alert("✅ " + toast.text);
-  }
-</script>
-
-<% session.toast = null %>
-<% } %>
-
-<% if (error) { %>
-<script>
-  alert("❌ <%= error.text %>");
-</script>
-<% } %>
 
 </body>
 </html>
