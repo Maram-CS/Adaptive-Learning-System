@@ -2,9 +2,6 @@ import profileModel from "../Model/profileModel.js";
 import userModel from "../Model/userModel.js";
 import authRequest from "../middleware/authMiddleware.js";
 
- 
-// maram choufi work flow ta3k kifah rai7 ykoun hna 
-// 1 diri save ll info ta3 profile f bd mba3d bah ytafichaw fi page wa7dha lazm tjibi info ta3 user b email ta3ou mba3d nafichihom fi page jdida
 
 // create profile function
 const createProfile = async (req, res,next) => {
@@ -102,6 +99,6 @@ const viewProfile = async (req, res) => {
         return res.render("auth/editProfile");
     }
 };
-// lyna hdi hiya view profile for teacher 
+
 
 export { createProfile, editProfile, viewProfile };

@@ -19,7 +19,7 @@ const UserSchema = new Schema({
     role : {
         type : String,
         required: true,
-        enum : ['student','teacher']
+        enum : ['student','teacher','admin'],
     },
 },{timestamps: true});
 
