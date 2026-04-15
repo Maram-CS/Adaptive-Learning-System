@@ -36,7 +36,7 @@
 
       <div class="profile-info">
 
-        <!-- صورة -->
+        <!-- photo-->
         <div class="avatar-container">
           <% if (profile && profile.profilePicture) { %>
             <img class="avatar" src="<%= profile.profilePicture %>" alt="Profile">
@@ -45,7 +45,7 @@
           <% } %>
         </div>
 
-        <!-- معلومات -->
+        <!-- user details -->
         <div class="user-details">
           <h3><%= profile?.userName || 'No username' %></h3>
           <p><%= profile?.bio || 'No bio available' %></p>

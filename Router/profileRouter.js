@@ -8,3 +8,6 @@ profileRouter.post("/create",authRequest, upload.single("profilePicture"), creat
 profileRouter.post("/edit", authRequest, upload.single("profilePicture"), editProfile);
 profileRouter.get("/Profile-view", authRequest, viewProfile);
 export default profileRouter;
+
+
+
