@@ -11,14 +11,15 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <h3 class="logo">My profile</h3>
+    <h3 class="logo">My Profile</h3>
 
     <ul>
+
       <li class="active">My profile</li>
-      <li><a href="/Home">Dashboard</a></li>
-      <li><a href="/App/courses">All Courses</a></li>
-      <li><a href="/App/studentDashboard">Favorite Courses</a></li>
-    </ul>
+      <li><a href="/studentDashboard/">Dashboard</a></li>
+      <li><a href="/courses/All">All Courses</a></li>
+      <li><a href="/favoriteCourses/All">Favorite Courses</a></li>
+
 
     <a href="/home"><button class="logout">Sign out</button></a>
   </div>
@@ -161,11 +162,7 @@
 
 
 </script>
-</script>
-<% if (typeof error !== "undefined") { %>
-<script>
-  alert("<%= error %>");
-</script>
-<% } %>
+
+
 </body>
 </html>

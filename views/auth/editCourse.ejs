@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eduphin | Create Course</title>
+<title>Eduphin | Edit Course</title>
 <link rel="stylesheet" href="/Style/createCourse.css">
 </head>
 <body>
@@ -16,177 +16,146 @@
             <img src="/img/logoBleu.png" class="logo-img">
             <span>Eduphin</span>
         </div>
+
         <div class="menu">
             <ul>
-                <li class="active">Create Course</li>
+                <li class="active">Edit Course</li>
                 <li><a href="/teacherDashboard/get">Home</a></li>
                 <li><a href="/profile/Profile-view">My Profile</a></li>
                 <li><a href="/App/createQuiz">Create Quiz</a></li>
                 <li><a href="/App/studentAnalytics">Student Analytics</a></li>
             </ul>
         </div>
+
         <br><br><br><br><br>
+
         <a href="/home">
             <button class="logout">Sign out</button>
         </a>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN -->
     <div class="main">
 
-        <!-- HEADER -->
         <div class="main-header">
-            <h2>Create <span>Course</span></h2>
+            <h2>Edit <span>Course</span></h2>
         </div>
 
         <br>
 
-        <!-- PAGE TITLE + BREADCRUMB -->
         <div style="padding: 0 2rem;">
-            <h3><span class="orange">New</span> <span class="blue">Course</span></h3>
+            <h3><span class="orange">Edit</span> <span class="blue">Course</span></h3>
             <p class="breadcrumb">
-                <a href="/teacherDashboard/get">Home</a> &rsaquo; Create Course
+                <a href="/teacherDashboard/get">Home</a> &rsaquo; Edit Course
             </p>
         </div>
 
         <div style="padding: 0 2rem 2rem;">
 
-            <!-- ── FORM START ── -->
-            <form id="create-course-form" action="/courses/create" method="POST" enctype="multipart/form-data">
+            <!-- FORM -->
+            <form id="edit-course-form" action="/courses/edit/<%= course.slug %>" method="POST" enctype="multipart/form-data">
 
-                <!-- ── BASIC INFO ── -->
+                <!-- BASIC INFO -->
                 <div class="form-section">
                     <div class="form-section-title">Basic info</div>
 
                     <div class="field">
-                        <label for="title">Course Title *</label>
-                        <input type="text" id="title" name="Title" placeholder="Complete Node.js Bootcamp" required>
+                        <label>Course Title *</label>
+                        <input type="text" name="Title" value="<%= course.Title %>" required>
                     </div>
 
                     <div class="field">
-                        <label for="description">Description *</label>
-                        <textarea id="description" name="Description" placeholder="What will students learn?" required></textarea>
+                        <label>Description *</label>
+                        <textarea name="Description" required><%= course.Description %></textarea>
                     </div>
 
                     <div class="field">
-                        <label for="category">Category *</label>
-                        <select id="category" name="category" required>
-                            <option value="" disabled selected>Select category</option>
-                            <option value="frontend">Frontend</option>
-                            <option value="backend">Backend</option>
-                            <option value="database">Database</option>
-                            <option value="tools">Tools</option>
-                            <option value="design">Design</option>
-                            <option value="deployment">Deployment</option>
+                        <label>Category *</label>
+                        <select name="category" required>
+                            <option value="frontend" <%= course.category === "frontend" ? "selected" : "" %>>Frontend</option>
+                            <option value="backend" <%= course.category === "backend" ? "selected" : "" %>>Backend</option>
+                            <option value="database" <%= course.category === "database" ? "selected" : "" %>>Database</option>
+                            <option value="tools" <%= course.category === "tools" ? "selected" : "" %>>Tools</option>
+                            <option value="design" <%= course.category === "design" ? "selected" : "" %>>Design</option>
+                            <option value="deployment" <%= course.category === "deployment" ? "selected" : "" %>>Deployment</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- ── COURSE DETAILS ── -->
+                <!-- DETAILS -->
                 <div class="form-section">
                     <div class="form-section-title">Course details</div>
 
                     <div class="form-grid-3">
+
                         <div class="field">
                             <label>Level</label>
-                            <select id="level" name="level" required>
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
+                            <select name="level">
+                                <option value="beginner" <%= course.level === "beginner" ? "selected" : "" %>>Beginner</option>
+                                <option value="intermediate" <%= course.level === "intermediate" ? "selected" : "" %>>Intermediate</option>
+                                <option value="advanced" <%= course.level === "advanced" ? "selected" : "" %>>Advanced</option>
                             </select>
                         </div>
 
                         <div class="field">
-                            <label for="totalDuration">Total Duration</label>
-                            <input type="text" id="totalDuration" name="totalDuration" placeholder="12h 30m">
+                            <label>Total Duration</label>
+                            <input type="text" name="totalDuration" value="<%= course.totalDuration %>">
                         </div>
 
                         <div class="field">
-                            <label for="price">Price (USD)</label>
-                            <input type="number" id="price" name="price" min="0" step="0.01" value="0">
+                            <label>Price (USD)</label>
+                            <input type="number" name="price" value="<%= course.price %>">
                         </div>
+
                     </div>
 
                     <div class="field">
-                        <label for="slug">Slug</label>
-                        <input type="text" id="slug" name="slug" placeholder="auto-generated from title">
+                        <label>Slug</label>
+                        <input type="text" name="slug" value="<%= course.slug %>">
                     </div>
                 </div>
 
-                <!-- ── MEDIA ── -->
+                <!-- MEDIA -->
                 <div class="form-section">
                     <div class="form-section-title">Media</div>
 
                     <div class="field">
-                        <label>Course Thumbnail *</label>
+                        <label>Course Thumbnail</label>
 
-                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                            <label for="image" style="
-                                display: inline-flex;
-                                align-items: center;
-                                gap: 8px;
-                                padding: 8px 16px;
-                                background: transparent;
-                                border: 1px solid #ccc;
-                                border-radius: 6px;
-                                cursor: pointer;
-                                font-size: 14px;
-                                color: inherit;
-                            ">
-                                &#8593; Upload Image
-                                <input type="file" id="image" name="image" accept="image/*" required
-                                       style="display: none;" onchange="previewImg()">
-                            </label>
-
-                            <span id="file-name" style="font-size: 13px; color: #888;">No file chosen</span>
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <input type="file" name="image" accept="image/*">
                         </div>
 
-                        <!-- Image Preview -->
-                        <div id="img-preview" style="
-                            margin-top: 12px;
-                            width: 180px;
-                            height: 110px;
-                            border: 1px dashed #ccc;
-                            border-radius: 8px;
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            justify-content: center;
-                            color: #aaa;
-                            font-size: 13px;
-                            gap: 6px;
-                            overflow: hidden;
-                        ">
-                            &#128247; Image preview
-                        </div>
+                        <% if(course.image){ %>
+                            <img src="<%= course.image %>" style="width:180px; margin-top:10px; border-radius:8px;">
+                        <% } %>
                     </div>
                 </div>
 
-                <!-- ── VISIBILITY ── -->
+                <!-- VISIBILITY -->
                 <div class="form-section">
                     <label>
-                        <input type="checkbox" id="isPublished" name="isPublished" checked>
+                        <input type="checkbox" name="isPublished" <%= course.isPublished ? "checked" : "" %>>
                         Publish immediately
                     </label>
                 </div>
 
-                <!-- ── ACTIONS ── -->
+                <!-- ACTIONS -->
                 <div class="form-actions">
-                    <button type="reset" class="btn-reset" onclick="resetForm()">Reset</button>
-                    <button type="submit" class="btn-create">Create Course</button>
+                    <button type="submit" class="btn-create">Update Course</button>
                 </div>
 
             </form>
-            <!-- ── FORM END ── -->
 
         </div>
 
-        <!-- FOOTER -->
         <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
 
-    </div><!-- /main -->
+    </div>
+</div>
 
-</div><!-- /page-container -->
+</body>
+</html>
 
 <script>
     // Auto slug from title
@@ -277,11 +246,14 @@
         .then(data => { alert('Course created!'); console.log(data); resetForm(); })
         .catch(err => { alert('Error creating course'); console.error(err); });
     });
+
+    
+
 </script>
 
-<% if (typeof error !== "undefined") { %>
+<% if (typeof message !== "undefined") { %>
 <script>
-  alert("<%= error %>");
+  alert("<%= message %>");
 </script>
 <% } %>
 

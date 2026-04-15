@@ -24,7 +24,7 @@
                   <li><a href="/profile/Profile-view">My Profile</a></li>
                 <li><a href="/App/createQuiz">Create Quiz </a></li>
                  <li><a href="/App/createCourse">Create Course </a></li>
-                <li><a href="#">Student Analytics</a></li>
+                <li><a href="/App/studentAnalytics">Student Analytics</a></li>
             </ul>
         </div>
        <br> <br> <br> <br> <br>  
@@ -57,6 +57,9 @@
     </div>
     
     <!-- Overview -->
+
+<br>
+
     <h3>Overview</h3>
 
 <div class="dashboard-container">
@@ -69,7 +72,8 @@
         <i class="fa-solid fa-book"></i>
       </div>
       <h4> <span class="orange">Total</span> <span class="blue">Courses</span></h4>
-      <p class="big"></p>
+      <p class="big"><%= totalCourses %></p>
+       <span class="small-text">Courses created</span>
     </div>
 
     <!-- CARD 2 -->
@@ -77,8 +81,9 @@
       <div class="feature-icon icon-orange">
         <i class="fa-solid fa-clipboard-list"></i>
       </div>
-      <h4> <span class="orange"> Quiz</span> <span class="blue"> Repository</span></h4>
-      <p class="big"></p>
+      <h4> <span class="orange"> Quiz </span> <span class="blue"> Repository</span></h4>
+      <p class="big"><%= totalQuizzes %></p>
+       <span class="small-text">Available quizzes</span>
     </div>
 
     <!-- CARD 3 -->
@@ -87,85 +92,121 @@
         <i class="fa-solid fa-users"></i>
       </div>
       <h4><span class="orange">Total</span> <span class="blue">Students</span></h4>
-      <p class="big"></p>
-       <a href="">  <button class="btn-student">View All students</button></a>
+      <p class="big"><%= totalStudents %></p>
+       <span class="small-text">Active learners</span>
     </div>
 
   </div>
 </div>
-  
 
-    <!-- Courses -->
-    <h3>Course Section</h3>
-    <div class="courses">
+<br>
 
-      <div class="course">
-        <h4>Mastering Full-Stack</h4>
-        <div class="buttons">
-          <button>Edit Course</button>
-          <button>Quiz Hub</button>
-        </div>
-        <div class="buttons second">
-          <button class="orange">Student Performance</button>
-          <button class="orange">Content</button>
-        </div>
-        <div class="progress"><span style="width:40%"></span></div>
-        <p>42 enrolled students</p>
+<!-- COURSES -->
+<h3>Course Section</h3>
+
+<div class="courses">
+
+<% if (courses && courses.length > 0) { %>
+
+  <% courses.forEach(course => { %>
+
+    <div class="course">
+
+      <h4><%= course.Title %></h4>
+
+      <img src="<%= course.image %>" class="course-img">
+
+      <div class="buttons">
+
+        <button onclick="getCourse('<%= course.slug %>')">
+          Edit
+        </button>
+
+        <button onclick="deleteCourse('<%= course.slug %>')">
+          Delete
+        </button>
+        
+        <button class="content-btn" onclick="window.location.href='/App/courseContent/<%= course.slug %>'">
+          Content
+        </button>
+
       </div>
 
-      <div class="course">
-        <h4>Data Science Track</h4>
-        <div class="buttons">
-          <button>Edit Course</button>
-          <button>Quiz Hub</button>
-        </div>
-        <div class="buttons second">
-          <button class="orange">Student Performance</button>
-          <button class="orange">Content</button>
-        </div>
-        <div class="progress"><span style="width:60%"></span></div>
-        <p>47 enrolled students</p>
-      </div>
-
-      <div class="course">
-        <h4>Mobile Dev Specialization</h4>
-        <div class="buttons">
-          <button>Edit Course</button>
-          <button>Quiz Hub</button>
-        </div>
-        <div class="buttons second">
-          <button class="orange">Student Performance</button>
-          <button class="orange">Content</button>
-        </div>
-        <div class="progress"><span style="width:60%"></span></div>
-        <p>47 enrolled students</p>
-      </div>
+      <p>
+        <%= course.students ? course.students.length : 0 %> students
+      </p>
 
     </div>
-    <!-- FOOTER -->
-        <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
 
+  <% }) %>
 
-  </main>
+<% } else { %>
+
+  <div class="empty-state">
+    <h3>No Courses yet </h3>
+    <div class="empty-icon">💔</div>
+    <a href="/App/createCourse" class="browse-btn">Create Course</a>
+  </div>
+
+<% } %>
 
 </div>
+ <!-- FOOTER -->
+        <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
+
+</div>
+</div>
+
+<!-- SCRIPT -->
 <script>
-    // Example dynamic name
-document.getElementById("teacherName").innerText = "John Doe";
 
-// Sidebar active effect
-const items = document.querySelectorAll(".sidebar li");
+// safe fix (no crash)
+const teacherNameEl = document.getElementById("teacherName");
+if (teacherNameEl) {
+  teacherNameEl.innerText = "Welcome, Professor <%= user.userName %> 👋";
+}
 
-items.forEach(item => {
-  item.addEventListener("click", () => {
-    items.forEach(i => i.classList.remove("active"));
-    item.classList.add("active");
-  });
-});
+// delete course
+const deleteCourse = async (slug) => {
+  try {
 
-const getProfile = () => {
-  window.location.href = "/profile/Profile-view";
+    const ok = confirm("Are you sure you want to delete this course?");
+    if (!ok) return;
+
+    const res = await fetch(`/courses/delete/${slug}`, {
+      method: "POST",
+      credentials: "include"// to include cookies for auth
+    });
+
+    const data = await res.json();
+
+    if (data.message === "Course deleted successfully") {
+      alert("Course deleted successfully");
+      window.location.reload();
+      return;
+    }
+
+    if (data.message === "Course not found") {
+      alert("Course not found");
+      return;
+    }
+
+    if (data.message === "Not authorized to delete this course") {
+      alert("Not authorized");
+      return;
+    }
+
+    alert("Something went wrong");
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
 };
+
+const getCourse = async (slug) => {
+ window.location.href = `/courses/getCourse/${slug}`;
+}
 
 </script>
 

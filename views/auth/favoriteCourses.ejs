@@ -1,272 +1,509 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Favorite Courses - Eduphin</title>
-  <link rel="stylesheet" href="/Style/favoriteCourses.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favorite Courses - Eduphin</title>
+
+<link rel="stylesheet" href="/Style/favoriteCourses.css">
+
 </head>
+
 <body>
 
 <div class="page-container">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="logo">
-      <img src="/img/logoBleu.png" class="logo-img" alt="Eduphin logo" onerror="this.style.display='none'">
-      <span>My Courses</span>
-    </div>
-    <div class="menu">
-      <ul>
-        <li><a href="/App/courses">All Courses</a></li>
-        <li><a href="/App/studentDashboard">Dashboard</a></li>
-        <li class="active"><a href="/App/favoriteCourses">Favorite Courses</a></li>
-        <li><a href="/profile/Profile-view">My Profile</a></li>
-      </ul>
-    </div>
-    <a href="/home"><button class="logout">Sign out</button></a>
-  </div>
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- Header -->
-    <div class="main-header">
-      <h2>Favorite <span>Courses</span></h2>
-      <div class="header-actions">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search favorites...">
-        <div class="buttons">
-          <button class="icon-btn">🔔</button>
-          <button class="icon-btn">💬</button>
-          <a href="/App/infoProfile"><button class="icon-btn">👤</button></a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-      <div class="stat-pill">
-        <span class="stat-icon">❤️</span>
-        <span id="favCount">0</span> Saved
-      </div>
-      <div class="stat-pill">
-        <span class="stat-icon">⭐</span>
-        <span id="ratedCount">0</span> Rated
-      </div>
-      <button class="clear-all-btn" id="clearAllBtn" onclick="clearAllFavorites()">
-        🗑️ Clear All
-      </button>
-    </div>
-
-    <!-- Filter Buttons -->
-    <div class="filter-buttons">
-      <button onclick="filterFavorites('all', this)" class="active-filter">All</button>
-      <button onclick="filterFavorites('frontend', this)">Frontend</button>
-      <button onclick="filterFavorites('backend', this)">Backend</button>
-      <button onclick="filterFavorites('database', this)">Database</button>
-      <button onclick="filterFavorites('tools', this)">Tools</button>
-      <button onclick="filterFavorites('design', this)">Design</button>
-      <button onclick="filterFavorites('deployment', this)">Deployment</button>
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty-state" id="emptyState" style="display:none;">
-      <div class="empty-icon">💔</div>
-      <h3>No favorites yet</h3>
-      <p>You haven't saved any courses. Browse all courses and click the heart icon to add them here.</p>
-      <a href="/App/courses" class="browse-btn">Browse Courses</a>
-    </div>
-
-    <!-- Courses Grid -->
-    <div class="courses-container" id="favoritesContainer"></div>
-
-  </div>
+<div class="logo">
+<img src="/img/logoBleu.png" class="logo-img">
+<span>My Courses</span>
 </div>
 
-<div class="footer">© 2026 Eduphin. All rights reserved.</div>
+<div class="menu">
+<ul>
+
+<li>
+<a href="/courses/All">All Courses</a>
+</li>
+
+<li>
+<a href="/studentDashboard/">Dashboard</a>
+</li>
+
+<li class="active">
+<a href="/favoriteCourses/All">Favorite Courses</a>
+</li>
+
+<li>
+<a href="/profile/Profile-view">My Profile</a>
+</li>
+
+</ul>
+</div>
+
+<a href="/home">
+<button class="logout">
+Sign out
+</button>
+</a>
+
+</div>
+
+
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- HEADER -->
+
+<div class="main-header">
+
+<h2>
+Favorite <span>Courses</span>
+</h2>
+
+<div class="header-actions">
+
+<input 
+type="text"
+id="searchInput"
+class="search-bar"
+placeholder="Search favorites..."
+>
+
+<div class="buttons">
+
+<button class="icon-btn">🔔</button>
+<button class="icon-btn">💬</button>
+
+<a href="/profile/Profile-view">
+<button class="icon-btn">👤</button>
+</a>
+
+</div>
+</div>
+</div>
+
+
+
+<!-- STATS -->
+
+<div class="stats-bar">
+
+<div class="stat-pill">
+❤️ 
+<span id="favCount">0</span>
+Saved
+</div>
+
+<div class="stat-pill">
+⭐ 
+<span id="ratedCount">0</span>
+Rated
+</div>
+
+<button 
+class="clear-all-btn"
+onclick="clearAllFavorites()"
+>
+🗑️ Clear All
+</button>
+
+</div>
+
+
+
+<!-- FILTER -->
+
+<div class="filter-buttons">
+
+<button 
+onclick="filterFavorites('all',this)"
+class="active-filter">
+All
+</button>
+
+<button onclick="filterFavorites('frontend',this)">
+Frontend
+</button>
+
+<button onclick="filterFavorites('backend',this)">
+Backend
+</button>
+
+<button onclick="filterFavorites('database',this)">
+Database
+</button>
+
+<button onclick="filterFavorites('tools',this)">
+Tools
+</button>
+
+<button onclick="filterFavorites('design',this)">
+Design
+</button>
+
+<button onclick="filterFavorites('deployment',this)">
+Deployment
+</button>
+
+</div>
+
+
+
+<!-- EMPTY STATE -->
+
+<div 
+class="empty-state"
+id="emptyState"
+style="display:none"
+>
+
+<h3>No Favorites Yet</h3>
+
+<p>
+You haven't saved any courses yet
+</p>
+
+<a href="/courses/All" class="browse-btn">
+Browse Courses
+</a>
+
+</div>
+
+
+
+<!-- COURSES -->
+
+<div 
+class="courses-container"
+id="favoritesContainer"
+>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+© 2026 Eduphin
+</div>
+
+
 
 <script>
-/* ── ALL AVAILABLE COURSES DATA ─────────────────────── */
-const allCourses = [
-  { id: 'html-css',    title: 'HTML & CSS',        desc: 'Learn the fundamentals of web development using HTML and CSS.',  category: 'frontend',   img: '/img/html.png' },
-  { id: 'javascript',  title: 'JavaScript Basics',  desc: 'Understand the core concepts of JavaScript programming.',        category: 'frontend',   img: '/img/javascript.png' },
-  { id: 'react',       title: 'React JS',            desc: 'Build dynamic user interfaces with React library.',              category: 'frontend',   img: '/img/react.png' },
-  { id: 'nodejs',      title: 'Node.js',             desc: 'Learn backend development using Node.js and Express.',           category: 'backend',    img: '/img/node.png' },
-  { id: 'python',      title: 'Python Basics',       desc: 'Get started with Python programming language.',                  category: 'backend',    img: '/img/python.png' },
-  { id: 'django',      title: 'Django',              desc: 'Develop web applications using Django framework.',               category: 'backend',    img: '/img/Django.png' },
-  { id: 'php',         title: 'PHP',                 desc: 'Learn web development with the PHP programming language.',       category: 'backend',    img: '/img/PHP.png' },
-  { id: 'github',      title: 'GitHub',              desc: 'Learn version control with GitHub.',                             category: 'tools',      img: '/img/GitHub.png' },
-  { id: 'git',         title: 'Git',                 desc: 'Learn version control with Git.',                                category: 'tools',      img: '/img/Git.png' },
-  { id: 'figma',       title: 'Figma',               desc: 'Learn UI/UX design with Figma.',                                category: 'design',     img: '/img/Figma.png' },
-  { id: 'mysql',       title: 'MySQL',               desc: 'Learn SQL database management with MySQL.',                      category: 'database',   img: '/img/MySQL.png' },
-  { id: 'mongodb',     title: 'MongoDB',             desc: 'Learn NoSQL database management with MongoDB.',                  category: 'database',   img: '/img/MongoDB.png' },
-  { id: 'vercel',      title: 'Vercel',              desc: 'Deploy and host web applications with Vercel.',                  category: 'deployment', img: '/img/Vercel.png' },
-];
 
-/* ── RATING TEXT ────────────────────────────────────── */
-const ratingText = { 0: 'Tap to rate', 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very Good', 5: 'Excellent! 🎉' };
+const allCourses = JSON.parse('<%- JSON.stringify(courses) %>')
 
-/* ── GET / SET FAVORITES ────────────────────────────── */
-function getFavorites() {
-  try { return JSON.parse(localStorage.getItem('favorites') || '[]'); }
-  catch { return []; }
+const courseById = {}
+
+allCourses.forEach(c=>{
+
+courseById[c._id]=c
+
+})
+
+
+
+/* FAVORITES */
+
+function getFavorites(){
+
+return JSON.parse(localStorage.getItem("favorites")) || []
+
 }
 
-function toggleFavorite(courseId) {
-  let favs = getFavorites();
-  const idx = favs.indexOf(courseId);
-  if (idx === -1) {
-    favs.push(courseId);
-  } else {
-    favs.splice(idx, 1);
-  }
-  localStorage.setItem('favorites', JSON.stringify(favs));
-  renderFavorites();
+function toggleFavorite(id){
+
+let favs = getFavorites()
+
+if(favs.includes(id)){
+
+favs = favs.filter(f=>f!==id)
+
+}else{
+
+favs.push(id)
+
 }
 
-function clearAllFavorites() {
-  if (!confirm('Remove all favorite courses?')) return;
-  localStorage.setItem('favorites', '[]');
-  renderFavorites();
+localStorage.setItem("favorites",JSON.stringify(favs))
+
+renderFavorites()
+
 }
 
-/* ── STAR RATING ────────────────────────────────────── */
-function buildStars(container) {
-  const course = container.getAttribute('data-course');
-  const saved  = parseInt(localStorage.getItem('rating_' + course)) || 0;
-  const label  = container.nextElementSibling;
-  container.innerHTML = '';
 
-  for (let i = 1; i <= 5; i++) {
-    const star = document.createElement('span');
-    star.classList.add('star');
-    star.textContent = '★';
-    star.dataset.value = i;
-    if (i <= saved) star.classList.add('filled');
 
-    star.addEventListener('mouseenter', () => {
-      highlightStars(container, parseInt(star.dataset.value));
-      label.textContent = ratingText[parseInt(star.dataset.value)];
-      label.classList.remove('rated');
-    });
-    star.addEventListener('mouseleave', () => {
-      const cur = parseInt(localStorage.getItem('rating_' + course)) || 0;
-      highlightStars(container, cur);
-      label.textContent = ratingText[cur];
-      label.classList.toggle('rated', cur > 0);
-    });
-    star.addEventListener('click', () => {
-      const val = parseInt(star.dataset.value);
-      localStorage.setItem('rating_' + course, val);
-      highlightStars(container, val);
-      label.textContent = ratingText[val];
-      label.classList.add('rated');
-      star.style.transform = 'scale(1.6)';
-      setTimeout(() => { star.style.transform = ''; }, 220);
-      updateStats();
-    });
+function clearAllFavorites(){
 
-    container.appendChild(star);
-  }
+if(!confirm("Clear all favorites ?")) return
 
-  highlightStars(container, saved);
-  label.textContent = ratingText[saved];
-  label.classList.toggle('rated', saved > 0);
+localStorage.setItem("favorites","[]")
+
+renderFavorites()
+
 }
 
-function highlightStars(container, value) {
-  container.querySelectorAll('.star').forEach(s => {
-    s.classList.toggle('filled', parseInt(s.dataset.value) <= value);
-  });
+
+
+/* RATING */
+
+const ratingText={
+
+0:"Tap to rate",
+1:"Poor",
+2:"Fair",
+3:"Good",
+4:"Very Good",
+5:"Excellent 🎉"
+
 }
 
-/* ── UPDATE STATS ───────────────────────────────────── */
-function updateStats() {
-  const favs = getFavorites();
-  document.getElementById('favCount').textContent = favs.length;
 
-  let rated = 0;
-  favs.forEach(id => {
-    if (parseInt(localStorage.getItem('rating_' + id)) > 0) rated++;
-  });
-  document.getElementById('ratedCount').textContent = rated;
+
+function buildStars(container){
+
+const id = container.dataset.course
+
+const saved =
+parseInt(localStorage.getItem("rating_"+id)) || 0
+
+const label = container.nextElementSibling
+
+container.innerHTML=""
+
+for(let i=1;i<=5;i++){
+
+const star=document.createElement("span")
+
+star.classList.add("star")
+
+star.innerHTML="★"
+
+star.dataset.value=i
+
+if(i<=saved) star.classList.add("filled")
+
+star.onclick=()=>{
+
+localStorage.setItem("rating_"+id,i)
+
+highlightStars(container,i)
+
+label.textContent=ratingText[i]
+
+updateStats()
+
 }
 
-/* ── RENDER ─────────────────────────────────────────── */
-function renderFavorites(category = 'all') {
-  const container = document.getElementById('favoritesContainer');
-  const emptyState = document.getElementById('emptyState');
-  const favs = getFavorites();
+container.appendChild(star)
 
-  const filtered = allCourses.filter(c =>
-    favs.includes(c.id) && (category === 'all' || c.category === category)
-  );
-
-  container.innerHTML = '';
-
-  if (favs.length === 0) {
-    emptyState.style.display = 'flex';
-    container.style.display = 'none';
-    updateStats();
-    return;
-  }
-
-  emptyState.style.display = 'none';
-  container.style.display = 'flex';
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="no-results">No favorites in this category.</div>';
-    updateStats();
-    return;
-  }
-
-  filtered.forEach((course, i) => {
-    const card = document.createElement('div');
-    card.className = 'item';
-    card.setAttribute('data-category', course.category);
-    card.style.animationDelay = (i * 0.06) + 's';
-    card.innerHTML = `
-      <button class="heart-btn active" title="Remove from favorites" onclick="toggleFavorite('${course.id}')">❤️</button>
-      <img src="${course.img}" class="course-img" alt="${course.title}" onerror="this.src='/img/default.png'">
-      <h3>${course.title}</h3>
-      <span class="category-tag">${course.category}</span>
-      <p>${course.desc}</p>
-      <div class="card-divider"></div>
-      <div class="star-rating" data-course="${course.id}"></div>
-      <div class="rating-label">Tap to rate</div>
-      <button class="view-details-btn" onclick="viewCourseDetails('${course.title}')">View Details</button>
-    `;
-    container.appendChild(card);
-  });
-
-  container.querySelectorAll('.star-rating').forEach(buildStars);
-  updateStats();
 }
 
-/* ── FILTER ─────────────────────────────────────────── */
-function filterFavorites(category, btn) {
-  document.querySelectorAll('.filter-buttons button').forEach(b => b.classList.remove('active-filter'));
-  btn.classList.add('active-filter');
-  renderFavorites(category);
+highlightStars(container,saved)
+
+label.textContent=ratingText[saved]
+
 }
 
-/* ── SEARCH ─────────────────────────────────────────── */
-document.getElementById('searchInput').addEventListener('keyup', function () {
-  const filter = this.value.toLowerCase();
-  document.querySelectorAll('#favoritesContainer .item').forEach(item => {
-    item.style.display = item.textContent.toLowerCase().includes(filter) ? 'flex' : 'none';
-  });
-});
 
-/* ── VIEW DETAILS ───────────────────────────────────── */
-function viewCourseDetails(title) {
-  localStorage.setItem('selectedCourse', title);
-  window.location.href = `/coursesDetail?course=${encodeURIComponent(title)}`;
+function highlightStars(container,val){
+
+container.querySelectorAll(".star")
+.forEach(star=>{
+
+star.classList.toggle(
+"filled",
+star.dataset.value<=val
+)
+
+})
+
 }
 
-/* ── INIT ───────────────────────────────────────────── */
-renderFavorites();
+
+
+/* STATS */
+
+function updateStats(){
+
+const favs = getFavorites()
+
+document
+.getElementById("favCount")
+.textContent = favs.length
+
+let rated=0
+
+favs.forEach(id=>{
+
+if(localStorage.getItem("rating_"+id)){
+rated++
+}
+
+})
+
+document
+.getElementById("ratedCount")
+.textContent=rated
+
+}
+
+
+
+/* RENDER */
+
+function renderFavorites(category="all"){
+
+const container =
+document.getElementById("favoritesContainer")
+
+const empty =
+document.getElementById("emptyState")
+
+const favs = getFavorites()
+
+const filtered = favs
+.map(id=>courseById[id])
+.filter(c=>c && (category==="all" || c.category===category))
+
+container.innerHTML=""
+
+if(favs.length===0){
+
+empty.style.display="flex"
+
+container.style.display="none"
+
+updateStats()
+
+return
+
+}
+
+empty.style.display="none"
+
+container.style.display="flex"
+
+
+
+filtered.forEach(course=>{
+
+const card=document.createElement("div")
+
+card.className="item"
+
+card.dataset.category=course.category
+
+card.innerHTML=`
+
+<button 
+class="heart-btn active"
+onclick="toggleFavorite('${course._id}')">
+❤️
+</button>
+
+<img src="${course.image}" class="course-img">
+
+<h3>${course.Title}</h3>
+
+<p>${course.Description}</p>
+
+<div class="card-divider"></div>
+
+<div class="star-rating" data-course="${course._id}">
+</div>
+
+<div class="rating-label">
+Tap to rate
+</div>
+
+<button 
+class="view-details-btn"
+onclick="viewCourseDetails('${course._id}')">
+View Details
+</button>
+
+`
+
+container.appendChild(card)
+
+})
+
+
+document
+.querySelectorAll(".star-rating")
+.forEach(buildStars)
+
+updateStats()
+
+}
+
+
+
+/* FILTER */
+
+function filterFavorites(cat,btn){
+
+document
+.querySelectorAll(".filter-buttons button")
+.forEach(b=>b.classList.remove("active-filter"))
+
+btn.classList.add("active-filter")
+
+renderFavorites(cat)
+
+}
+
+
+
+/* SEARCH */
+
+document
+.getElementById("searchInput")
+.addEventListener("keyup",function(){
+
+const val=this.value.toLowerCase()
+
+document
+.querySelectorAll(".item")
+.forEach(item=>{
+
+item.style.display =
+item.textContent
+.toLowerCase()
+.includes(val)
+? "flex"
+: "none"
+
+})
+
+})
+
+
+
+/* VIEW DETAILS */
+
+function viewCourseDetails(id){
+
+localStorage.setItem("selectedCourse",id)
+
+window.location.href="/App/course"
+
+}
+
+
+
+/* INIT */
+
+renderFavorites()
+
 </script>
+
 
 </body>
 </html>

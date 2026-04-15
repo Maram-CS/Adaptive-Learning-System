@@ -15,14 +15,6 @@ const lessonSchema = new Schema({
     content: { type: String, default: "" },
 });
 
-// Chapter Schema 
-const chapterSchema = new Schema({
-    title: { type: String, required: true },
-    duration: { type: String, required: true },
-    preview: { type: String, default: "" },
-    order: { type: Number, default: 0 },
-    lessons: [lessonSchema]
-});
 
 // Resource Schema
 const resourceSchema = new Schema({
@@ -46,7 +38,7 @@ const courseSchema = new Schema({
     Instructor: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: false,
     },
     category: {
         type: String,
@@ -85,7 +77,7 @@ const courseSchema = new Schema({
         }
     ],
 
-    chapters: [chapterSchema],
+    lessons: [lessonSchema],
     resources: [resourceSchema],
 
     enrolledStudents: [{
@@ -138,4 +130,5 @@ courseSchema.index({ Instructor: 1 });
 courseSchema.index({ isPublished: 1 });
 
 const courseModel = model("course", courseSchema);
+
 export default courseModel;
