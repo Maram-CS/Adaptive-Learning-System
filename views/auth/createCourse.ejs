@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eduphin | Create Course</title>
-<link rel="stylesheet" href="/Style/createCourse.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduphin | Create Course</title>
+    <link rel="stylesheet" href="/Style/createCourse.css">
 </head>
 <body>
 
@@ -13,7 +13,7 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo">
-            <img src="/img/logoBleu.png" class="logo-img">
+            <img src="/img/logoBleu.png" class="logo-img" alt="Eduphin Logo">
             <span>Eduphin</span>
         </div>
         <div class="menu">
@@ -38,10 +38,9 @@
         <div class="main-header">
             <h2>Create <span>Course</span></h2>
         </div>
-
         <br>
 
-        <!-- PAGE TITLE + BREADCRUMB -->
+        <!-- BREADCRUMB -->
         <div style="padding: 0 2rem;">
             <h3><span class="orange">New</span> <span class="blue">Course</span></h3>
             <p class="breadcrumb">
@@ -49,12 +48,20 @@
             </p>
         </div>
 
+        <!-- Toast notification -->
+        <div id="toast" style="
+            display: none;
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            padding: 14px 20px; border-radius: 8px;
+            font-size: 14px; font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+        "></div>
+
         <div style="padding: 0 2rem 2rem;">
 
-            <!-- ── FORM START ── -->
             <form id="create-course-form" action="/courses/create" method="POST" enctype="multipart/form-data">
 
-                <!-- ── BASIC INFO ── -->
+                <!-- BASIC INFO -->
                 <div class="form-section">
                     <div class="form-section-title">Basic info</div>
 
@@ -82,13 +89,13 @@
                     </div>
                 </div>
 
-                <!-- ── COURSE DETAILS ── -->
+                <!-- COURSE DETAILS -->
                 <div class="form-section">
                     <div class="form-section-title">Course details</div>
 
                     <div class="form-grid-3">
                         <div class="field">
-                            <label>Level</label>
+                            <label for="level">Level</label>
                             <select id="level" name="level" required>
                                 <option value="beginner">Beginner</option>
                                 <option value="intermediate">Intermediate</option>
@@ -113,177 +120,258 @@
                     </div>
                 </div>
 
-                <!-- ── MEDIA ── -->
+                <!-- MEDIA -->
                 <div class="form-section">
                     <div class="form-section-title">Media</div>
 
                     <div class="field">
                         <label>Course Thumbnail *</label>
-
-                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                             <label for="image" style="
-                                display: inline-flex;
-                                align-items: center;
-                                gap: 8px;
-                                padding: 8px 16px;
-                                background: transparent;
-                                border: 1px solid #ccc;
-                                border-radius: 6px;
-                                cursor: pointer;
-                                font-size: 14px;
-                                color: inherit;
-                            ">
-                                &#8593; Upload Image
-                                <input type="file" id="image" name="image" accept="image/*" required
-                                       style="display: none;" onchange="previewImg()">
+                                display:inline-flex; align-items:center; gap:8px;
+                                padding:8px 16px; background:transparent;
+                                border:1px solid #ccc; border-radius:6px;
+                                cursor:pointer; font-size:14px; color:inherit;">
+                                📁 Upload Image
+                                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/jpg" required style="display:none;" onchange="previewImg(this)">
                             </label>
-
-                            <span id="file-name" style="font-size: 13px; color: #888;">No file chosen</span>
+                            <span id="file-name" style="font-size:13px; color:#888;">No file chosen</span>
                         </div>
 
-                        <!-- Image Preview -->
                         <div id="img-preview" style="
-                            margin-top: 12px;
-                            width: 180px;
-                            height: 110px;
-                            border: 1px dashed #ccc;
-                            border-radius: 8px;
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            justify-content: center;
-                            color: #aaa;
-                            font-size: 13px;
-                            gap: 6px;
-                            overflow: hidden;
-                        ">
-                            &#128247; Image preview
+                            margin-top:12px; width:180px; height:110px;
+                            border:1px dashed #ccc; border-radius:8px;
+                            display:flex; flex-direction:column;
+                            align-items:center; justify-content:center;
+                            color:#aaa; font-size:13px; gap:6px; overflow:hidden;">
+                            🖼️ Image preview
                         </div>
                     </div>
                 </div>
 
-                <!-- ── VISIBILITY ── -->
+                <!-- LESSONS -->
                 <div class="form-section">
-                    <label>
+                    <div class="form-section-title">Lessons</div>
+                    <div id="lessons-container"></div>
+                    <button type="button" class="btn-create" onclick="addLesson()" style="margin-top:10px;">+ Add Lesson</button>
+                </div>
+
+                <!-- VISIBILITY -->
+                <div class="form-section">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                         <input type="checkbox" id="isPublished" name="isPublished" checked>
                         Publish immediately
                     </label>
                 </div>
 
-                <!-- ── ACTIONS ── -->
+                <!-- ACTIONS -->
                 <div class="form-actions">
-                    <button type="reset" class="btn-reset" onclick="resetForm()">Reset</button>
-                    <button type="submit" class="btn-create">Create Course</button>
+                    <button type="button" class="btn-reset" onclick="resetForm()">Reset</button>
+                    <button type="submit" class="btn-create" id="submit-btn">Create Course</button>
                 </div>
 
             </form>
-            <!-- ── FORM END ── -->
 
         </div>
 
-        <!-- FOOTER -->
         <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
 
-    </div><!-- /main -->
-
-</div><!-- /page-container -->
+    </div>
+</div>
 
 <script>
-    // Auto slug from title
-    document.getElementById('title').addEventListener('input', function () {
-        document.getElementById('slug').value = this.value
+let lessonIndex = 0;
+
+// Auto slug from title
+document.getElementById('title').addEventListener('input', function () {
+    const slugInput = document.getElementById('slug');
+    if (slugInput) {
+        slugInput.value = this.value
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-|-$/g, '');
-        updatePreview();
-    });
-
-    // Image preview
-    function previewImg() {
-        const input = document.getElementById('image');
-        const el    = document.getElementById('img-preview');
-        const label = document.getElementById('file-name');
-
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            label.textContent = file.name;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                el.style.backgroundImage    = 'url(' + e.target.result + ')';
-                el.style.backgroundSize     = 'cover';
-                el.style.backgroundPosition = 'center';
-                el.innerHTML = '';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            label.textContent = 'No file chosen';
-            el.style.backgroundImage = '';
-            el.innerHTML = '&#128247; Image preview';
-        }
     }
+});
 
-    // Live preview JSON
-    function updatePreview() {
-        const obj = {
-            Title:         document.getElementById('title').value || undefined,
-            Description:   document.getElementById('description').value || undefined,
-            category:      document.getElementById('category').value || undefined,
-            totalDuration: document.getElementById('totalDuration').value || 'Coming soon',
-            level:         document.getElementById('level').value,
-            price:         parseFloat(document.getElementById('price').value) || 0,
-            slug:          document.getElementById('slug').value || undefined,
-            isPublished:   document.getElementById('isPublished').checked,
-            chapters:      [],
-            resources:     [],
-            enrolledStudents: []
+// Image preview
+function previewImg(input) {
+    const preview = document.getElementById('img-preview');
+    const label = document.getElementById('file-name');
+
+    if (input.files && input.files[0]) {
+        label.textContent = input.files[0].name;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.style.backgroundImage = `url(${e.target.result})`;
+            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundPosition = 'center';
+            preview.innerHTML = '';
         };
-        Object.keys(obj).forEach(k => obj[k] === undefined && delete obj[k]);
-        console.log(JSON.stringify(obj, null, 2));
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        label.textContent = 'No file chosen';
+        preview.style.backgroundImage = '';
+        preview.innerHTML = '🖼️ Image preview';
     }
+}
 
-    // Reset form
-    function resetForm() {
-        document.getElementById('title').value = '';
-        document.getElementById('description').value = '';
-        document.getElementById('totalDuration').value = '';
-        document.getElementById('slug').value = '';
-        document.getElementById('price').value = '0';
-        document.getElementById('category').value = '';
-        document.getElementById('isPublished').checked = true;
-        document.getElementById('level').value = 'beginner';
-        document.getElementById('file-name').textContent = 'No file chosen';
-        document.getElementById('img-preview').style.backgroundImage = '';
-        document.getElementById('img-preview').innerHTML = '&#128247; Image preview';
-        updatePreview();
-    }
+// Toast helper
+function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.background = isError ? '#fee2e2' : '#dcfce7';
+    toast.style.color = isError ? '#b91c1c' : '#166534';
+    toast.style.border = isError ? '1px solid #f87171' : '1px solid #86efac';
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+}
 
-    document.querySelectorAll('input, select, textarea').forEach(el => {
-        el.addEventListener('input', updatePreview);
-        el.addEventListener('change', updatePreview);
-    });
+// Reset form
+function resetForm() {
+    document.getElementById('create-course-form').reset();
+    document.getElementById('slug').value = '';
+    document.getElementById('file-name').textContent = 'No file chosen';
+    const preview = document.getElementById('img-preview');
+    preview.style.backgroundImage = '';
+    preview.innerHTML = '🖼️ Image preview';
+    document.getElementById('lessons-container').innerHTML = '';
+    lessonIndex = 0;
+}
 
-    updatePreview();
+// Form submit via fetch
+document.getElementById('create-course-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-    // Form submit via fetch
-    document.getElementById('create-course-form').addEventListener('submit', function(e) {
-        e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Creating...';
+
+    try {
         const formData = new FormData(this);
-        fetch('/courses/create', {
+        const response = await fetch('/courses/create', {
             method: 'POST',
             body: formData
-        })
-        .then(res => res.json())
-        .then(data => { alert('Course created!'); console.log(data); resetForm(); })
-        .catch(err => { alert('Error creating course'); console.error(err); });
-    });
-</script>
+        });
 
-<% if (typeof error !== "undefined") { %>
-<script>
-  alert("<%= error %>");
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to create course');
+        }
+
+        showToast('✅ Course created successfully!');
+        setTimeout(() => {
+            window.location.href = '/teacherDashboard/get';
+        }, 1500);
+
+    } catch (err) {
+        console.error(err);
+        showToast('❌ ' + err.message, true);
+        btn.disabled = false;
+        btn.textContent = 'Create Course';
+    }
+});
+
+// Add lesson
+function addLesson() {
+    const container = document.getElementById('lessons-container');
+    const idx = lessonIndex;
+
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('form-section');
+    wrapper.style.marginTop = '15px';
+    wrapper.setAttribute('data-lesson-index', idx);
+
+    wrapper.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Lesson ${idx + 1}</strong>
+            <button type="button" onclick="this.closest('[data-lesson-index]').remove(); reindexLessons();" class="btn-reset" style="padding:4px 10px;">✕ Remove</button>
+        </div>
+
+        <div class="field">
+            <label>Lesson Name *</label>
+            <input type="text" name="lessons[${idx}][name]" placeholder="Introduction to Node.js" required>
+        </div>
+
+        <div class="field">
+            <label>Lesson Type</label>
+            <select name="lessons[${idx}][type]" onchange="changeFileAccept(this, ${idx})">
+                <option value="video">Video</option>
+                <option value="PDF">PDF</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Duration *</label>
+            <input type="text" name="lessons[${idx}][duration]" placeholder="10 min" required>
+        </div>
+
+        <div class="field">
+            <label>Upload File (PDF or Video) *</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="lessonFile-${idx}" style="
+                    background: #4F46E5;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    display: inline-block;
+                ">
+                    📁 Choose File
+                </label>
+                <input type="file" 
+                       id="lessonFile-${idx}"
+                       name="lessonFiles" 
+                       accept="video/mp4,video/webm,application/pdf"
+                       style="display: none;"
+                       required>
+                <span id="lessonFileName-${idx}" style="color: #666;">
+                    No file chosen
+                </span>
+            </div>
+        </div>
+    `;
+
+    const fileInput = wrapper.querySelector(`#lessonFile-${idx}`);
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            const span = document.getElementById(`lessonFileName-${idx}`);
+            if (span) {
+                span.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
+            }
+        });
+    }
+
+    container.appendChild(wrapper);
+    lessonIndex++;
+}
+// Change accepted file types
+function changeFileAccept(select, idx) {
+    const input = document.getElementById(`lessonFile-${idx}`);
+    if (!input) return;
+    input.accept = select.value === 'PDF' ? 'application/pdf' : 'video/mp4,video/webm';
+}
+
+// Re-index lessons after removal
+function reindexLessons() {
+    const lessons = document.querySelectorAll('#lessons-container > [data-lesson-index]');
+    lessons.forEach((lesson, newIdx) => {
+        lesson.setAttribute('data-lesson-index', newIdx);
+        
+        const strong = lesson.querySelector('strong');
+        if (strong) strong.textContent = `Lesson ${newIdx + 1}`;
+        
+        const inputs = lesson.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            const name = input.getAttribute('name');
+            if (name) {
+                input.setAttribute('name', name.replace(/lessons\[\d+\]/, `lessons[${newIdx}]`));
+            }
+        });
+    });
+    lessonIndex = lessons.length;
+}
 </script>
-<% } %>
 
 </body>
 </html>

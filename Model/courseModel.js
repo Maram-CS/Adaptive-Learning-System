@@ -1,20 +1,20 @@
 import { Schema, model } from "mongoose";
-import slugify from "slugify"; // npm install slugify
+import slugify from "slugify";
 import userModel from "./userModel.js";
 
-// Lesson Schema
+// Lesson Schema - CORRIGÉ
 const lessonSchema = new Schema({
     name: { type: String, required: true },
     type: { 
         type: String, 
-        enum: ["video","PDF"],
+        enum: ["video", "PDF"],
         default: "video"
     },
     duration: { type: String, required: true },
-    videoUrl: { type: String, default: "" },
+    file: { type: String, default: "" },      // ← AJOUTE CE CHAMP !
+    videoUrl: { type: String, default: "" },   // garde pour compatibilité
     content: { type: String, default: "" },
 });
-
 
 // Resource Schema
 const resourceSchema = new Schema({
@@ -63,7 +63,6 @@ const courseSchema = new Schema({
         default: 0
     },
 
-    // ⭐ Average Rating
     averageRating: {
         type: Number,
         default: 0
@@ -90,40 +89,32 @@ const courseSchema = new Schema({
         default: true
     },
     slug: {
-    type: String,
-    unique: true,
-    required: false,
-    lowercase: true,
-    trim: true
-}
+        type: String,
+        unique: true,
+        required: false,
+        lowercase: true,
+        trim: true
+    }
 
 }, { timestamps: true });
 
-
-//Calculate Average Rating Automatically
+// Calculate Average Rating Automatically
 courseSchema.pre("save", function () {
     if (this.rating.length === 0) {
         this.averageRating = 0;
     } else {
-        const total = this.rating.reduce(
-            (acc, item) => acc + item.value,
-            0
-        );
-
+        const total = this.rating.reduce((acc, item) => acc + item.value, 0);
         this.averageRating = total / this.rating.length;
     }
-
 });
 
-courseSchema.pre("save", function(){
-    if(!this.slug){
+courseSchema.pre("save", function() {
+    if (this.isModified("Title") && !this.slug) {
         this.slug = slugify(this.Title, { lower: true, strict: true });
     }
-    
 });
 
-
-//for better query performance
+// Indexes
 courseSchema.index({ Title: 1 });
 courseSchema.index({ category: 1 });
 courseSchema.index({ Instructor: 1 });
