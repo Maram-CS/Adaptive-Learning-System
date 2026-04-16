@@ -43,4 +43,7 @@ AppRouter.get("/createQuiz", (req, res) => {
 AppRouter.get("/studentAnalytics", (req, res) => {
     res.render("auth/studentAnalytics");
 });
+AppRouter.get("/AdminDashboard", (req, res) => {
+    res.render("auth/AdminDashboard");
+});
 export default AppRouter;

@@ -25,15 +25,16 @@ const loginUser = async (req, res) => {
       });
 
       //  check role
-      if (user.role === "teacher") {
-        return res.redirect("/teacherDashboard/get");
-      } else if (user.role === "student") {
-        return res.redirect("/studentDashboard/");// Redirect to student dashboard or courses page(/studentDashboard/)
-      } else {
-        return res.redirect("/login");
-      }
+      if (user.role === "admin") {
+  return res.redirect("/App/AdminDashboard");
+} else if (user.role === "teacher") {
+  return res.redirect("/teacherDashboard/get");
+} else if (user.role === "student") {
+  return res.redirect("/studentDashboard/");
+} else {
+  return res.redirect("/login");
+}
     }
-
   } catch (err) {
   console.log("ERROR LOGIN:", err.message);
   res.render("auth/login", { error: err.message });

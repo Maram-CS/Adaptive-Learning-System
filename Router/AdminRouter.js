@@ -2,14 +2,13 @@ import express from 'express';
 import {
     getDashboardStats,
     getAllUsers,
+    getSystemAnalytics,
     addUser,
-    deleteUser,
-    getSystemAnalytics
-} from '../Controller/AdminController.js';
+    deleteUser
+} from '../Controller/userController.js';
 
 const router = express.Router();
 
-// Routes API
 router.get('/stats', getDashboardStats);
 router.get('/users', getAllUsers);
 router.post('/users', addUser);
