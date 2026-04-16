@@ -37,6 +37,9 @@ AppRouter.get("/createCourse", async (req, res) => {
 });
 
 AppRouter.get("/createQuiz", (req, res) => {
+    if (req.role !== "teacher") {
+        return res.status(403).send("Forbidden");
+    }
     res.render("createQuiz");
 });
 
@@ -44,6 +47,9 @@ AppRouter.get("/studentAnalytics", (req, res) => {
     res.render("auth/studentAnalytics");
 });
 AppRouter.get("/AdminDashboard", (req, res) => {
+    if (req.role !== "admin") {
+        return res.status(403).send("Forbidden");
+    }
     res.render("auth/AdminDashboard");
 });
 export default AppRouter;
