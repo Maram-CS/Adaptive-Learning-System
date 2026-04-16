@@ -39,7 +39,7 @@ App.use("/profile", authRequest, profileRouter);
 App.use("/", publicRouter);
 App.use("/courses", coursesRouter);
 App.use("/teacherDashboard", authRequest, teacherDashboardRouter);
-App.use("/api/dashboard", authRequest, dashboardRoutes);
+App.use("/studentDashboard", authRequest, dashboardRoutes);
 App.use("/favoriteCourses", authRequest, favoriteCourseRouter);
 App.use("/api/admin", authRequest, adminRouter);
 
