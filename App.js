@@ -10,9 +10,8 @@ import publicRouter from "./Router/publicRouter.js";
 import coursesRouter from "./Router/courseRouter.js";
 import teacherDashboardRouter from "./Router/teacherDashBoardRouter.js";
 import dashboardRoutes from "./Router/dashboardRoutes.js";
-import studentDashboardRouter from "./Router/dashboardRoutes.js";
 import favoriteCourseRouter from "./Router/favoriteCoursesRouter.js";
-import adminRouter from './Router/AdminRouter.js'; 
+import adminRouter from "./Router/AdminRouter.js"; 
 config();
 
 const App = express();
@@ -41,9 +40,8 @@ App.use("/", publicRouter);
 App.use("/courses", coursesRouter);
 App.use("/teacherDashboard", authRequest, teacherDashboardRouter);
 App.use("/api/dashboard", authRequest, dashboardRoutes);
-App.use("/studentDashboard", authRequest, studentDashboardRouter);
 App.use("/favoriteCourses", authRequest, favoriteCourseRouter);
-App.use('/admin', authRequest,adminRouter);
+App.use("/api/admin", authRequest, adminRouter);
 
 App.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
