@@ -44,7 +44,7 @@
 
     <div class="buttons">
       <button class="icon-btn">🔔</button>
-      <button class="icon-btn">💬</button>
+      <button class="icon-btn" id="chatBtn">💬</button>
       <a href="/profile/Profile-view">
         <button class="icon-btn">👤</button>
       </a>
@@ -314,12 +314,19 @@ toast.classList.remove("show")
 
 document
 .querySelectorAll(".star-rating")
-.forEach(buildStars)
+.forEach(buildStars);
 
-syncHearts()
+syncHearts();
 
+</script>
 
-
+<script src="//code.tidio.co/ihlzjyy4poj2j2yjxbswichcqxzfdlfk.js" async></script>
+<script>
+document.addEventListener("tidioChat-ready", function() {
+  document.getElementById("chatBtn").addEventListener("click", function() {
+    window.tidioChatApi.open();
+  });
+});
 </script>
 
 </body>
