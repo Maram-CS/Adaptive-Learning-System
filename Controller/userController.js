@@ -2,6 +2,7 @@ import userModel from "../Model/userModel.js";
 import UserDB from "../ConfigDB/userDB.js";
 import profileModel from "../Model/profileModel.js";
 import courseModel from "../Model/courseModel.js";
+import ProgressModel from "../Model/Progress.js";
 import { config } from "dotenv";
 
 config();
@@ -18,20 +19,20 @@ const addUser = async (req, res, next) => {
         const isExist = await userModel.findOne({ email });
         
         if (isExist) {
-            return res.status(400).json({ success: false, message: "User with this email already exists" });
+            return res.status(400).json({ status: "exists", message: "User with this email already exists" });
         } else {
             const user = new userModel(req.body);
             const isUser = await user.save();
 
             if (isUser) {
-                return res.status(200).json({ success: true, message: "User added successfully", user: isUser });
+                return res.status(200).json({ status: "user Added", message: "User added successfully", user: isUser });
             } else {
-                return res.status(400).json({ success: false, message: "Error adding user, please try again" });
+                return res.status(400).json({ status: "error", message: "Error adding user, please try again" });
             }
         }
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ success: false, message: "Server error" });
+        return res.status(500).json({ status: "error", message: "Server error" });
     }
 }
 
