@@ -529,18 +529,18 @@
     });
     
     document.getElementById('saveUserBtn')?.addEventListener('click', async () => {
-        const username = document.getElementById('userName').value;
+        const userName = document.getElementById('userName').value;
         const email = document.getElementById('userEmail').value;
         const password = document.getElementById('userPassword').value;
         const role = document.getElementById('userRole').value;
         
-        if (!username || !email) { alert('Please fill required fields'); return; }
+        if (!userName || !email) { alert('Please fill required fields'); return; }
         
         try {
             const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password, role })
+                body: JSON.stringify({ userName, email, password, role })
             });
             const data = await res.json();
             if (data.success) {

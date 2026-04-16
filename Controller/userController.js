@@ -18,20 +18,20 @@ const addUser = async (req, res, next) => {
         const isExist = await userModel.findOne({ email });
         
         if (isExist) {
-            res.json({ status: "exists" });
+            return res.status(400).json({ success: false, message: "User with this email already exists" });
         } else {
             const user = new userModel(req.body);
             const isUser = await user.save();
 
             if (isUser) {
-                res.status(200).json({ status: "user Added", user: isUser });
+                return res.status(200).json({ success: true, message: "User added successfully", user: isUser });
             } else {
-                res.status(400).json({ status: "error", message: "you have a mistake some where try again" });
+                return res.status(400).json({ success: false, message: "Error adding user, please try again" });
             }
         }
-        return next();
     } catch (err) {
         console.error(err);
+        return res.status(500).json({ success: false, message: "Server error" });
     }
 }
 
@@ -41,7 +41,7 @@ const getDashboardStats = async (req, res) => {
         const totalUsers = await userModel.countDocuments();
         const totalStudents = await userModel.countDocuments({ role: 'student' });
         const totalTeachers = await userModel.countDocuments({ role: 'teacher' });
-        const totalCourses = 12; // يمكن جلبها من جدول Course لاحقاً
+        const totalCourses = await courseModel.countDocuments();
 
         res.json({
             success: true,
@@ -76,7 +76,11 @@ const getDashboardStats = async (req, res) => {
         const students = await userModel.countDocuments({ role: 'student' });
         const teachers = await userModel.countDocuments({ role: 'teacher' });
         
-        const activeUsers = Math.floor(totalUsers * 0.7);
+        // حساب المستخدمين النشطين: المستخدمين الذين تم إنشاؤهم في آخر 30 يوماً
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const activeUsers = await userModel.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
+        
         const completionRate = 68;
         const topCourses = [
             { name: "React JS", enrollment: 45, completion: 82 },
