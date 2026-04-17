@@ -1,5 +1,5 @@
 import Router from "express";
-import { getAllCourses, getCourseBySlug, createCourse,editCourse, deleteCourse, getCourseLessonsPage}from "../Controller/courseController.js";
+import { getAllCourses, getCourseBySlug, createCourse,editCourse, deleteCourse, getCourseLessonsPage,getCourseBySlugForStudent,getEditCoursePage}from "../Controller/courseController.js";
 import authRequest from "../middleware/authMiddleware.js";
 import { roleRequest }from "../middleware/roleMiddleware.js";
 import { upload }from "../ConfigDB/multerConfig.js";
@@ -24,5 +24,10 @@ coursesRouter.post("/delete/:slug",authRequest, roleRequest, deleteCourse);
 
 //get lessons page for teacher
 coursesRouter.get("/content/:slug", authRequest, roleRequest, getCourseLessonsPage);
+
+//get course page for student
+coursesRouter.get("/course/:slug", getCourseBySlugForStudent);
+
+coursesRouter.get("/edit/:slug",authRequest,roleRequest,getEditCoursePage);
 
 export default coursesRouter;
