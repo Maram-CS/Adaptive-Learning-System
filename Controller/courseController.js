@@ -1,4 +1,5 @@
 import courseModel from "../Model/courseModel.js";
+import { notifyNewCourse } from "./notificationController.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from 'path';
@@ -91,6 +92,7 @@ const createCourse = async (req, res) => {
         });
 
         const savedCourse = await course.save();
+        await notifyNewCourse(instructorId, savedCourse);
         
         console.log("Course saved with ID:", savedCourse._id);
         
