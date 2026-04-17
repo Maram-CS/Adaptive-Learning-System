@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Courses - Eduphin</title>
 <link rel="stylesheet" href="/Style/courses.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -26,9 +27,9 @@
       <li><a href="/profile/Profile-view">My Profile</a></li>
     </ul>
   </div>
-
+<br> <br> <br> <br> <br>  <br> <br> 
   <a href="/home">
-    <button class="logout">Sign out</button>
+   <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
   </a>
 </div>
 
@@ -43,7 +44,12 @@
     <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
 
     <div class="buttons">
-       <a href="/App/notifications"> <button class="icon-btn">🔔</button> </a>
+       <a href="/App/notifications" class="notif-btn">
+    <button class="icon-btn">
+        🔔
+        <span class="notif-badge">0</span>
+    </button>
+</a>
       <button class="icon-btn" id="chatBtn">💬</button>
       <a href="/profile/Profile-view">
         <button class="icon-btn">👤</button>
@@ -327,6 +333,36 @@ document.addEventListener("tidioChat-ready", function() {
     window.tidioChatApi.open();
   });
 });
+
+//num de notfications
+async function loadUnreadCount() {
+  try {
+    const res = await fetch('/api/notifications', {
+      credentials: 'include'
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // نحسب غير unread
+      const unread = data.notifications.filter(n => !n.is_read).length;
+
+      const badge = document.querySelector('.notif-badge');
+
+      if (unread > 0) {
+        badge.textContent = unread;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+  } catch (err) {
+    console.log("error loading notifications", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadUnreadCount);
 </script>
 
 </body>

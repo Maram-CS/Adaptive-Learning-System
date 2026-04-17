@@ -26,7 +26,8 @@
                 <li><a href="/profile/Profile-view">My Profile</a></li>
             </ul>
         </div>
-        <a href="/home"><button class="logout">Sign out</button></a>
+        <br> <br> <br> <br> <br>  <br> <br> <br> 
+        <a href="/home"><button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button></a>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -87,7 +88,7 @@
     let currentPage = 1;
     const itemsPerPage = 15;
     
-    // جلب الإشعارات من API
+    // tjin not mn api 3la 7ssab userId mn cookie
     async function fetchNotifications() {
         try {
             const response = await fetch('/api/notifications', {
@@ -106,8 +107,7 @@
             showError('Connection error');
         }
     }
-    
-    // فلترة الإشعارات حسب النوع
+    //filtre notf
     function getFilteredNotifications() {
         if (currentFilter === 'all') {
             return allNotifications;
@@ -118,7 +118,7 @@
         return allNotifications.filter(n => n.type === currentFilter);
     }
     
-    // عرض الإشعارات مع Pagination
+    //3ard notf m3a pagination
     function renderFilteredNotifications() {
         const filtered = getFilteredNotifications();
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
@@ -128,8 +128,7 @@
         renderNotificationsList(paginated);
         renderPagination(totalPages);
     }
-    
-    // عرض قائمة الإشعارات
+     //display list notf
     function renderNotificationsList(notifications) {
         const container = document.getElementById('notificationsListContainer');
         
@@ -161,7 +160,7 @@
             </div>
         `).join('');
         
-        // إضافة أحداث النقر
+        // event t3 bouttons
         document.querySelectorAll('.notification-item-page').forEach(item => {
             item.addEventListener('click', async (e) => {
                 if (e.target.closest('.notification-delete-page')) return;

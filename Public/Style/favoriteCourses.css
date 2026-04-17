@@ -231,16 +231,17 @@ body {
 }
 
 .icon-btn {
+  position: relative; /* 🔥 مهم */
   background: white;
   border: 2px solid var(--blue-light);
   border-radius: 50%;
-  width: 40px;
+  width: 40px; 
   height: 40px;
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
-  display: flex;
-  align-items: center;
+  display: flex; 
+  align-items: center; 
   justify-content: center;
 }
 
@@ -249,6 +250,34 @@ body {
   border-color: var(--blue-main);
   transform: scale(1.1);
 }
+
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+
+    background: #e74c3c;
+    color: white;
+
+    font-size: 11px;
+    font-weight: bold;
+
+    padding: 3px 6px;
+    border-radius: 50%;
+
+    min-width: 18px;
+    text-align: center;
+
+    box-shadow: 0 0 0 2px white;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
 
 /* ─── STATS BAR ───────────────────────────────────── */
 .stats-bar {
