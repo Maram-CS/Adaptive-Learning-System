@@ -1,9 +1,11 @@
-import Notification from "../Model/notificationModel.js";
 import userModel from "../Model/userModel.js";
+import Notification from "../Model/notificationModel.js";
 
-// 📘 إشعار course
 export const notifyNewCourse = async (teacherId, course) => {
     try {
+
+        const teacher = await userModel.findById(teacherId);
+
         const students = await userModel.find({ role: "student" });
 
         const notifications = students.map(student => ({
@@ -11,12 +13,13 @@ export const notifyNewCourse = async (teacherId, course) => {
             teacherId: teacherId,
             type: "course",
             title: "New Course 📘",
-            message: `New course "${course.Title}" is available`,
+            message: `${teacher.userName} added a new course: "${course.Title}"`,
             relatedId: course._id
         }));
 
         await Notification.insertMany(notifications);
+
     } catch (err) {
-        console.error("notifyNewCourse error:", err);
+        console.log(err);
     }
 };

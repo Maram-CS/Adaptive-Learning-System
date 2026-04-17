@@ -4,25 +4,24 @@ import Notification from "../Model/notificationModel.js";
 
 const router = Router();
 
-// 🔔 GET notifications (API)
+// GET all notifications
 router.get("/api/notifications", authRequest, async (req, res) => {
-  try {
-    const notifications = await Notification.find({
-      studentId: req.id
-    }).sort({ created_at: -1 });
+    try {
+        const notifications = await Notification.find({
+            studentId: req.id
+        }).sort({ created_at: -1 });
 
-    res.json({
-      success: true,
-      notifications
-    });
+        res.json({
+            success: true,
+            notifications
+        });
 
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-  }
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
 });
 
 export default router;

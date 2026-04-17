@@ -24,15 +24,14 @@ const loginUser = async (req, res) => {
         httpOnly: true,
         maxAge: 3 * 24 * 60 * 60 * 1000, 
       });
-      // Create a welcome notification for the user upon successful login
+
+      // notification t3 create
       if (user.role === "student") {
         await Notification.create({
           studentId: user._id,
-          teacherId: null,
           type: "info",
           title: "Welcome 👋",
           message: "You logged in successfully",
-          relatedId: user._id
         });
       }
 

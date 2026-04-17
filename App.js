@@ -44,7 +44,7 @@ App.use("/teacherDashboard", authRequest, teacherDashboardRouter);
 App.use("/studentDashboard", authRequest, dashboardRoutes);
 App.use("/favoriteCourses", authRequest, favoriteCourseRouter);
 App.use("/api/admin", authRequest, adminRouter);
-App.use("/api", notificationRoutes);
+App.use("/", notificationRoutes);
 App.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
