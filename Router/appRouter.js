@@ -52,4 +52,8 @@ AppRouter.get("/AdminDashboard", (req, res) => {
     }
     res.render("auth/AdminDashboard");
 });
+
+AppRouter.get("/notifications", authRequest, async (req, res) => {
+    res.render("auth/notification");
+});
 export default AppRouter;
