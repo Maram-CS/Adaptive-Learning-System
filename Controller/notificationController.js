@@ -13,7 +13,7 @@ export const notifyNewCourse = async (teacherId, course) => {
             teacherId: teacherId,
             type: "course",
             title: "New Course 📘",
-            message: `${teacher.userName} added a new course: "${course.Title}"`,
+            message: `Professor ${teacher.userName} added a new course: "${course.Title}"`,
             relatedId: course._id
         }));
 
