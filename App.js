@@ -14,6 +14,7 @@ import teacherDashboardRouter from "./Router/teacherDashBoardRouter.js";
 import dashboardRoutes from "./Router/dashboardRoutes.js";
 import favoriteCourseRouter from "./Router/favoriteCoursesRouter.js";
 import adminRouter from "./Router/AdminRouter.js"; 
+import notificationRoutes from "./Router/notificationRoutes.js";
 config();
 
 const App = express();
@@ -25,6 +26,7 @@ const __dirname = dirname(__filename);
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
 App.use(cookieParser());
+App.use(authRequest);
 
 // ⚠️ Sert le dossier Public/uploads pour les fichiers uploadés
 App.use('/uploads', express.static(join(__dirname, 'Public/uploads')));
@@ -42,7 +44,7 @@ App.use("/teacherDashboard", authRequest, teacherDashboardRouter);
 App.use("/studentDashboard", authRequest, dashboardRoutes);
 App.use("/favoriteCourses", authRequest, favoriteCourseRouter);
 App.use("/api/admin", authRequest, adminRouter);
-
+App.use("/api", notificationRoutes);
 App.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
