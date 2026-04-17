@@ -426,7 +426,7 @@ Tap to rate
 
 <button 
 class="view-details-btn"
-onclick="viewCourseDetails('${course._id}')">
+onclick="viewCourseDetails('${course.slug}')">
 View Details
 </button>
 
@@ -490,11 +490,10 @@ item.textContent
 
 /* VIEW DETAILS */
 
-function viewCourseDetails(id){
+function viewCourseDetails(slug){
 
-localStorage.setItem("selectedCourse",id)
-
-window.location.href="/App/course"
+localStorage.setItem("selectedCourse",slug)
+window.location.href="/courses/course/"+slug
 
 }
 

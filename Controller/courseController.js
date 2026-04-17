@@ -143,6 +143,25 @@ const getCourseBySlug = async (req, res) => {
     }
 };
 
+
+const getCourseBySlugForStudent = async (req, res) => {
+    try {
+        const course = await courseModel.findOne({ slug: req.params.slug }).populate("Instructor","userName email");
+
+        console.log("FOUND COURSE:", course);
+
+        if (!course) {
+            return res.send("No course found");
+        }
+
+        return res.render("auth/course", { course });
+
+    } catch (err) {
+        console.error(err);
+        return res.send("ERROR");
+    }
+};
+
 // GET COURSE LESSONS PAGE
 const getCourseLessonsPage = async (req, res) => {
     try {
@@ -262,6 +281,25 @@ const editCourse = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+// get edit course page
+const getEditCoursePage = async (req, res) => {
+try {
+
+const course = await courseModel.findOne({
+slug: req.params.slug
+})
+
+if(!course){
+return res.send("Course not found")
+}
+
+res.render("auth/editCourse",{course})
+
+} catch(err){
+console.log(err)
+res.send("Error loading edit page")
+}
+}
 
 // DELETE COURSE
 const deleteCourse = async (req, res) => {
@@ -288,4 +326,4 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-export { createCourse, getAllCourses, editCourse, deleteCourse, getCourseBySlug, getCourseLessonsPage };
+export { createCourse, getAllCourses, editCourse, deleteCourse, getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent ,getEditCoursePage};
