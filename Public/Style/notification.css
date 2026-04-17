@@ -187,24 +187,29 @@
         }
 
         .notification-delete-page {
-            background: none;
-            border: none;
-            color: #bdc3c7;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: 0.2s;
-            opacity: 0;
-        }
+    background: #fde2e2;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: 0.2s;
+    opacity: 1; /* دايما باينة */
+}
 
-        .notification-item-page:hover .notification-delete-page {
-            opacity: 1;
-        }
+.notification-delete-page i {
+    font-size: 15px;
+}
 
-        .notification-delete-page:hover {
-            background: #fde2e2;
-            color: #e74c3c;
-        }
+.notification-delete-page:hover {
+    background: #e74c3c;
+    color: white;
+    transform: scale(1.05);
+}
 
         /* Empty State */
         .empty-state-page {

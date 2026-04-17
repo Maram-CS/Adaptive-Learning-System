@@ -76,7 +76,8 @@
                 <li><a href="/profile/Profile-view">My Profile</a></li>
             </ul>
         </div>
-        <a href="/home"><button class="logout">Sign out</button></a>
+        <br> <br> <br> <br> <br>  <br> <br> <br> 
+        <a href="/home"><button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button></a>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -88,7 +89,12 @@
             <div class="header-actions">
                 <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
                 <div class="buttons">
-                    <a href="/App/notifications"><button class="icon-btn">🔔</button></a>
+                    <a href="/App/notifications" class="notif-btn">
+    <button class="icon-btn">
+        🔔
+        <span class="notif-badge">0</span>
+    </button>
+</a>
                     <button class="icon-btn">💬</button>
                     <a href="/profile/Profile-view"><button class="icon-btn">👤</button></a>
                 </div>
@@ -285,6 +291,37 @@
     }
 
     loadDashboard();
+
+    //num de notfications
+async function loadUnreadCount() {
+  try {
+    const res = await fetch('/api/notifications', {
+      credentials: 'include'
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // نحسب غير unread
+      const unread = data.notifications.filter(n => !n.is_read).length;
+
+      const badge = document.querySelector('.notif-badge');
+
+      if (unread > 0) {
+        badge.textContent = unread;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+  } catch (err) {
+    console.log("error loading notifications", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadUnreadCount);
+window.addEventListener("focus", loadUnreadCount);
 </script>
 </body>
 </html>
