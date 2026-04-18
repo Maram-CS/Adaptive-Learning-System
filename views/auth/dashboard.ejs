@@ -58,61 +58,9 @@
     // ============================================
     // STUDENT DASHBOARD DATA
     // ============================================
-    const userData = {
-        firstName: "Ahmed",
-        streakDays: 5,
-        totalLearningHours: 4,
-        totalLearningMinutes: 20,
-        quizAverage: 85
-    };
+    let userData = {};
 
-    const courses = [
-        {
-            id: 1,
-            title: "Full-Stack Development",
-            icon: "fab fa-react",
-            overallProgress: 40,
-            lastLesson: "React Hooks",
-            lastLessonTime: 15,
-            lessons: [
-                { title: "JavaScript Basics", progress: 100, completed: true, icon: "fab fa-js" },
-                { title: "DOM Manipulation", progress: 100, completed: true, icon: "fas fa-window-maximize" },
-                { title: "React Components", progress: 60, completed: false, icon: "fab fa-react" },
-                { title: "React Hooks", progress: 45, completed: false, icon: "fab fa-react" },
-                { title: "State Management", progress: 25, completed: false, icon: "fas fa-database" },
-                { title: "API Integration", progress: 0, completed: false, icon: "fas fa-plug" }
-            ]
-        },
-        {
-            id: 2,
-            title: "Python for Data Science",
-            icon: "fab fa-python",
-            overallProgress: 60,
-            lastLesson: "Pandas",
-            lastLessonTime: 10,
-            lessons: [
-                { title: "Python Basics", progress: 100, completed: true, icon: "fab fa-python" },
-                { title: "NumPy", progress: 100, completed: true, icon: "fas fa-calculator" },
-                { title: "Pandas", progress: 70, completed: false, icon: "fas fa-table" },
-                { title: "Data Visualization", progress: 30, completed: false, icon: "fas fa-chart-line" },
-                { title: "Machine Learning Intro", progress: 0, completed: false, icon: "fas fa-brain" }
-            ]
-        },
-        {
-            id: 3,
-            title: "Mobile App Development (Flutter)",
-            icon: "fab fa-android",
-            overallProgress: 20,
-            lastLesson: "Flutter Basics",
-            lastLessonTime: 25,
-            lessons: [
-                { title: "Flutter Basics", progress: 50, completed: false, icon: "fab fa-flutter" },
-                { title: "Widgets", progress: 20, completed: false, icon: "fas fa-puzzle-piece" },
-                { title: "State Management", progress: 0, completed: false, icon: "fas fa-database" },
-                { title: "Navigation", progress: 0, completed: false, icon: "fas fa-directions" }
-            ]
-        }
-    ];
+    let courses = [];
 
     const recommendations = [
         { icon: "fas fa-code", title: "JavaScript Arrays", reason: "Based on your last quiz performance" },
@@ -120,13 +68,7 @@
         { icon: "fab fa-python", title: "Pandas Tutorial", reason: "Popular among learners this week" }
     ];
 
-    const leaderboard = [
-        { name: "Sarah", points: 1250, badge: "🔥", isCurrentUser: false },
-        { name: "Ahmed", points: 980, badge: "⭐", isCurrentUser: true },
-        { name: "Youssef", points: 745, badge: "📈", isCurrentUser: false },
-        { name: "Leila", points: 620, badge: "", isCurrentUser: false },
-        { name: "Omar", points: 510, badge: "", isCurrentUser: false }
-    ];
+    let leaderboard = [];
 
     // ============================================
     // FUNCTIONS
@@ -172,6 +114,31 @@
             updateNumber();
         });
     }
+
+    async function loadDashboardData() {
+    try {
+
+        const res = await fetch("/studentDashboard/get");
+        const data = await res.json();
+
+        if(data.success){
+            userData = data.userData;
+            courses = data.courses;
+        }
+
+        const leaderboardRes = await fetch("/studentDashboard/leaderboard");
+        const leaderboardData = await leaderboardRes.json();
+
+        if(leaderboardData.success){
+            leaderboard = leaderboardData.leaderboard;
+        }
+
+        renderDashboard();
+
+    } catch(error){
+        console.error("Dashboard Error:", error);
+    }
+}
 
     function renderDashboard() {
         const container = document.getElementById('dashboard-container');
@@ -341,7 +308,7 @@
         setTimeout(animateNumbers, 500);
     }
 
-    renderDashboard();
+    loadDashboardData();
 </script>
 </body>
 </html>
