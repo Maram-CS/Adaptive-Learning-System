@@ -1,5 +1,6 @@
 import courseModel from "../Model/courseModel.js";
 import { notifyNewCourse } from "./notificationController.js";
+import progressModel from "../Model/Progress.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from 'path';
@@ -143,15 +144,42 @@ const getCourseBySlug = async (req, res) => {
     }
 };
 
-
 const getCourseBySlugForStudent = async (req, res) => {
     try {
-        const course = await courseModel.findOne({ slug: req.params.slug }).populate("Instructor","userName email");
 
-        console.log("FOUND COURSE:", course);
+        const course = await courseModel
+        .findOne({ slug: req.params.slug })
+        .populate("Instructor","userName email");
 
         if (!course) {
             return res.send("No course found");
+        }
+
+        const userId = req.id; // من auth middleware
+
+        // أول lesson
+        const firstLesson = course.lessons[0];
+
+        if(firstLesson){
+
+            const existing = await progressModel.findOne({
+                userId,
+                courseId: course._id,
+                lessonId: firstLesson._id
+            })
+
+            if(!existing){
+                await progressModel.create({
+                    userId,
+                    courseId: course._id,
+                    lessonId: firstLesson._id,
+                    progress: 0,
+                    completed:false,
+                    lastUpdated:new Date(),
+                    pointsEarned:0
+                })
+            }
+
         }
 
         return res.render("auth/course", { course });
@@ -161,7 +189,6 @@ const getCourseBySlugForStudent = async (req, res) => {
         return res.send("ERROR");
     }
 };
-
 // GET COURSE LESSONS PAGE
 const getCourseLessonsPage = async (req, res) => {
     try {

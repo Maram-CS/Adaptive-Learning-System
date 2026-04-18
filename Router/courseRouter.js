@@ -26,7 +26,7 @@ coursesRouter.post("/delete/:slug",authRequest, roleRequest, deleteCourse);
 coursesRouter.get("/content/:slug", authRequest, roleRequest, getCourseLessonsPage);
 
 //get course page for student
-coursesRouter.get("/course/:slug", getCourseBySlugForStudent);
+coursesRouter.get("/course/:slug",authRequest, getCourseBySlugForStudent);
 
 coursesRouter.get("/edit/:slug",authRequest,roleRequest,getEditCoursePage);
 

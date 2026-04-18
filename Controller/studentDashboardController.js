@@ -1,6 +1,6 @@
 import userModel from "../Model/userModel.js";
 import progressModel from "../Model/Progress.js";
-import ProgressModel from "../Model/Progress.js";
+import courseModel from "../Model/courseModel.js";
 
 // جلب بيانات داشبورد الطالب
  const getStudentDashboardData = async (req, res) => {
@@ -17,7 +17,7 @@ import ProgressModel from "../Model/Progress.js";
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        const allProgress = await ProgressModel.find({ userId });
+        const allProgress = await progressModel.find({ userId });
 
         const completedLessons = allProgress.filter(p => p.completed === true).length;
         
@@ -35,32 +35,40 @@ import ProgressModel from "../Model/Progress.js";
             coursesMap.get(progress.courseId).lessons.push(progress);
         });
 
-        const courseDetails = {
-            1: { title: "Full-Stack Development", icon: "fab fa-react", lastLesson: "React Hooks", lastLessonTime: 15 },
-            2: { title: "Python for Data Science", icon: "fab fa-python", lastLesson: "Pandas", lastLessonTime: 10 },
-            3: { title: "Mobile App Development (Flutter)", icon: "fab fa-android", lastLesson: "Flutter Basics", lastLessonTime: 25 }
-        };
+       // const course = await courseModel.findById(progress.courseId);
 
         const courses = [];
-        for (let [courseId, data] of coursesMap.entries()) {
-            const lessons = data.lessons.map(lesson => ({
-                title: `Lesson ${lesson.lessonId}`,
-                progress: lesson.progress,
-                completed: lesson.completed,
-                icon: lesson.completed ? "fas fa-check-circle" : (lesson.progress > 0 ? "fas fa-play-circle" : "fas fa-lock")
-            }));
-            
-            const courseOverallProgress = lessons.length > 0 ? Math.round(lessons.reduce((sum, l) => sum + l.progress, 0) / lessons.length) : 0;
-            
-            courses.push({
-                id: courseId,
-                title: courseDetails[courseId]?.title || `Course ${courseId}`,
-                icon: courseDetails[courseId]?.icon || "fas fa-book",
-                overallProgress: courseOverallProgress,
-                lastLesson: courseDetails[courseId]?.lastLesson || "Lesson",
-                lastLessonTime: courseDetails[courseId]?.lastLessonTime || 10,
-                lessons: lessons
-            });
+            for (let [courseId, data] of coursesMap.entries()) {
+
+        const course = await courseModel.findById(courseId);
+
+        const lessons = data.lessons.map(lesson => ({
+        title: `Lesson ${lesson.lessonId}`,
+        progress: lesson.progress,
+        completed: lesson.completed,
+        icon: lesson.completed 
+        ? "fas fa-check-circle" 
+        : (lesson.progress > 0 
+        ? "fas fa-play-circle" 
+        : "fas fa-lock")
+        }));
+
+        const courseOverallProgress =
+        lessons.length > 0
+        ? Math.round(
+        lessons.reduce((sum, l) => sum + l.progress, 0) / lessons.length
+        )
+        : 0;
+
+        courses.push({
+        id: courseId,
+        title: course?.Title || "Course",
+        icon: "fas fa-book",
+        overallProgress: courseOverallProgress,
+        lastLesson: course?.lessons?.[0]?.name || "Lesson",
+        lastLessonTime: 10,
+        lessons: lessons
+        });
         }
 
         const userData = {
@@ -93,7 +101,7 @@ const getLeaderboardData = async (req, res) => {
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
             
-            const leaderboardData = await ProgressModel.aggregate([
+            const leaderboardData = await progressModel.aggregate([
                 { $match: { lastUpdated: { $gte: oneWeekAgo } } },
                 { $group: { _id: "$userId", totalPoints: { $sum: "$pointsEarned" } } },
                 { $sort: { totalPoints: -1 } },
