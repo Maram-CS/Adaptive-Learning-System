@@ -5,14 +5,25 @@ import userModel from "./userModel.js";
 // Lesson Schema - CORRIGÉ
 const lessonSchema = new Schema({
     name: { type: String, required: true },
+
+    level: {
+        type: String,
+        enum: ["beginner", "intermediate", "advanced"],
+        default: "beginner"
+    },
+
     type: { 
         type: String, 
         enum: ["video", "PDF"],
         default: "video"
     },
+
     duration: { type: String, required: true },
-    file: { type: String, default: "" },      // ← AJOUTE CE CHAMP !
-    videoUrl: { type: String, default: "" },   // garde pour compatibilité
+
+    file: { type: String, default: "" },
+
+    videoUrl: { type: String, default: "" },
+
     content: { type: String, default: "" },
 });
 
@@ -77,6 +88,40 @@ const courseSchema = new Schema({
     ],
 
     lessons: [lessonSchema],
+
+    quizzes: [
+  {
+    title: { type: String, required: true },
+
+    questions: [
+      {
+        question: { type: String, required: true },
+
+        options: {
+          type: [String],
+          required: true
+        },
+
+        correctAnswer: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
+
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }
+],
+    
+
+    placementQuiz: {
+    type: Schema.Types.ObjectId,
+    ref: "quiz"
+    },
+
     resources: [resourceSchema],
 
     enrolledStudents: [{
@@ -94,7 +139,8 @@ const courseSchema = new Schema({
         required: false,
         lowercase: true,
         trim: true
-    }
+    },
+    
 
 }, { timestamps: true });
 

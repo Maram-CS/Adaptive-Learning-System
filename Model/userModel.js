@@ -1,66 +1,64 @@
-import { Schema } from "mongoose";
-import {model} from "mongoose";
+import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const UserSchema = new Schema({
-    userName: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    role : {
-        type : String,
-        required: true,
-        enum : ['student','teacher','admin'],
-    },
-},{timestamps: true});
+  userName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    enum: ['student', 'teacher', 'admin'],
+  },
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  resetToken: String,
+  resetTokenExpire: Date
+}, { timestamps: true });
 
-UserSchema.pre("save",async function(next) {
-    const user = this;
-    try {
-        if(!user.isModified("password")) {
-         next();
-        }else {
-        const salt = await bcrypt.genSalt(10);
-            const hash = await bcrypt.hash(user.password,salt);
-            user.password = hash;
-            next();
-        }
-    }catch(err) {
-        console.error(err);
-    }});
-               
-        
+// HASH PASSWORD
+UserSchema.pre("save", async function (next) {
+  try {
+    if (!this.isModified("password")) return next();
 
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
- UserSchema.statics.login = async function(email,password) {
-    const model = this;
-    const user = await model.findOne({email});
-    if(user) {
-        
-            const isUser = await bcrypt.compare(password,user.password);
-                if(isUser) {
-                    console.log("you are logged in ");
-                    return user;
-                }else {
-                    console.log ("your password is wrong");
-                    throw Error ("your password or email is wrong");
-                }
-            
-            console.error(err);
-        
-    }else {
-        throw Error ("this user not exist");
-    }
-}
-const userModel = model('User',UserSchema);
+// LOGIN FUNCTION
+UserSchema.statics.login = async function (email, password) {
+  const user = await this.findOne({ email });
+
+  if (!user) {
+    throw Error("This user does not exist");
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw Error("Email or password is wrong");
+  }
+
+  return user;
+};
+
+const userModel = model('User', UserSchema);
+
 export default userModel;

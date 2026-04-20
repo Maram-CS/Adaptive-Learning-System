@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Quiz</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f5f6fa;
+  padding: 30px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.question {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+.add-btn {
+  background: #3498db;
+}
+
+.add-btn:hover {
+  background: #2980b9;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Create Quiz for: <%= course.title %></h2>
+
+<form action="/teacherDashboard/createQuiz" method="POST">
+
+  <!-- IMPORTANT: courseId -->
+  <input type="hidden" name="courseId" value="<%= course._id %>">
+
+  <input type="text" name="title" placeholder="Quiz Title" required>
+
+  <div id="questions-container">
+
+    <div class="question">
+      <input type="text" name="questions[0][question]" placeholder="Enter question" required>
+
+      <input type="text" name="questions[0][options][]" placeholder="Option 1" required>
+      <input type="text" name="questions[0][options][]" placeholder="Option 2" required>
+      <input type="text" name="questions[0][options][]" placeholder="Option 3" required>
+      <input type="text" name="questions[0][options][]" placeholder="Option 4" required>
+
+      <input type="number" name="questions[0][correctAnswer]" placeholder="Correct index (0-3)" required>
+    </div>
+
+  </div>
+
+  <button type="button" class="add-btn" onclick="addQuestion()">+ Add Question</button>
+
+  <button type="submit">Save Quiz</button>
+
+</form>
+
+</div>
+
+<script>
+let index = 1;
+
+function addQuestion() {
+  const container = document.getElementById("questions-container");
+
+  const div = document.createElement("div");
+  div.classList.add("question");
+
+  div.innerHTML = `
+    <input type="text" name="questions[${index}][question]" placeholder="Enter question" required>
+
+    <input type="text" name="questions[${index}][options][]" placeholder="Option 1" required>
+    <input type="text" name="questions[${index}][options][]" placeholder="Option 2" required>
+    <input type="text" name="questions[${index}][options][]" placeholder="Option 3" required>
+    <input type="text" name="questions[${index}][options][]" placeholder="Option 4" required>
+
+    <input type="number" name="questions[${index}][correctAnswer]" placeholder="Correct index (0-3)" required>
+  `;
+
+  container.appendChild(div);
+  index++;
+}
+</script>
+
+</body>
+</html>

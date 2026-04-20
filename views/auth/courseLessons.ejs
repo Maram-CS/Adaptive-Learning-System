@@ -10,12 +10,14 @@
 <body>
 
 <div class="page-container">
+
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo">
             <img src="/img/logoBleu.png" class="logo-img" alt="logo">
             <span>Eduphin</span>
         </div>
+
         <div class="menu">
             <ul>
                 <li><a href="/teacherDashboard/get">Home</a></li>
@@ -25,39 +27,48 @@
                 <li><a href="/App/studentAnalytics">Student Analytics</a></li>
             </ul>
         </div>
+
         <br><br><br><br><br>
+
         <a href="/home">
-           <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
+            <button class="logout"><i class="fas fa-sign-out-alt"></i> Sign out</button>
         </a>
     </div>
 
     <!-- MAIN -->
     <div class="main">
+
         <div class="main-header">
             <h2><%= course.Title %> - <span>Lessons</span></h2>
         </div>
 
         <div style="padding: 2rem;">
+
             <button class="back-btn" onclick="window.location.href='/teacherDashboard/get'">
                 ← Back to Dashboard
             </button>
 
+            <!-- LESSONS -->
             <div class="lessons-container">
-                <h3>Course Content</h3>
-                
+                <h3>📚 Course Content</h3>
+
                 <% if (course.lessons && course.lessons.length > 0) { %>
+
                     <% course.lessons.forEach((lesson, index) => { %>
+
                         <div class="lesson-card">
+
                             <div class="lesson-title">
                                 Lesson <%= index + 1 %>: <%= lesson.name %>
                             </div>
+
                             <div>
                                 <span class="lesson-type <%= lesson.type === 'video' ? 'type-video' : 'type-pdf' %>">
                                     <%= lesson.type === 'video' ? '🎬 Video' : '📄 PDF' %>
                                 </span>
                                 <span class="lesson-duration">⏱️ <%= lesson.duration %></span>
                             </div>
-                            
+
                             <% if (lesson.file && lesson.file !== "") { %>
                                 <div>
                                     <a href="<%= lesson.file %>" class="file-link" target="_blank">
@@ -67,21 +78,83 @@
                             <% } else { %>
                                 <p style="color: #f59e0b;">⚠️ No file uploaded yet</p>
                             <% } %>
+
                         </div>
-                    <% }); %>
+
+                    <% }) %>
+
                 <% } else { %>
+
                     <div class="no-lessons">
                         <p>📚 No lessons added yet</p>
-                        <p>Click "Edit Course" to add lessons with PDFs or Videos</p>
-                        <a href="/courses/edit/<%= course.slug %>" class="file-link" style="margin-top: 20px; display: inline-block;">
+                        <a href="/courses/edit/<%= course.slug %>" class="file-link">
                             + Add Lessons
                         </a>
                     </div>
+
                 <% } %>
+
             </div>
+
+            <!-- QUIZZES -->
+            <div class="lessons-container" style="margin-top:40px;">
+                <h3>🧠 Course Quizzes</h3>
+
+                <% if (course.quizzes && course.quizzes.length > 0) { %>
+
+                    <% course.quizzes.forEach((quiz, qIndex) => { %>
+
+                        <div class="lesson-card">
+
+                            <div class="lesson-title">
+                                📝 Quiz <%= qIndex + 1 %>: <%= quiz.title %>
+                            </div>
+
+                            <% if (quiz.questions && quiz.questions.length > 0) { %>
+
+                                <% quiz.questions.forEach((q, i) => { %>
+
+                                    <div style="margin-top: 15px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+
+                                        <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
+
+                                        <ul style="margin-top: 8px;">
+                                            <% q.options.forEach((opt, oIndex) => { %>
+                                                <li>
+                                                    <%= opt %>
+                                                    <% if (oIndex === q.correctAnswer) { %>
+                                                        <span style="color: green;"> ✔</span>
+                                                    <% } %>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+
+                                    </div>
+
+                                <% }) %>
+
+                            <% } else { %>
+                                <p style="color:#999;">No questions in this quiz</p>
+                            <% } %>
+
+                        </div>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <div class="no-lessons">
+                        <p>🧠 No quizzes added yet</p>
+                    </div>
+
+                <% } %>
+
+            </div>
+
         </div>
 
         <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
+
     </div>
 </div>
 

@@ -302,6 +302,16 @@ function addLesson() {
             </select>
         </div>
 
+        <!-- ✅ LESSON LEVEL ADDED -->
+        <div class="field">
+            <label>Lesson Level</label>
+            <select name="lessons[${idx}][level]">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+            </select>
+        </div>
+
         <div class="field">
             <label>Duration *</label>
             <input type="text" name="lessons[${idx}][duration]" placeholder="10 min" required>
@@ -320,12 +330,14 @@ function addLesson() {
                 ">
                     📁 Choose File
                 </label>
+
                 <input type="file" 
                        id="lessonFile-${idx}"
                        name="lessonFiles" 
                        accept="video/mp4,video/webm,application/pdf"
                        style="display: none;"
                        required>
+
                 <span id="lessonFileName-${idx}" style="color: #666;">
                     No file chosen
                 </span>
@@ -333,6 +345,7 @@ function addLesson() {
         </div>
     `;
 
+    // file name preview
     const fileInput = wrapper.querySelector(`#lessonFile-${idx}`);
     if (fileInput) {
         fileInput.addEventListener('change', function() {

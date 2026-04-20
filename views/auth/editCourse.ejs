@@ -183,6 +183,15 @@
                                     </div>
 
                                     <div class="field">
+                                        <label>Lesson Level</label>
+                                        <select name="lessons[<%= idx %>][level]">
+                                            <option value="beginner" <%= lesson.level === "beginner" ? "selected" : "" %>>Beginner</option>
+                                            <option value="intermediate" <%= lesson.level === "intermediate" ? "selected" : "" %>>Intermediate</option>
+                                            <option value="advanced" <%= lesson.level === "advanced" ? "selected" : "" %>>Advanced</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field">
                                         <label>Duration *</label>
                                         <input type="text" name="lessons[<%= idx %>][duration]" value="<%= lesson.duration %>" required>
                                     </div>
@@ -304,12 +313,21 @@ function addLessonEdit() {
         </div>
 
         <div class="field">
+            <label>Lesson Level</label>
+            <select name="lessons[${idx}][level]">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+            </select>
+        </div>
+
+        <div class="field">
             <label>Duration *</label>
             <input type="text" name="lessons[${idx}][duration]" placeholder="10 min" required>
         </div>
 
         <input type="hidden" name="lessons[${idx}][existingFile]" value="">
-
+        
         <div class="field">
             <label>Upload File (PDF or Video) *</label>
             <div style="display: flex; align-items: center; gap: 10px;">

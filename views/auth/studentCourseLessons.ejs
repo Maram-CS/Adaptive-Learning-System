@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title><%= course.Title %> - Lessons</title>
+<link rel="stylesheet" href="/Style/courseLesson.css">
+</head>
+<body>
+
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1f2d3d;
+}
+
+a {
+    text-decoration: none;
+    color: #2b7de9;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #f4a640;
+}
+
+/* lesson card */
+.lesson-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 14px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-left: 5px solid #2b7de9;
+    transition: 0.3s;
+}
+
+.lesson-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.lesson-card h3 {
+    margin: 0 0 10px 0;
+    color: #1f2d3d;
+}
+
+.lesson-card p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+/* links */
+.lesson-card a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: #2b7de9;
+    color: white;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.lesson-card a:hover {
+    background: #f4a640;
+}
+
+/* empty state */
+p {
+    text-align: center;
+    color: #888;
+    margin-top: 30px;
+}
+    </style>
+
+<div class="container">
+
+<h2><%= course.Title %> - My Lessons (<%= userLevel %>)</h2>
+
+<a href="/studentDashboard/">⬅ Back Dashboard</a>
+
+<% if (lessons.length > 0) { %>
+
+    <% lessons.forEach((lesson, index) => { %>
+
+        <div class="lesson-card">
+
+            <h3>Lesson <%= index + 1 %>: <%= lesson.name %></h3>
+
+            <p>Level: <%= lesson.level %></p>
+
+            <p>Duration: <%= lesson.duration %></p>
+
+            <% if (lesson.type === "video") { %>
+                <a href="<%= lesson.file %>" target="_blank">▶ Watch Video</a>
+            <% } else { %>
+                <a href="<%= lesson.file %>" target="_blank">📄 Open PDF</a>
+            <% } %>
+
+        </div>
+
+    <% }) %>
+
+<% } else { %>
+
+    <p>No lessons available for your level.</p>
+
+<% } %>
+
+</div>
+
+</body>
+</html>

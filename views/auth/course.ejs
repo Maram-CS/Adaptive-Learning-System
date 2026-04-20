@@ -88,6 +88,37 @@
 <%= course.Description %>
 </p>
 
+  <!-- PLACEMENT QUIZ SECTION -->
+
+<div class="quiz-section">
+
+<h3>
+<i class="fas fa-brain"></i>
+Placement Quiz
+</h3>
+
+<p>
+Take this quiz to determine your level and unlock personalized lessons
+</p>
+
+<% course.quizzes.forEach(quiz => { %>
+
+    <a href="/quiz/course/<%= course._id %>/quiz/<%= quiz._id %>">
+        <button class="quiz-btn">
+            Start Quiz - <%= quiz.title %>
+        </button>
+    </a>
+
+<% }) %>
+
+<button class="quiz-btn">
+Start Placement Quiz
+</button>
+
+</a>
+
+</div>
+
 <div class="progress-section">
 <div class="progress-label">
 <span>Your Progress</span>
