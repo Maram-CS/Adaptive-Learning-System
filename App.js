@@ -1,7 +1,7 @@
 import RouterLogin from "./Router/userRouter.js";
 import AppRouter from "./Router/appRouter.js";
 import express from "express";
-import { config } from "dotenv";
+import dotenv from "dotenv";
 import { join } from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -15,10 +15,11 @@ import dashboardRoutes from "./Router/dashboardRoutes.js";
 import favoriteCourseRouter from "./Router/favoriteCoursesRouter.js";
 import adminRouter from "./Router/AdminRouter.js"; 
 import notificationRoutes from "./Router/notificationRoutes.js";
-config();
+import quizRouter from "./Router/quizRouter.js";
+dotenv.config();
 
 const App = express();
-const PORT = process.env.Port || 1000;
+const PORT = process.env.PORT || 1000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,6 +46,7 @@ App.use("/studentDashboard", authRequest, dashboardRoutes);
 App.use("/favoriteCourses", authRequest, favoriteCourseRouter);
 App.use("/api/admin", authRequest, adminRouter);
 App.use("/", notificationRoutes);
+App.use("/quiz", quizRouter);
 App.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

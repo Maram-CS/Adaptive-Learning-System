@@ -373,6 +373,31 @@ function searchQuizzes() {
     }
 }
 
+
+let index = 1;
+
+function addQuestion() {
+    const container = document.getElementById("questions-container");
+
+    const div = document.createElement("div");
+    div.classList.add("question");
+
+    div.innerHTML = `
+        <input type="text" name="questions[${index}][question]" placeholder="Enter question">
+
+        <input type="text" name="questions[${index}][options][]" placeholder="Option 1">
+        <input type="text" name="questions[${index}][options][]" placeholder="Option 2">
+        <input type="text" name="questions[${index}][options][]" placeholder="Option 3">
+        <input type="text" name="questions[${index}][options][]" placeholder="Option 4">
+
+        <input type="number" name="questions[${index}][correctAnswer]" placeholder="Correct index (0-3)">
+    `;
+
+    container.appendChild(div);
+    index++;
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
     updateDynamicFields();
     
@@ -417,6 +442,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderQuestionsList();
 });
+
+
 </script>
 </body>
 </html>

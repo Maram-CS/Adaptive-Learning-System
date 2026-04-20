@@ -1,6 +1,7 @@
 import userModel from "../Model/userModel.js";
 import courseModel from "../Model/courseModel.js";
 
+
 // This controller is responsible for handling the logic related to the teacher dashboard, such as rendering the dashboard page and fetching the teacher's profile information to display on the dashboard.
 
 const getTeacherDashboard = async (req, res) => {
@@ -31,4 +32,35 @@ const getTeacherDashboard = async (req, res) => {
     }
 };
 
-export { getTeacherDashboard };
+const createQuiz = async (req, res) => {
+    try {
+        const { courseId, title, questions } = req.body;
+
+        const course = await courseModel.findById(courseId);
+
+        if (!course) return res.send("Course not found");
+
+        course.quizzes.push({
+            title,
+            questions
+        });
+
+        await course.save();
+
+        res.redirect(`/teacherDashboard/get`);
+
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+
+
+const getSelectCourseForQuizPage = async (req, res) => {
+     const course = await courseModel.findById(req.params.courseId);
+        if (!course) return res.send("Course not found");
+    
+        res.render("auth/createQuiz", { course });
+};
+
+export { getTeacherDashboard , createQuiz , getSelectCourseForQuizPage};

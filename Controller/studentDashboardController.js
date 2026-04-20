@@ -143,7 +143,31 @@ const getLeaderboardData = async (req, res) => {
         }
     }
 
-export  {getStudentDashboardData, getLeaderboardData, getStudentDashboard};
+
+const studentCourseLessons = async (req, res) => {
+    try {
+        const course = await courseModel.findById(req.params.courseId);
+        if (!course) return res.send("Course not found");
+
+        const user = await userModel.findById(req.id);
+        const userLevel = user?.level || "beginner";
+
+        const lessons = course.lessons.filter(
+            l => l.level === userLevel
+        );
+
+        res.render("auth/studentCourseLessons", {
+            course,
+            lessons,
+            userLevel
+        });
+
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+  
+export  {getStudentDashboardData, getLeaderboardData, getStudentDashboard, studentCourseLessons};
 
 
 

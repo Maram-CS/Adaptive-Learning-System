@@ -60,6 +60,7 @@ const createCourse = async (req, res) => {
             name: lesson.name || "",
             type: lesson.type || "video",
             duration: lesson.duration || "",
+            level: lesson.level,
             file: uploadedFiles[index] ? `/uploads/${uploadedFiles[index].filename}` : ""
         }));
 
@@ -284,6 +285,7 @@ const editCourse = async (req, res) => {
                     name: lesson.name || "",
                     type: lesson.type || "video",
                     duration: lesson.duration || "",
+                    level: lesson.level || "beginner",
                     file: filePath
                 });
             }
@@ -327,7 +329,36 @@ console.log(err)
 res.send("Error loading edit page")
 }
 }
+// get course by level
+const getLessonsByLevel = async (req, res) => {
 
+try {
+
+    const { courseId, level } = req.params;
+
+    const course = await courseModel.findById(courseId);
+
+    
+    const userLevel = level;
+
+    const lessons = course.lessons.filter(
+    l => l.level === userLevel
+    );
+
+    console.log("User level:", userLevel);
+    console.log("Filtered lessons:", lessons);
+
+    res.render("auth/courseLessons", {
+    course,
+    lessons,
+    level: userLevel
+    });
+
+} catch (error) {
+res.send(error.message);
+}
+
+};
 // DELETE COURSE
 const deleteCourse = async (req, res) => {
     try {
@@ -353,4 +384,4 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-export { createCourse, getAllCourses, editCourse, deleteCourse, getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent ,getEditCoursePage};
+export { createCourse, getAllCourses, editCourse, deleteCourse, getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent ,getEditCoursePage , getLessonsByLevel};
