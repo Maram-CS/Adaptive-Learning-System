@@ -3,298 +3,731 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Lessons - <%= course.Title %></title>
-    <link rel="stylesheet" href="/Style/courseLesson.css">
+    <title>Course Lessons & Quizzes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
-        .level-beginner {
-            background: #10B981;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-        .level-intermediate {
-            background: #F59E0B;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-        .level-advanced {
-            background: #EF4444;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-        .lesson-level {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            margin-left: 10px;
-        }
-        .level-badge-beginner {
-            background: #10B981;
-            color: white;
-        }
-        .level-badge-intermediate {
-            background: #F59E0B;
-            color: white;
-        }
-        .level-badge-advanced {
-            background: #EF4444;
-            color: white;
-        }
-        .quiz-card {
-            margin-top: 15px;
-        }
+    :root {
+        --bg: #0d0d14;
+        --surface: #141420;
+        --surface2: #1c1c2a;
+        --border: #262636;
+        --accent: #6c63ff;
+        --accent-glow: rgba(108,99,255,.2);
+        --green: #00d97e;
+        --orange: #f79c42;
+        --red: #ff6b6b;
+        --text: #e4e4f0;
+        --muted: #60607a;
+        --placement-color: #f79c42;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+    }
+
+    .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+    .sidebar {
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        padding: 28px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+    .sidebar .logo {
+        display: flex; align-items: center; gap: 10px;
+        font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px;
+    }
+    .sidebar .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    .sidebar nav a {
+        display: flex; align-items: center; gap: 10px;
+        padding: 9px 13px; border-radius: 8px;
+        color: var(--muted); text-decoration: none; font-size: 14px; transition: all .2s;
+    }
+    .sidebar nav a:hover, .sidebar nav a.active { background: var(--surface2); color: var(--text); }
+
+    .main { padding: 40px 48px; overflow-y: auto; }
+
+    .page-header { margin-bottom: 36px; }
+    .page-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 30px; font-weight: 800; letter-spacing: -.5px;
+    }
+    .page-header p { color: var(--muted); margin-top: 6px; font-size: 14px; }
+
+    .tabs {
+        display: flex; gap: 4px; margin-bottom: 32px;
+        background: var(--surface); border-radius: 12px; padding: 4px; width: fit-content;
+    }
+    .tab-btn {
+        padding: 9px 22px; border-radius: 9px; border: none;
+        background: transparent; color: var(--muted);
+        font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+        cursor: pointer; transition: all .2s;
+    }
+    .tab-btn.active { background: var(--surface2); color: var(--text); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .section-card {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 16px; padding: 28px; margin-bottom: 24px;
+    }
+    .section-card h2 {
+        font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+        margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-card h2 .icon-badge {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .placement-badge  { background: rgba(247,156,66,.2); color: var(--orange); }
+    .level-badge-icon { background: var(--accent-glow); color: var(--accent); }
+    .green-badge      { background: rgba(0,217,126,.15); color: var(--green); }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+        display: block; font-size: 12px; font-weight: 500; color: var(--muted);
+        margin-bottom: 7px; letter-spacing: .5px; text-transform: uppercase;
+    }
+    .field input, .field select, .field textarea {
+        width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+        border-radius: 10px; color: var(--text); padding: 11px 14px;
+        font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color .2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+    .field select option { background: var(--surface2); }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+    .questions-container { display: flex; flex-direction: column; gap: 16px; }
+
+    .question-card {
+        background: var(--surface2); border: 1px solid var(--border);
+        border-radius: 12px; padding: 20px; position: relative;
+    }
+    .question-card .q-header {
+        display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+    }
+    .q-num { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+    .q-type-tag {
+        font-size: 10px; font-weight: 600; letter-spacing: .5px;
+        text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
+    }
+    .tag-mc { background: var(--accent-glow); color: var(--accent); }
+    .tag-tf { background: rgba(0,217,126,.15); color: var(--green); }
+    .tag-ms { background: rgba(247,156,66,.15); color: var(--orange); }
+    .tag-wr { background: rgba(255,107,107,.15); color: var(--red); }
+
+    .del-q-btn {
+        position: absolute; top: 16px; right: 16px;
+        background: rgba(255,107,107,.15); color: var(--red);
+        border: none; border-radius: 6px; padding: 4px 10px;
+        font-size: 12px; cursor: pointer; transition: background .2s;
+    }
+    .del-q-btn:hover { background: rgba(255,107,107,.3); }
+
+    .q-input {
+        width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 8px; color: var(--text); padding: 10px 13px;
+        font-family: 'DM Sans', sans-serif; font-size: 14px;
+        outline: none; transition: border-color .2s; margin-bottom: 14px;
+    }
+    .q-input:focus { border-color: var(--accent); }
+
+    .options-area { display: flex; flex-direction: column; gap: 8px; }
+
+    .opt-row { display: flex; align-items: center; gap: 10px; }
+    .opt-row input[type="text"] {
+        flex: 1; background: var(--bg); border: 1.5px solid var(--border);
+        border-radius: 8px; color: var(--text); padding: 9px 12px;
+        font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border-color .2s;
+    }
+    .opt-row input[type="text"]:focus { border-color: var(--accent); }
+
+    .correct-marker {
+        display: flex; align-items: center; gap: 5px;
+        font-size: 12px; color: var(--muted); white-space: nowrap;
+    }
+    .correct-marker input[type="radio"]    { accent-color: var(--green);  width: 15px; height: 15px; }
+    .correct-marker input[type="checkbox"] { accent-color: var(--orange); width: 15px; height: 15px; }
+
+    .add-opt-btn {
+        background: transparent; border: 1.5px dashed var(--border);
+        border-radius: 8px; color: var(--muted); padding: 8px 14px;
+        font-size: 13px; cursor: pointer; width: 100%; margin-top: 6px; transition: all .2s;
+    }
+    .add-opt-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .tf-area { display: flex; gap: 12px; }
+    .tf-option {
+        flex: 1; padding: 14px; border-radius: 10px; border: 1.5px solid var(--border);
+        background: var(--bg); display: flex; align-items: center;
+        justify-content: center; gap: 8px; font-weight: 600; font-size: 14px;
+        cursor: default; color: var(--muted);
+    }
+    .tf-correct-row { display: flex; gap: 12px; margin-top: 10px; }
+    .tf-correct-btn {
+        flex: 1; padding: 9px; border-radius: 8px; border: 1.5px solid var(--border);
+        background: transparent; color: var(--muted); font-size: 13px; font-weight: 600;
+        cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+        transition: all .2s;
+    }
+    .tf-correct-btn.selected-true  { border-color: var(--green); background: rgba(0,217,126,.12); color: var(--green); }
+    .tf-correct-btn.selected-false { border-color: var(--red);   background: rgba(255,107,107,.12); color: var(--red); }
+
+    .written-area input[type="text"] {
+        width: 100%; background: var(--bg); border: 1.5px solid var(--red);
+        border-radius: 8px; color: var(--text); padding: 10px 13px;
+        font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+    }
+    .written-area label { font-size: 12px; color: var(--red); margin-bottom: 6px; display: block; }
+
+    .add-question-bar {
+        border: 1.5px dashed var(--border); border-radius: 12px;
+        padding: 16px; display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;
+    }
+    .add-q-btn {
+        padding: 9px 18px; border-radius: 8px; border: 1.5px solid var(--border);
+        background: var(--surface); color: var(--muted);
+        font-size: 13px; font-weight: 500; cursor: pointer;
+        transition: all .2s; display: flex; align-items: center; gap: 6px;
+    }
+    .add-q-btn:hover { border-color: var(--accent); color: var(--text); }
+
+    .save-btn {
+        background: linear-gradient(135deg, var(--accent), #a09cff);
+        color: white; border: none; padding: 13px 32px; border-radius: 11px;
+        font-size: 15px; font-weight: 700; cursor: pointer;
+        display: flex; align-items: center; gap: 8px;
+        transition: opacity .2s, transform .2s; margin-top: 24px;
+    }
+    .save-btn:hover { opacity: .9; transform: translateY(-1px); }
+
+    .quiz-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .quiz-item {
+        background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+        padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .quiz-item .qi-left { display: flex; align-items: center; gap: 12px; }
+    .qi-type-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-placement    { background: var(--orange); }
+    .dot-beginner     { background: var(--green); }
+    .dot-intermediate { background: var(--accent); }
+    .dot-advanced     { background: var(--red); }
+    .qi-title { font-size: 14px; font-weight: 500; }
+    .qi-meta  { font-size: 12px; color: var(--muted); }
+    .del-quiz-btn {
+        background: rgba(255,107,107,.12); color: var(--red);
+        border: none; border-radius: 7px; padding: 5px 12px;
+        font-size: 12px; cursor: pointer; transition: background .2s;
+    }
+    .del-quiz-btn:hover { background: rgba(255,107,107,.3); }
+
+    .toast {
+        position: fixed; bottom: 28px; right: 28px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 12px; padding: 14px 20px;
+        display: flex; align-items: center; gap: 10px;
+        color: var(--text); font-size: 14px;
+        box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        transform: translateY(80px); opacity: 0;
+        transition: all .3s cubic-bezier(.16,1,.3,1); z-index: 1000;
+    }
+    .toast.show    { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--green); }
+    .toast.error   { border-color: var(--red); }
+
+    .lessons-table { width: 100%; border-collapse: collapse; }
+    .lessons-table th {
+        text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 600;
+        letter-spacing: .5px; text-transform: uppercase; color: var(--muted);
+        border-bottom: 1px solid var(--border);
+    }
+    .lessons-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .level-chip {
+        display: inline-block; padding: 3px 10px; border-radius: 20px;
+        font-size: 11px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase;
+    }
+    .chip-beginner     { background: rgba(0,217,126,.15); color: var(--green); }
+    .chip-intermediate { background: var(--accent-glow); color: var(--accent); }
+    .chip-advanced     { background: rgba(255,107,107,.15); color: var(--red); }
     </style>
 </head>
 <body>
+<div class="layout">
 
-<div class="page-container">
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="logo">
-            <img src="/img/logoBleu.png" class="logo-img" alt="logo">
-            <span>Eduphin</span>
-        </div>
-
-        <div class="menu">
-            <ul>
-                <li><a href="/teacherDashboard/get">Home</a></li>
-                <li><a href="/profile/Profile-view">My Profile</a></li>
-                <li><a href="/App/createQuiz">Create Quiz</a></li>
-                <li><a href="/App/createCourse">Create Course</a></li>
-                <li><a href="/App/studentAnalytics">Student Analytics</a></li>
-            </ul>
-        </div>
-
-        <br><br><br><br><br>
-
-        <a href="/home">
-            <button class="logout"><i class="fas fa-sign-out-alt"></i> Sign out</button>
-        </a>
-    </div>
-
-    <!-- MAIN -->
-    <div class="main">
-
-        <div class="main-header">
-            <h2><%= course.Title %> - <span>Lessons</span></h2>
-        </div>
-
-        <div style="padding: 2rem;">
-
-            <button class="back-btn" onclick="window.location.href='/teacherDashboard/get'">
-                ← Back to Dashboard
-            </button>
-
-            <!-- LESSONS SECTION -->
-            <div class="lessons-container">
-                <h3>📚 Course Content</h3>
-
-                <% if (course.lessons && course.lessons.length > 0) { %>
-
-                    <% course.lessons.forEach((lesson, index) => { 
-                        let levelClass = '';
-                        let levelText = '';
-                        if(lesson.level === 'beginner') {
-                            levelClass = 'level-badge-beginner';
-                            levelText = 'Beginner';
-                        } else if(lesson.level === 'intermediate') {
-                            levelClass = 'level-badge-intermediate';
-                            levelText = 'Intermediate';
-                        } else if(lesson.level === 'advanced') {
-                            levelClass = 'level-badge-advanced';
-                            levelText = 'Advanced';
-                        }
-                    %>
-
-                        <div class="lesson-card">
-
-                            <div class="lesson-title">
-                                Lesson <%= index + 1 %>: <%= lesson.name %>
-                                <span class="lesson-level <%= levelClass %>"><%= levelText %></span>
-                            </div>
-
-                            <div>
-                                <span class="lesson-type <%= lesson.type === 'video' ? 'type-video' : 'type-pdf' %>">
-                                    <%= lesson.type === 'video' ? '🎬 Video' : '📄 PDF' %>
-                                </span>
-                                <span class="lesson-duration">⏱️ <%= lesson.duration %></span>
-                            </div>
-
-                            <% if (lesson.file && lesson.file !== "") { %>
-                                <div>
-                                    <a href="<%= lesson.file %>" class="file-link" target="_blank">
-                                        <%= lesson.type === 'video' ? '▶️ Watch Video' : '📖 Read PDF' %>
-                                    </a>
-                                </div>
-                            <% } else { %>
-                                <p style="color: #f59e0b;">⚠️ No file uploaded yet</p>
-                            <% } %>
-
-                        </div>
-
-                    <% }) %>
-
-                <% } else { %>
-
-                    <div class="no-lessons">
-                        <p>📚 No lessons added yet</p>
-                        <a href="/courses/edit/<%= course.slug %>" class="file-link">
-                            + Add Lessons
-                        </a>
-                    </div>
-
-                <% } %>
-
-            </div>
-
-            <!-- QUIZZES SECTION -->
-            <div class="lessons-container" style="margin-top:40px;">
-                <h3>🧠 Course Quizzes</h3>
-                
-                <!-- Beginner Quizzes -->
-                <% if(quizzesByLevel && quizzesByLevel.beginner && quizzesByLevel.beginner.length > 0) { %>
-                    <h4 style="color: #10B981; margin-top: 20px;">🌱 Beginner Level Quizzes</h4>
-                    <% quizzesByLevel.beginner.forEach((quiz, qIndex) => { %>
-                        <div class="lesson-card quiz-card">
-                            <div class="lesson-title">
-                                📝 Quiz: <%= quiz.title %>
-                                <span class="level-beginner">Beginner</span>
-                            </div>
-                            <div>Passing Score: <%= quiz.passingScore || 70 %>%</div>
-                            <div>Questions: <%= quiz.questions?.length || 0 %></div>
-                            <% if(quiz.questions && quiz.questions.length > 0) { %>
-                                <details style="margin-top: 10px;">
-                                    <summary style="cursor: pointer; color: #4F46E5;">View Questions</summary>
-                                    <% quiz.questions.forEach((q, i) => { %>
-                                        <div style="margin-top: 10px; padding: 10px; background: #f9fafb; border-radius: 8px;">
-                                            <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
-                                            <ul style="margin-top: 5px; margin-bottom: 5px;">
-                                                <% q.options.forEach((opt, oIndex) => { %>
-                                                    <li>
-                                                        <%= opt %>
-                                                        <% if (oIndex === q.correctAnswer) { %>
-                                                            <span style="color: green;"> ✔ (Correct)</span>
-                                                        <% } %>
-                                                    </li>
-                                                <% }) %>
-                                            </ul>
-                                        </div>
-                                    <% }) %>
-                                </details>
-                            <% } %>
-                        </div>
-                    <% }) %>
-                <% } %>
-                
-                <!-- Intermediate Quizzes -->
-                <% if(quizzesByLevel && quizzesByLevel.intermediate && quizzesByLevel.intermediate.length > 0) { %>
-                    <h4 style="color: #F59E0B; margin-top: 20px;">⚡ Intermediate Level Quizzes</h4>
-                    <% quizzesByLevel.intermediate.forEach((quiz, qIndex) => { %>
-                        <div class="lesson-card quiz-card">
-                            <div class="lesson-title">
-                                📝 Quiz: <%= quiz.title %>
-                                <span class="level-intermediate">Intermediate</span>
-                            </div>
-                            <div>Passing Score: <%= quiz.passingScore || 70 %>%</div>
-                            <div>Questions: <%= quiz.questions?.length || 0 %></div>
-                            <% if(quiz.questions && quiz.questions.length > 0) { %>
-                                <details style="margin-top: 10px;">
-                                    <summary style="cursor: pointer; color: #4F46E5;">View Questions</summary>
-                                    <% quiz.questions.forEach((q, i) => { %>
-                                        <div style="margin-top: 10px; padding: 10px; background: #f9fafb; border-radius: 8px;">
-                                            <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
-                                            <ul style="margin-top: 5px; margin-bottom: 5px;">
-                                                <% q.options.forEach((opt, oIndex) => { %>
-                                                    <li>
-                                                        <%= opt %>
-                                                        <% if (oIndex === q.correctAnswer) { %>
-                                                            <span style="color: green;"> ✔ (Correct)</span>
-                                                        <% } %>
-                                                    </li>
-                                                <% }) %>
-                                            </ul>
-                                        </div>
-                                    <% }) %>
-                                </details>
-                            <% } %>
-                        </div>
-                    <% }) %>
-                <% } %>
-                
-                <!-- Advanced Quizzes -->
-                <% if(quizzesByLevel && quizzesByLevel.advanced && quizzesByLevel.advanced.length > 0) { %>
-                    <h4 style="color: #EF4444; margin-top: 20px;">🚀 Advanced Level Quizzes</h4>
-                    <% quizzesByLevel.advanced.forEach((quiz, qIndex) => { %>
-                        <div class="lesson-card quiz-card">
-                            <div class="lesson-title">
-                                📝 Quiz: <%= quiz.title %>
-                                <span class="level-advanced">Advanced</span>
-                            </div>
-                            <div>Passing Score: <%= quiz.passingScore || 70 %>%</div>
-                            <div>Questions: <%= quiz.questions?.length || 0 %></div>
-                            <% if(quiz.questions && quiz.questions.length > 0) { %>
-                                <details style="margin-top: 10px;">
-                                    <summary style="cursor: pointer; color: #4F46E5;">View Questions</summary>
-                                    <% quiz.questions.forEach((q, i) => { %>
-                                        <div style="margin-top: 10px; padding: 10px; background: #f9fafb; border-radius: 8px;">
-                                            <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
-                                            <ul style="margin-top: 5px; margin-bottom: 5px;">
-                                                <% q.options.forEach((opt, oIndex) => { %>
-                                                    <li>
-                                                        <%= opt %>
-                                                        <% if (oIndex === q.correctAnswer) { %>
-                                                            <span style="color: green;"> ✔ (Correct)</span>
-                                                        <% } %>
-                                                    </li>
-                                                <% }) %>
-                                            </ul>
-                                        </div>
-                                    <% }) %>
-                                </details>
-                            <% } %>
-                        </div>
-                    <% }) %>
-                <% } %>
-                
-                <% if(!quizzesByLevel || 
-                      (!quizzesByLevel.beginner || quizzesByLevel.beginner.length === 0) && 
-                      (!quizzesByLevel.intermediate || quizzesByLevel.intermediate.length === 0) && 
-                      (!quizzesByLevel.advanced || quizzesByLevel.advanced.length === 0)) { %>
-                    <div class="no-lessons">
-                        <p>🧠 No quizzes added yet</p>
-                        <a href="/App/createQuiz?courseId=<%= course._id %>" class="file-link">
-                            + Add Quiz
-                        </a>
-                    </div>
-                <% } %>
-            </div>
-
-            <!-- ADD QUIZ BUTTON -->
-            <div style="margin-top: 20px; text-align: center;">
-                <a href="/App/createQuiz?courseId=<%= course._id %>">
-                    <button class="btn-create" style="background: #4F46E5;">
-                        <i class="fas fa-plus"></i> Add New Quiz
-                    </button>
-                </a>
-            </div>
-
-        </div>
-
-        <div class="footer">© 2026 Eduphin. All Rights Reserved.</div>
-
-    </div>
+<div class="sidebar">
+    <div class="logo"><div class="logo-dot"></div> TeacherPanel</div>
+    <nav>
+        <a href="/teacherDashboard/get"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="/courses/All"><i class="fas fa-book"></i> All Courses</a>
+        <a href="#" class="active"><i class="fas fa-list"></i> Course Content</a>
+    </nav>
 </div>
 
+<div class="main">
+    <div class="page-header">
+        <h1><%= course.Title %></h1>
+        <p>Manage lessons and quizzes for this course</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('lessons', this)">
+            <i class="fas fa-play-circle"></i> Lessons
+        </button>
+        <button class="tab-btn" onclick="switchTab('placement', this)">
+            <i class="fas fa-brain"></i> Placement Quiz
+        </button>
+        <button class="tab-btn" onclick="switchTab('levelquizzes', this)">
+            <i class="fas fa-puzzle-piece"></i> Level Quizzes
+        </button>
+    </div>
+
+    <!-- TAB: LESSONS -->
+    <div class="tab-content active" id="tab-lessons">
+        <div class="section-card">
+            <h2>
+                <span class="icon-badge green-badge"><i class="fas fa-list"></i></span>
+                Course Lessons
+            </h2>
+            <% if(lessons && lessons.length > 0) { %>
+            <table class="lessons-table">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Name</th><th>Type</th><th>Level</th><th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% lessons.forEach((lesson, i) => { %>
+                    <tr>
+                        <td><%= i+1 %></td>
+                        <td><%= lesson.name %></td>
+                        <td><i class="fas <%= lesson.type === 'video' ? 'fa-video' : 'fa-file-pdf' %>"></i> <%= lesson.type %></td>
+                        <td><span class="level-chip chip-<%= lesson.level %>"><%= lesson.level %></span></td>
+                        <td><%= lesson.duration %></td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <% } else { %>
+                <p style="color:var(--muted);text-align:center;padding:32px">No lessons yet.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- TAB: PLACEMENT QUIZ -->
+    <div class="tab-content" id="tab-placement">
+        <div class="section-card">
+            <h2>
+                <span class="icon-badge placement-badge"><i class="fas fa-brain"></i></span>
+                Placement / Level Test Quiz
+            </h2>
+            <p style="color:var(--muted);font-size:14px;margin-bottom:24px">
+                Shown to students <strong>before</strong> accessing lessons. Score determines starting level.<br><br>
+                Score &lt; 40% → <span style="color:var(--green)">Beginner</span> &nbsp;|&nbsp;
+                40–69% → <span style="color:var(--orange)">Intermediate</span> &nbsp;|&nbsp;
+                ≥ 70% → <span style="color:var(--accent)">Advanced</span>
+            </p>
+
+            <% if(placementQuiz) { %>
+            <div class="quiz-list">
+                <div class="quiz-item">
+                    <div class="qi-left">
+                        <div class="qi-type-dot dot-placement"></div>
+                        <div>
+                            <div class="qi-title"><%= placementQuiz.title %></div>
+                            <div class="qi-meta"><%= placementQuiz.questions.length %> questions · Passing: <%= placementQuiz.passingScore || 70 %>%</div>
+                        </div>
+                    </div>
+                    <button class="del-quiz-btn" onclick="deleteQuiz('<%= placementQuiz._id %>')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            <% } else { %>
+            <p style="color:var(--muted);font-size:13px;margin-bottom:20px">
+                <i class="fas fa-info-circle"></i> No placement quiz yet — create one below.
+            </p>
+            <% } %>
+
+            <div class="row-2">
+                <div class="field">
+                    <label>Quiz Title</label>
+                    <input type="text" id="pt-title" placeholder="e.g. Level Assessment Quiz" value="Level Assessment Quiz">
+                </div>
+                <div class="field">
+                    <label>Passing Score (%)</label>
+                    <input type="number" id="pt-passing" value="70" min="0" max="100">
+                </div>
+            </div>
+
+            <div class="questions-container" id="pt-questions"></div>
+
+            <div class="add-question-bar">
+                <button class="add-q-btn" onclick="addQuestion('pt', 'multiple-choice')">
+                    <i class="fas fa-circle-dot"></i> Multiple Choice
+                </button>
+                <button class="add-q-btn" onclick="addQuestion('pt', 'true-false')">
+                    <i class="fas fa-toggle-on"></i> True / False
+                </button>
+                <button class="add-q-btn" onclick="addQuestion('pt', 'multi-select')">
+                    <i class="fas fa-check-square"></i> Select All That Apply
+                </button>
+                <button class="add-q-btn" onclick="addQuestion('pt', 'written')">
+                    <i class="fas fa-pencil"></i> Written Answer
+                </button>
+            </div>
+
+            <button class="save-btn" onclick="saveQuiz('placement')">
+                <i class="fas fa-floppy-disk"></i> Save Placement Quiz
+            </button>
+        </div>
+    </div>
+
+    <!-- TAB: LEVEL QUIZZES -->
+    <div class="tab-content" id="tab-levelquizzes">
+        <div class="section-card">
+            <h2>
+                <span class="icon-badge level-badge-icon"><i class="fas fa-puzzle-piece"></i></span>
+                Level Quizzes
+            </h2>
+            <p style="color:var(--muted);font-size:14px;margin-bottom:24px">
+                One quiz per level. Unlocked after student completes all lessons for that level.
+            </p>
+
+            <%
+            const allLevelQuizzes = [
+                ...(quizzesByLevel.beginner     || []),
+                ...(quizzesByLevel.intermediate || []),
+                ...(quizzesByLevel.advanced     || [])
+            ];
+            %>
+            <% if(allLevelQuizzes.length > 0) { %>
+            <div class="quiz-list">
+                <% allLevelQuizzes.forEach(q => { %>
+                <div class="quiz-item">
+                    <div class="qi-left">
+                        <div class="qi-type-dot dot-<%= q.level %>"></div>
+                        <div>
+                            <div class="qi-title"><%= q.title %></div>
+                            <div class="qi-meta"><%= q.level %> · <%= q.questions.length %> questions · Passing: <%= q.passingScore || 70 %>%</div>
+                        </div>
+                    </div>
+                    <button class="del-quiz-btn" onclick="deleteQuiz('<%= q._id %>')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+                <% }) %>
+            </div>
+            <% } %>
+
+            <div class="row-3" style="margin-bottom:18px">
+                <div class="field">
+                    <label>Quiz Title</label>
+                    <input type="text" id="lq-title" placeholder="e.g. Beginner Final Quiz">
+                </div>
+                <div class="field">
+                    <label>Level</label>
+                    <select id="lq-level">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Passing Score (%)</label>
+                    <input type="number" id="lq-passing" value="70" min="0" max="100">
+                </div>
+            </div>
+
+            <div class="questions-container" id="lq-questions"></div>
+
+            <div class="add-question-bar">
+                <button class="add-q-btn" onclick="addQuestion('lq', 'multiple-choice')">
+                    <i class="fas fa-circle-dot"></i> Multiple Choice
+                </button>
+                <button class="add-q-btn" onclick="addQuestion('lq', 'true-false')">
+                    <i class="fas fa-toggle-on"></i> True / False
+                </button>
+                <button class="add-q-btn" onclick="addQuestion('lq', 'multi-select')">
+                    <i class="fas fa-check-square"></i> Select All That Apply
+                </button>
+                <button class="add-q-btn" onclick="addQuestion('lq', 'written')">
+                    <i class="fas fa-pencil"></i> Written Answer
+                </button>
+            </div>
+
+            <button class="save-btn" onclick="saveQuiz('level')">
+                <i class="fas fa-floppy-disk"></i> Save Level Quiz
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const COURSE_SLUG = '<%= course.slug %>';
+
+function switchTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+}
+
+let ptCount = 0;
+let lqCount = 0;
+
+function addQuestion(prefix, type) {
+    const container = document.getElementById(`${prefix}-questions`);
+    const idx = prefix === 'pt' ? ptCount++ : lqCount++;
+
+    const typeLabels = {
+        'multiple-choice': { tag: 'MC',          cls: 'tag-mc', icon: 'fa-circle-dot' },
+        'true-false':      { tag: 'T/F',         cls: 'tag-tf', icon: 'fa-toggle-on'  },
+        'multi-select':    { tag: 'SELECT ALL',  cls: 'tag-ms', icon: 'fa-check-square'},
+        'written':         { tag: 'WRITTEN',     cls: 'tag-wr', icon: 'fa-pencil'     },
+    };
+    const meta = typeLabels[type];
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `${prefix}-q-${idx}`;
+    card.dataset.type = type;
+    card.dataset.idx  = idx;
+
+    card.innerHTML = `
+        <div class="q-header">
+            <span class="q-num">Question ${idx + 1}</span>
+            <span class="q-type-tag ${meta.cls}"><i class="fas ${meta.icon}"></i> ${meta.tag}</span>
+        </div>
+        <button class="del-q-btn" onclick="this.closest('.question-card').remove()">
+            <i class="fas fa-times"></i> Remove
+        </button>
+        <input type="text" class="q-input" placeholder="Enter your question…" data-role="question">
+        ${buildQuestionBody(prefix, idx, type)}
+    `;
+    container.appendChild(card);
+}
+
+function buildQuestionBody(prefix, idx, type) {
+    if (type === 'true-false') {
+        return `
+        <div class="tf-area">
+            <div class="tf-option"><i class="fas fa-check" style="color:var(--green)"></i> True</div>
+            <div class="tf-option"><i class="fas fa-times" style="color:var(--red)"></i> False</div>
+        </div>
+        <div class="tf-correct-row">
+            <button type="button" class="tf-correct-btn" data-value="0"
+                    onclick="selectTF(this, '${prefix}', ${idx})">
+                <i class="fas fa-check"></i> True is correct
+            </button>
+            <button type="button" class="tf-correct-btn" data-value="1"
+                    onclick="selectTF(this, '${prefix}', ${idx})">
+                <i class="fas fa-times"></i> False is correct
+            </button>
+        </div>
+        <input type="hidden" data-role="correctAnswer" value="">`;
+    }
+
+    if (type === 'multiple-choice') {
+        return `
+        <div class="options-area" data-role="options-area" data-optcount="2">
+            ${buildMCOpt(0, 'radio')}
+            ${buildMCOpt(1, 'radio')}
+        </div>
+        <button class="add-opt-btn" onclick="addOption(this, 'radio')">
+            <i class="fas fa-plus"></i> Add Option
+        </button>`;
+    }
+
+    if (type === 'multi-select') {
+        return `
+        <p style="font-size:12px;color:var(--orange);margin-bottom:8px">
+            <i class="fas fa-info-circle"></i> Check ALL correct answers
+        </p>
+        <div class="options-area" data-role="options-area" data-optcount="2">
+            ${buildMCOpt(0, 'checkbox')}
+            ${buildMCOpt(1, 'checkbox')}
+        </div>
+        <button class="add-opt-btn" onclick="addOption(this, 'checkbox')">
+            <i class="fas fa-plus"></i> Add Option
+        </button>`;
+    }
+
+    if (type === 'written') {
+        return `
+        <div class="written-area">
+            <label><i class="fas fa-pencil"></i> Expected Answer (case-insensitive exact match)</label>
+            <input type="text" data-role="correctAnswerText" placeholder="Type the expected answer…">
+        </div>`;
+    }
+
+    return '';
+}
+
+function buildMCOpt(optIdx, inputType) {
+    const inputTag = inputType === 'radio'
+        ? `<input type="radio" title="Mark as correct">`
+        : `<input type="checkbox" title="Mark as correct">`;
+    return `
+    <div class="opt-row" data-opt-idx="${optIdx}">
+        <input type="text" placeholder="Option ${String.fromCharCode(65 + optIdx)}…">
+        <label class="correct-marker">${inputTag} Correct</label>
+    </div>`;
+}
+
+function addOption(btn, inputType) {
+    const area   = btn.previousElementSibling;
+    const optIdx = parseInt(area.dataset.optcount);
+    area.dataset.optcount = optIdx + 1;
+    area.insertAdjacentHTML('beforeend', buildMCOpt(optIdx, inputType));
+}
+
+function selectTF(btn, prefix, idx) {
+    const card = document.getElementById(`${prefix}-q-${idx}`);
+    card.querySelectorAll('.tf-correct-btn').forEach(b => b.className = 'tf-correct-btn');
+    const val = btn.dataset.value;
+    btn.classList.add(val === '0' ? 'selected-true' : 'selected-false');
+    card.querySelector('[data-role="correctAnswer"]').value = val;
+}
+
+function collectQuestions(prefix) {
+    const cards = document.querySelectorAll(`#${prefix}-questions .question-card`);
+    const questions = [];
+
+    cards.forEach(card => {
+        const type         = card.dataset.type;
+        const questionText = card.querySelector('[data-role="question"]')?.value?.trim();
+        if (!questionText) return;
+
+        const q = { question: questionText, questionType: type };
+
+        if (type === 'true-false') {
+            q.options       = ['True', 'False'];
+            const val       = card.querySelector('[data-role="correctAnswer"]')?.value;
+            q.correctAnswer = val !== '' ? parseInt(val) : null;
+        }
+
+        if (type === 'multiple-choice') {
+            const optRows   = card.querySelectorAll('.opt-row');
+            q.options       = [];
+            q.correctAnswer = null;
+            optRows.forEach(row => {
+                const text  = row.querySelector('input[type="text"]')?.value?.trim();
+                const radio = row.querySelector('input[type="radio"]');
+                if (text) {
+                    q.options.push(text);
+                    if (radio?.checked) q.correctAnswer = q.options.length - 1;
+                }
+            });
+        }
+
+        if (type === 'multi-select') {
+            const optRows    = card.querySelectorAll('.opt-row');
+            q.options        = [];
+            q.correctAnswers = [];
+            optRows.forEach(row => {
+                const text = row.querySelector('input[type="text"]')?.value?.trim();
+                const cb   = row.querySelector('input[type="checkbox"]');
+                if (text) {
+                    const optIdx = q.options.length;
+                    q.options.push(text);
+                    if (cb?.checked) q.correctAnswers.push(optIdx);
+                }
+            });
+        }
+
+        if (type === 'written') {
+            q.correctAnswerText = card.querySelector('[data-role="correctAnswerText"]')?.value?.trim() || '';
+        }
+
+        questions.push(q);
+    });
+
+    return questions;
+}
+
+async function saveQuiz(quizType) {
+    const isPlacement = quizType === 'placement';
+    const prefix      = isPlacement ? 'pt' : 'lq';
+
+    const title   = document.getElementById(`${prefix}-title`)?.value?.trim();
+    const passing = parseInt(document.getElementById(`${prefix}-passing`)?.value) || 70;
+    const level   = isPlacement ? null : document.getElementById('lq-level')?.value;
+
+    if (!title) { showToast('Please enter a quiz title.', 'error'); return; }
+
+    const questions = collectQuestions(prefix);
+    if (questions.length === 0) { showToast('Add at least one question.', 'error'); return; }
+
+    const payload = {
+        title,
+        quizType: isPlacement ? 'placement' : 'level',
+        passingScore: passing,
+        questions,
+    };
+    if (!isPlacement && level) payload.level = level;
+
+    try {
+        const res  = await fetch(`/courses/content/${COURSE_SLUG}/quiz/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('✓ Quiz saved!', 'success');
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            showToast(data.message || 'Error saving quiz.', 'error');
+        }
+    } catch (err) {
+        showToast('Network error: ' + err.message, 'error');
+    }
+}
+
+async function deleteQuiz(quizId) {
+    if (!confirm('Delete this quiz?')) return;
+    try {
+        const res  = await fetch(`/courses/content/${COURSE_SLUG}/quiz/${quizId}`, {
+            method: 'DELETE', credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Quiz deleted.', 'success');
+            setTimeout(() => location.reload(), 900);
+        } else {
+            showToast(data.message || 'Error.', 'error');
+        }
+    } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+    }
+}
+
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
 </body>
 </html>
