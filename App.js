@@ -27,7 +27,7 @@ const __dirname = dirname(__filename);
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
 App.use(cookieParser());
-App.use(authRequest);
+
 
 // ⚠️ Sert le dossier Public/uploads pour les fichiers uploadés
 App.use('/uploads', express.static(join(__dirname, 'Public/uploads')));
