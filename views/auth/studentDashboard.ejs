@@ -292,36 +292,7 @@
 
     loadDashboard();
 
-    //num de notfications
-async function loadUnreadCount() {
-  try {
-    const res = await fetch('/api/notifications', {
-      credentials: 'include'
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      // نحسب غير unread
-      const unread = data.notifications.filter(n => !n.is_read).length;
-
-      const badge = document.querySelector('.notif-badge');
-
-      if (unread > 0) {
-        badge.textContent = unread;
-        badge.style.display = 'flex';
-      } else {
-        badge.style.display = 'none';
-      }
-    }
-
-  } catch (err) {
-    console.log("error loading notifications", err);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadUnreadCount);
-window.addEventListener("focus", loadUnreadCount);
 </script>
+<script src="/js/notifications.js"></script>
 </body>
 </html>

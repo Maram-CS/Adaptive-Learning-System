@@ -184,23 +184,8 @@ document.addEventListener('tidioChat-ready', function () {
   });
 });
 
-async function loadUnreadCount() {
-  try {
-    const res  = await fetch('/api/notifications', { credentials: 'include' });
-    const data = await res.json();
-    if (data.success) {
-      const unread = data.notifications.filter(n => !n.is_read).length;
-      const badge  = document.querySelector('.notif-badge');
-      badge.textContent = unread > 0 ? unread : '';
-      badge.style.display = unread > 0 ? 'flex' : 'none';
-    }
-  } catch (err) {
-    console.log('error loading notifications', err);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', loadUnreadCount);
 </script>
+<script src="/js/notifications.js"></script>
 
 </body>
 </html>
