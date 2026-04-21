@@ -1,45 +1,53 @@
-import Router from "express";
-import { getAllCourses, getCourseBySlug, createCourse,editCourse, deleteCourse, getCourseLessonsPage,getCourseBySlugForStudent,getEditCoursePage,getLessonsByLevel,getCourseLearnPage,completeLesson,submitPlacementQuiz}from "../Controller/courseController.js";
+import {Router} from "express";
+import {
+    getAllCourses, getCourseBySlug, createCourse, editCourse, deleteCourse,
+    getCourseLessonsPage, getCourseBySlugForStudent, getEditCoursePage,
+    getLessonsByLevel, getCourseLearnPage, completeLesson,
+    submitPlacementQuiz, saveQuiz, deleteQuiz , getLevelQuiz, getLevelLessons
+} from "../Controller/courseController.js";
 import authRequest from "../middleware/authMiddleware.js";
-import { roleRequest }from "../middleware/roleMiddleware.js";
-import { upload }from "../ConfigDB/multerConfig.js";
+import { roleRequest } from "../middleware/roleMiddleware.js";
+import { upload } from "../ConfigDB/multerConfig.js";
 
 const coursesRouter = Router();
 
-const courseUpload = upload.fields([ { name: "image",       maxCount: 1  }, { name: "lessonFiles", maxCount: 50 }
+const courseUpload = upload.fields([
+    { name: "image",       maxCount: 1  },
+    { name: "lessonFiles", maxCount: 50 }
 ]);
 
-// Public routes
-coursesRouter.get("/All",getAllCourses);
-coursesRouter.get("/getCourse/:slug",getCourseBySlug);
+// ── Public ─────────────────────────────────────────────────────────────────────
+coursesRouter.get("/All", getAllCourses);
+coursesRouter.get("/getCourse/:slug", getCourseBySlug);
 
-// Protected routes (instructor only)
-coursesRouter.post( "/create",authRequest, roleRequest,courseUpload, createCourse
-);
+// ── Instructor ─────────────────────────────────────────────────────────────────
+coursesRouter.post("/create",       authRequest, roleRequest, courseUpload, createCourse);
+coursesRouter.post("/edit/:slug",   authRequest, roleRequest, courseUpload, editCourse);
+coursesRouter.post("/delete/:slug", authRequest, roleRequest, deleteCourse);
 
-coursesRouter.post("/edit/:slug",authRequest,roleRequest,courseUpload,editCourse
-);
-
-coursesRouter.post("/delete/:slug",authRequest, roleRequest, deleteCourse);
-
-//get lessons page for teacher
+// Teacher: lesson management page
 coursesRouter.get("/content/:slug", authRequest, roleRequest, getCourseLessonsPage);
+coursesRouter.get("/edit/:slug",    authRequest, roleRequest, getEditCoursePage);
 
-//get course page for student
-coursesRouter.get("/course/:slug",authRequest, getCourseBySlugForStudent);
+// Teacher: quiz CRUD
+coursesRouter.post("/content/:slug/quiz/save",         authRequest, roleRequest, saveQuiz);
+coursesRouter.delete("/content/:slug/quiz/:quizId",    authRequest, roleRequest, deleteQuiz);
 
-coursesRouter.get("/edit/:slug",authRequest,roleRequest,getEditCoursePage);
+// ── Student ─────────────────────────────────────────────────────────────────────
+// "View Details" on courses.ejs → lands here → shows placement quiz (or redirects to /learn)
+coursesRouter.get("/course/:slug",        authRequest, getCourseBySlugForStudent);
+coursesRouter.get("/course/:slug/learn",  authRequest, getCourseLearnPage);
 
+// Lesson level filter (legacy)
 coursesRouter.get("/:courseId/lessons/:level", getLessonsByLevel);
 
-// Dans ton fichier de routes
-coursesRouter.get('/course/:slug/learn', authRequest, getCourseLearnPage);
+// ── API endpoints (called via fetch) ───────────────────────────────────────────
+coursesRouter.post("/api/complete-lesson",        authRequest, completeLesson);
+coursesRouter.post("/api/submit-quiz",  authRequest, submitPlacementQuiz);
 
+coursesRouter.get("/api/level-quiz",    authRequest, getLevelQuiz);
 
-coursesRouter.post("/api/complete-lesson", authRequest, completeLesson);
-
-// Dans coursesRouter.js
-// Placement quiz route
-coursesRouter.post("/api/submit-placement-quiz", authRequest, submitPlacementQuiz);
+// Returns the lessons for a given level (and the student's completed lesson IDs)
+coursesRouter.get("/api/level-lessons", authRequest, getLevelLessons);
 
 export default coursesRouter;

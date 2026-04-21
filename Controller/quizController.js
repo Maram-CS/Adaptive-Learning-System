@@ -1,9 +1,42 @@
 import courseModel from "../Model/courseModel.js";
 import userModel from "../Model/userModel.js";
 import levelProgressModel from "../Model/progressLevelModel.js";
-import progressModel from "../Model/Progress.js";
 
+// ─── Score a single question based on its type ────────────────────────────────
+function scoreQuestion(question, rawAnswer) {
+    const type = question.questionType || "multiple-choice";
 
+    switch (type) {
+        case "multiple-choice":
+        case "true-false": {
+            // rawAnswer is a string like "0", "1", "2" …
+            return parseInt(rawAnswer) === question.correctAnswer ? 1 : 0;
+        }
+
+        case "multi-select": {
+            // rawAnswer is an array of strings ["0","2"] or a single string
+            const submitted = (Array.isArray(rawAnswer) ? rawAnswer : [rawAnswer])
+                .map(Number)
+                .sort();
+            const correct = [...(question.correctAnswers || [])].sort();
+
+            if (submitted.length !== correct.length) return 0;
+            return submitted.every((v, i) => v === correct[i]) ? 1 : 0;
+        }
+
+        case "written": {
+            // case-insensitive exact match (trimmed)
+            const expected = (question.correctAnswerText || "").trim().toLowerCase();
+            const given = (rawAnswer || "").toString().trim().toLowerCase();
+            return given === expected ? 1 : 0;
+        }
+
+        default:
+            return 0;
+    }
+}
+
+// ─── Submit a level quiz ──────────────────────────────────────────────────────
 const submitQuiz = async (req, res) => {
     try {
         const { courseId, quizId, answers, level } = req.body;
@@ -15,21 +48,18 @@ const submitQuiz = async (req, res) => {
         const quiz = course.quizzes.id(quizId);
         if (!quiz) return res.status(404).json({ message: "Quiz not found" });
 
-        // Calculer le score
+        // Score every question
         let score = 0;
         quiz.questions.forEach((q, i) => {
-            if (parseInt(answers[i]) === q.correctAnswer) {
-                score++;
-            }
+            score += scoreQuestion(q, answers[i]);
         });
 
-        const percentage = (score / quiz.questions.length) * 100;
+        const percentage = Math.round((score / quiz.questions.length) * 100);
         const passingScore = quiz.passingScore || 70;
         const passed = percentage >= passingScore;
 
-        // Récupérer LevelProgress
+        // Update LevelProgress
         let levelProgress = await levelProgressModel.findOne({ userId, courseId });
-        
         if (!levelProgress) {
             levelProgress = await levelProgressModel.create({
                 userId,
@@ -38,8 +68,8 @@ const submitQuiz = async (req, res) => {
             });
         }
 
-        // Mettre à jour le niveau correspondant
-        const levelData = levelProgress.levels[level || levelProgress.currentLevel];
+        const levelKey = level || levelProgress.currentLevel;
+        const levelData = levelProgress.levels[levelKey];
         if (levelData) {
             levelData.quizPassed = passed;
             levelData.lastScore = percentage;
@@ -51,57 +81,43 @@ const submitQuiz = async (req, res) => {
 
         if (passed) {
             const levels = ["beginner", "intermediate", "advanced"];
-            const currentIndex = levels.indexOf(level || levelProgress.currentLevel);
-            
+            const currentIndex = levels.indexOf(levelKey);
+
             if (currentIndex < levels.length - 1) {
                 nextLevel = levels[currentIndex + 1];
                 levelProgress.currentLevel = nextLevel;
-                message = `🎉 Félicitations ! Score: ${percentage}%. Tu passes au niveau ${nextLevel.toUpperCase()}!`;
+                message = `🎉 Congratulations! Score: ${percentage}%. You advance to ${nextLevel.toUpperCase()}!`;
             } else {
                 levelProgress.currentLevel = "completed";
                 levelProgress.completedAt = new Date();
-                message = `🎓 BRAVO ! Tu as complété le cours avec ${percentage}% ! 🎓`;
+                message = `🎓 BRAVO! You completed the course with ${percentage}%! 🎓`;
             }
         } else {
-            message = `❌ Score: ${percentage}%. Tu dois revoir les leçons et réessayer le quiz! (Minimum: ${passingScore}%)`;
+            message = `❌ Score: ${percentage}%. Review the lessons and try again! (Minimum: ${passingScore}%)`;
         }
 
         await levelProgress.save();
 
-        // Mettre à jour le niveau de l'utilisateur
-        await userModel.findByIdAndUpdate(userId, {
-            level: levelProgress.currentLevel
-        });
+        await userModel.findByIdAndUpdate(userId, { level: levelProgress.currentLevel });
 
-        // Si c'est une requête AJAX (depuis courseLearn.ejs)
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-            return res.json({
-                success: true,
-                passed,
-                percentage,
-                nextLevel,
-                currentLevel: levelProgress.currentLevel,
-                message,
-                needsRetry: !passed
-            });
-        }
-        
-        // Sinon redirection normale (pour l'ancien système)
-        if (passed) {
-            return res.redirect(`/studentDashboard/course/${courseId}`);
-        } else {
-            return res.redirect(`/quiz/course/${courseId}/quiz/${quizId}?error=low_score`);
-        }
+        // Always respond with JSON (page uses fetch)
+        return res.json({
+            success: true,
+            passed,
+            percentage,
+            nextLevel,
+            currentLevel: levelProgress.currentLevel,
+            message,
+            needsRetry: !passed
+        });
 
     } catch (error) {
         console.error("submitQuiz error:", error);
-        if (req.xhr || req.headers.accept?.includes('application/json')) {
-            return res.status(500).json({ message: error.message });
-        }
-        res.status(500).send(error.message);
+        return res.status(500).json({ message: error.message });
     }
 };
 
+// ─── Get quiz page (legacy fallback) ─────────────────────────────────────────
 const getQuizPage = async (req, res) => {
     try {
         const { courseId, quizId } = req.params;
@@ -112,10 +128,7 @@ const getQuizPage = async (req, res) => {
         const quiz = course.quizzes.id(quizId);
         if (!quiz) return res.send("Quiz not found");
 
-        res.render("auth/quiz", {
-            courseId,
-            quiz
-        });
+        res.render("auth/quiz", { courseId, quiz });
 
     } catch (error) {
         res.status(500).send(error.message);
@@ -123,5 +136,3 @@ const getQuizPage = async (req, res) => {
 };
 
 export { submitQuiz, getQuizPage };
-
-
