@@ -1,5 +1,6 @@
 import courseModel from "../Model/courseModel.js";
 import { notifyNewCourse } from "./notificationController.js";
+import levelProgressModel from "../Model/progressLevelModel.js";
 import progressModel from "../Model/Progress.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -145,49 +146,37 @@ const getCourseBySlug = async (req, res) => {
     }
 };
 
+
 const getCourseBySlugForStudent = async (req, res) => {
     try {
-
-        const course = await courseModel
-        .findOne({ slug: req.params.slug })
-        .populate("Instructor","userName email");
+        const course = await courseModel.findOne({ slug: req.params.slug })
+            .populate("Instructor", "userName email");
 
         if (!course) {
-            return res.send("No course found");
+            return res.status(404).send("Course not found");
         }
 
-        const userId = req.id; // من auth middleware
-
-        // أول lesson
-        const firstLesson = course.lessons[0];
-
-        if(firstLesson){
-
-            const existing = await progressModel.findOne({
-                userId,
-                courseId: course._id,
-                lessonId: firstLesson._id
-            })
-
-            if(!existing){
-                await progressModel.create({
-                    userId,
-                    courseId: course._id,
-                    lessonId: firstLesson._id,
-                    progress: 0,
-                    completed:false,
-                    lastUpdated:new Date(),
-                    pointsEarned:0
-                })
-            }
-
+        const userId = req.id;
+        
+        // Vérifier si l'étudiant a déjà passé le placement quiz
+        let levelProgress = await levelProgressModel.findOne({ userId, courseId: course._id });
+        
+        // Si l'étudiant a déjà un niveau (placement quiz déjà fait)
+        if (levelProgress && levelProgress.placementCompleted) {
+            // Rediriger vers la page d'apprentissage avec son niveau
+            return res.redirect(`/course/${course.slug}/learn`);
         }
-
-        return res.render("auth/course", { course });
+        
+        // Sinon, afficher la page course.ejs avec le placement quiz
+        return res.render("auth/course", {  // ← CHANGER ICI : course au lieu de courseDetailStudent
+            course,
+            showPlacementQuiz: true,
+            placementQuiz: course.placementQuiz
+        });
 
     } catch (err) {
         console.error(err);
-        return res.send("ERROR");
+        return res.status(500).send("Error loading course");
     }
 };
 // GET COURSE LESSONS PAGE
@@ -202,9 +191,17 @@ const getCourseLessonsPage = async (req, res) => {
             return res.status(404).send("Course not found");
         }
 
+        // Grouper les quizzes par niveau
+        const quizzesByLevel = {
+            beginner: course.quizzes?.filter(q => q.level === "beginner") || [],
+            intermediate: course.quizzes?.filter(q => q.level === "intermediate") || [],
+            advanced: course.quizzes?.filter(q => q.level === "advanced") || []
+        };
+
         return res.render("auth/courseLessons", { 
             course: course,
-            lessons: course.lessons || []
+            lessons: course.lessons || [],
+            quizzesByLevel
         });
 
     } catch (err) {
@@ -213,8 +210,66 @@ const getCourseLessonsPage = async (req, res) => {
     }
 };
 
+// Dans courseController.js
+const completeLesson = async (req, res) => {
+    try {
+        const { courseId, lessonId } = req.body;
+        const userId = req.id;
+        
+        // Mettre à jour ou créer le progress
+        let progress = await progressModel.findOne({
+            userId,
+            courseId,
+            lessonId
+        });
+        
+        if (!progress) {
+            progress = new progressModel({
+                userId,
+                courseId,
+                lessonId,
+                completed: true,
+                progress: 100,
+                pointsEarned: 10, // 10 points par leçon
+                lastUpdated: new Date()
+            });
+        } else {
+            progress.completed = true;
+            progress.progress = 100;
+            progress.pointsEarned = 10;
+            progress.lastUpdated = new Date();
+        }
+        
+        await progress.save();
+        
+        // Vérifier si toutes les leçons du niveau actuel sont complétées
+        const course = await courseModel.findById(courseId);
+        const levelProgress = await levelProgressModel.findOne({ userId, courseId });
+        
+        const currentLevelLessons = course.lessons.filter(l => l.level === levelProgress.currentLevel);
+        const completedLessons = await progressModel.find({
+            userId,
+            courseId,
+            lessonId: { $in: currentLevelLessons.map(l => l._id) },
+            completed: true
+        });
+        
+        const allCompleted = completedLessons.length === currentLevelLessons.length;
+        
+        res.json({ 
+            success: true, 
+            allCompleted,
+            message: allCompleted ? "🎉 All lessons completed! You can now take the quiz!" : "Lesson completed!"
+        });
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
 // EDIT COURSE
-// EDIT COURSE (CORRIGÉ)
+
 const editCourse = async (req, res) => {
     try {
         const course = await courseModel.findOne({
@@ -384,4 +439,132 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-export { createCourse, getAllCourses, editCourse, deleteCourse, getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent ,getEditCoursePage , getLessonsByLevel};
+
+const getCourseLearnPage = async (req, res) => {
+    try {
+        const course = await courseModel.findOne({ slug: req.params.slug });
+        
+        if (!course) {
+            return res.status(404).send("Course not found");
+        }
+        
+        const userId = req.id;
+        
+        // Récupérer LevelProgress
+        let levelProgress = await levelProgressModel.findOne({ userId, courseId: course._id });
+        
+        // Vérifier si l'étudiant a passé le placement quiz
+        if (!levelProgress || !levelProgress.placementCompleted) {
+            return res.redirect(`/course/${course.slug}`);
+        }
+        
+        // Récupérer les progrès des leçons
+        const lessonProgress = await progressModel.find({ 
+            userId, 
+            courseId: course._id,
+            completed: true
+        });
+        
+        const completedLessonIds = lessonProgress.map(p => p.lessonId.toString());
+        
+        // Filtrer les leçons du niveau déterminé par le placement quiz
+        const currentLessons = course.lessons.filter(l => l.level === levelProgress.currentLevel);
+        
+        // Vérifier si toutes les leçons sont complétées
+        const allLessonsCompleted = currentLessons.every(lesson => 
+            completedLessonIds.includes(lesson._id.toString())
+        );
+        
+        // Trouver le quiz du niveau actuel
+        const currentQuiz = course.quizzes?.find(q => q.level === levelProgress.currentLevel);
+        const levelData = levelProgress.levels[levelProgress.currentLevel];
+        const showQuiz = allLessonsCompleted && !levelData.quizPassed && currentQuiz;
+        
+        return res.render("auth/courseLearn", {
+            course,
+            currentLevel: levelProgress.currentLevel,
+            currentLessons,
+            completedLessonIds,
+            allLessonsCompleted,
+            showQuiz,
+            quiz: currentQuiz,
+            levelProgress,
+            placementScore: levelProgress.placementScore
+        });
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error loading course");
+    }
+};
+
+const submitPlacementQuiz = async (req, res) => {
+    try {
+        const { courseId, answers } = req.body;
+        const userId = req.id;
+
+        const course = await courseModel.findById(courseId);
+        if (!course) return res.status(404).json({ message: "Course not found" });
+
+        const placementQuiz = course.placementQuiz;
+        if (!placementQuiz) return res.status(404).json({ message: "Placement quiz not found" });
+
+        // Calculer le score
+        let score = 0;
+        placementQuiz.questions.forEach((q, i) => {
+            if (parseInt(answers[i]) === q.correctAnswer) {
+                score++;
+            }
+        });
+
+        const percentage = (score / placementQuiz.questions.length) * 100;
+        
+        // Déterminer le niveau basé sur le score
+        let determinedLevel = "beginner";
+        if (percentage >= 70) {
+            determinedLevel = "advanced";
+        } else if (percentage >= 40) {
+            determinedLevel = "intermediate";
+        } else {
+            determinedLevel = "beginner";
+        }
+
+        // Créer ou mettre à jour LevelProgress
+        let levelProgress = await levelProgressModel.findOne({ userId, courseId });
+        
+        if (!levelProgress) {
+            levelProgress = await levelProgressModel.create({
+                userId,
+                courseId,
+                currentLevel: determinedLevel,
+                placementCompleted: true,
+                placementScore: percentage,
+                levels: {
+                    beginner: { quizPassed: false, quizAttempts: 0, lastScore: 0 },
+                    intermediate: { quizPassed: false, quizAttempts: 0, lastScore: 0 },
+                    advanced: { quizPassed: false, quizAttempts: 0, lastScore: 0 }
+                }
+            });
+        } else {
+            levelProgress.currentLevel = determinedLevel;
+            levelProgress.placementCompleted = true;
+            levelProgress.placementScore = percentage;
+            await levelProgress.save();
+        }
+
+        // Retourner le résultat
+        return res.json({
+            success: true,
+            score: percentage,
+            level: determinedLevel,
+            message: `Votre score: ${percentage}%. Niveau déterminé: ${determinedLevel.toUpperCase()}`,
+            redirectUrl: `/course/${course.slug}/learn`
+        });
+
+    } catch (error) {
+        console.error("submitPlacementQuiz error:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { createCourse, getAllCourses, editCourse, deleteCourse, getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent ,getEditCoursePage , getLessonsByLevel, getCourseLearnPage, completeLesson, submitPlacementQuiz};

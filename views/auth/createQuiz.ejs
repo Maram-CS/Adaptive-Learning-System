@@ -1,128 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Create Quiz</title>
-
-<style>
-body {
-  font-family: Arial;
-  background: #f5f6fa;
-  padding: 30px;
-}
-
-.container {
-  max-width: 800px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
-.question {
-  background: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-button {
-  background: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-button:hover {
-  background: #45a049;
-}
-
-.add-btn {
-  background: #3498db;
-}
-
-.add-btn:hover {
-  background: #2980b9;
-}
-</style>
-
+    <meta charset="UTF-8">
+    <title>Create Quiz for <%= course.title %></title>
+    <link rel="stylesheet" href="/Style/createQuiz.css">
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f6fa;
+            padding: 30px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .question {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4F46E5;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .add-btn {
+            background: #4F46E5;
+        }
+        .add-btn:hover {
+            background: #4338ca;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .level-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .level-beginner { background: #10B981; color: white; }
+        .level-intermediate { background: #F59E0B; color: white; }
+        .level-advanced { background: #EF4444; color: white; }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
-
-<h2>Create Quiz for: <%= course.title %></h2>
-
-<form action="/teacherDashboard/createQuiz" method="POST">
-
-  <!-- IMPORTANT: courseId -->
-  <input type="hidden" name="courseId" value="<%= course._id %>">
-
-  <input type="text" name="title" placeholder="Quiz Title" required>
-
-  <div id="questions-container">
-
-    <div class="question">
-      <input type="text" name="questions[0][question]" placeholder="Enter question" required>
-
-      <input type="text" name="questions[0][options][]" placeholder="Option 1" required>
-      <input type="text" name="questions[0][options][]" placeholder="Option 2" required>
-      <input type="text" name="questions[0][options][]" placeholder="Option 3" required>
-      <input type="text" name="questions[0][options][]" placeholder="Option 4" required>
-
-      <input type="number" name="questions[0][correctAnswer]" placeholder="Correct index (0-3)" required>
-    </div>
-
-  </div>
-
-  <button type="button" class="add-btn" onclick="addQuestion()">+ Add Question</button>
-
-  <button type="submit">Save Quiz</button>
-
-</form>
-
+    <h2>Create Quiz for: <%= course.title %></h2>
+    
+    <form action="/teacherDashboard/createQuiz" method="POST">
+        <input type="hidden" name="courseId" value="<%= course._id %>">
+        
+        <!-- Quiz Title -->
+        <div class="form-group">
+            <label>Quiz Title *</label>
+            <input type="text" name="title" placeholder="e.g., Beginner Level Quiz" required>
+        </div>
+        
+        <!-- Quiz Level (IMPORTANT pour le système adaptatif) -->
+        <div class="form-group">
+            <label>Quiz Level *</label>
+            <select name="level" required>
+                <option value="beginner">🌱 Beginner</option>
+                <option value="intermediate">⚡ Intermediate</option>
+                <option value="advanced">🚀 Advanced</option>
+            </select>
+            <small style="color: #666;">This determines when students will see this quiz</small>
+        </div>
+        
+        <!-- Passing Score -->
+        <div class="form-group">
+            <label>Passing Score (%) *</label>
+            <input type="number" name="passingScore" value="70" min="0" max="100" required>
+            <small style="color: #666;">Minimum score required to pass to next level</small>
+        </div>
+        
+        <!-- Questions Container -->
+        <div id="questions-container">
+            <div class="question">
+                <h4>Question 1</h4>
+                <input type="text" name="questions[0][question]" placeholder="Enter question" required>
+                
+                <label>Options:</label>
+                <input type="text" name="questions[0][options][]" placeholder="Option A" required>
+                <input type="text" name="questions[0][options][]" placeholder="Option B" required>
+                <input type="text" name="questions[0][options][]" placeholder="Option C" required>
+                <input type="text" name="questions[0][options][]" placeholder="Option D" required>
+                
+                <label>Correct Answer (index 0-3):</label>
+                <input type="number" name="questions[0][correctAnswer]" placeholder="0, 1, 2, or 3" min="0" max="3" required>
+            </div>
+        </div>
+        
+        <button type="button" class="add-btn" onclick="addQuestion()">+ Add Question</button>
+        <button type="submit">Save Quiz</button>
+    </form>
 </div>
 
 <script>
-let index = 1;
+let questionIndex = 1;
 
 function addQuestion() {
-  const container = document.getElementById("questions-container");
-
-  const div = document.createElement("div");
-  div.classList.add("question");
-
-  div.innerHTML = `
-    <input type="text" name="questions[${index}][question]" placeholder="Enter question" required>
-
-    <input type="text" name="questions[${index}][options][]" placeholder="Option 1" required>
-    <input type="text" name="questions[${index}][options][]" placeholder="Option 2" required>
-    <input type="text" name="questions[${index}][options][]" placeholder="Option 3" required>
-    <input type="text" name="questions[${index}][options][]" placeholder="Option 4" required>
-
-    <input type="number" name="questions[${index}][correctAnswer]" placeholder="Correct index (0-3)" required>
-  `;
-
-  container.appendChild(div);
-  index++;
+    const container = document.getElementById("questions-container");
+    const div = document.createElement("div");
+    div.classList.add("question");
+    div.innerHTML = `
+        <h4>Question ${questionIndex + 1}</h4>
+        <input type="text" name="questions[${questionIndex}][question]" placeholder="Enter question" required>
+        
+        <label>Options:</label>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option A" required>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option B" required>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option C" required>
+        <input type="text" name="questions[${questionIndex}][options][]" placeholder="Option D" required>
+        
+        <label>Correct Answer (index 0-3):</label>
+        <input type="number" name="questions[${questionIndex}][correctAnswer]" placeholder="0, 1, 2, or 3" min="0" max="3" required>
+    `;
+    container.appendChild(div);
+    questionIndex++;
 }
 </script>
 

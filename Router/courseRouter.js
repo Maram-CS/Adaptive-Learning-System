@@ -1,5 +1,5 @@
 import Router from "express";
-import { getAllCourses, getCourseBySlug, createCourse,editCourse, deleteCourse, getCourseLessonsPage,getCourseBySlugForStudent,getEditCoursePage,getLessonsByLevel}from "../Controller/courseController.js";
+import { getAllCourses, getCourseBySlug, createCourse,editCourse, deleteCourse, getCourseLessonsPage,getCourseBySlugForStudent,getEditCoursePage,getLessonsByLevel,getCourseLearnPage,completeLesson,submitPlacementQuiz}from "../Controller/courseController.js";
 import authRequest from "../middleware/authMiddleware.js";
 import { roleRequest }from "../middleware/roleMiddleware.js";
 import { upload }from "../ConfigDB/multerConfig.js";
@@ -31,5 +31,15 @@ coursesRouter.get("/course/:slug",authRequest, getCourseBySlugForStudent);
 coursesRouter.get("/edit/:slug",authRequest,roleRequest,getEditCoursePage);
 
 coursesRouter.get("/:courseId/lessons/:level", getLessonsByLevel);
+
+// Dans ton fichier de routes
+coursesRouter.get('/course/:slug/learn', authRequest, getCourseLearnPage);
+
+
+coursesRouter.post("/api/complete-lesson", authRequest, completeLesson);
+
+// Dans coursesRouter.js
+// Placement quiz route
+coursesRouter.post("/api/submit-placement-quiz", authRequest, submitPlacementQuiz);
 
 export default coursesRouter;
