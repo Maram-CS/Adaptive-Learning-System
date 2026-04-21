@@ -411,80 +411,97 @@ const submitPlacementQuiz = async (req, res) => {
         const userId = req.id;
 
         const course = await courseModel.findById(courseId);
-        if (!course) return res.status(404).json({ message: "Course not found" });
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
 
-        // Support both new (quizId in quizzes[]) and old (placementQuiz) structure
+        // get quiz
         let placementQuiz = null;
+
         if (quizId) {
             placementQuiz = course.quizzes.id(quizId);
         }
+
         if (!placementQuiz) {
-            placementQuiz = course.placementQuiz;
+            placementQuiz = course.quizzes.find(q => q.quizType === "placement");
         }
-        if (!placementQuiz) return res.status(404).json({ message: "Placement quiz not found" });
 
-        // Score all questions (supports all 4 types)
-        const { scoreQuestion } = await import("../Controller/quizController.js").catch(() => ({
-            // inline fallback scoring if import fails
-            scoreQuestion: (q, a) => parseInt(a) === q.correctAnswer ? 1 : 0
-        }));
+        if (!placementQuiz) {
+            return res.status(404).json({ message: "Placement quiz not found" });
+        }
 
+        // SCORE
         let score = 0;
+
         placementQuiz.questions.forEach((q, i) => {
             const type = q.questionType || "multiple-choice";
-            const raw = answers[i];
+            const raw = answers?.[i];
 
             if (type === "multi-select") {
                 const submitted = (Array.isArray(raw) ? raw : [raw]).map(Number).sort();
                 const correct = [...(q.correctAnswers || [])].sort();
-                if (submitted.length === correct.length && submitted.every((v, j) => v === correct[j])) score++;
+
+                if (
+                    submitted.length === correct.length &&
+                    submitted.every((v, idx) => v === correct[idx])
+                ) {
+                    score++;
+                }
+
             } else if (type === "written") {
                 const expected = (q.correctAnswerText || "").trim().toLowerCase();
                 const given = (raw || "").toString().trim().toLowerCase();
+
                 if (given === expected) score++;
+
             } else {
-                if (parseInt(raw) === q.correctAnswer) score++;
+                if (parseInt(raw) === q.correctAnswer) {
+                    score++;
+                }
             }
         });
 
         const percentage = Math.round((score / placementQuiz.questions.length) * 100);
 
-        // Determine level from placement score
-        const determineLevel = (score) => {
-        if (score >= 70) return "advanced";
-        if (score >= 40) return "intermediate";
-        return "beginner";
+        // LEVEL LOGIC
+        const determineLevel = (p) => {
+            if (p >= 70) return "advanced";
+            if (p >= 40) return "intermediate";
+            return "beginner";
         };
 
-const determinedLevel = determineLevel(percentage);
+        const level = determineLevel(percentage);
 
-        // Update or create LevelProgress
-        let levelProgress = await levelProgressModel.findOne({ userId, courseId });
+        // FIND OR CREATE PROGRESS
+        let levelProgress = await levelProgressModel.findOne({
+            userId,
+            courseId
+        });
+
         if (!levelProgress) {
-            levelProgress = await levelProgressModel.create({
+            levelProgress = new levelProgressModel({
                 userId,
                 courseId,
-                currentLevel: determinedLevel,
+                currentLevel: level,
                 placementCompleted: true,
                 placementScore: percentage,
                 levels: {
-                    beginner:     { quizPassed: false, quizAttempts: 0, lastScore: 0 },
+                    beginner: { quizPassed: false, quizAttempts: 0, lastScore: 0 },
                     intermediate: { quizPassed: false, quizAttempts: 0, lastScore: 0 },
-                    advanced:     { quizPassed: false, quizAttempts: 0, lastScore: 0 }
+                    advanced: { quizPassed: false, quizAttempts: 0, lastScore: 0 }
                 }
             });
         } else {
-                        levelProgress.currentLevel = determinedLevel;
+            levelProgress.currentLevel = level;
             levelProgress.placementCompleted = true;
             levelProgress.placementScore = percentage;
 
-            // ensure levels object exists safely
             if (!levelProgress.levels) {
                 levelProgress.levels = {};
             }
 
-            if (!levelProgress.levels[determinedLevel]) {
-                levelProgress.levels[determinedLevel] = {
+            if (!levelProgress.levels[level]) {
+                levelProgress.levels[level] = {
                     quizPassed: false,
                     quizAttempts: 0,
                     lastScore: 0
@@ -492,20 +509,20 @@ const determinedLevel = determineLevel(percentage);
             }
         }
 
-        // Level descriptions shown on result screen
+        // ✅ IMPORTANT FIX (SAVE DB)
+        await levelProgress.save();
+
         const levelDescriptions = {
-            beginner:     "You're just starting out. We'll build your foundation step by step.",
+            beginner: "You're just starting out. We'll build your foundation step by step.",
             intermediate: "Great foundation! You're ready for more challenging concepts.",
-            advanced:     "Excellent knowledge! Jump straight into advanced topics."
+            advanced: "Excellent knowledge! Jump straight into advanced topics."
         };
 
-        // Always return JSON — course.ejs displays the result inline
         return res.json({
             success: true,
             score: percentage,
-            level: determinedLevel,
-            message: `Your score: ${percentage}%. Determined level: ${determinedLevel.toUpperCase()}`,
-            levelDescription: levelDescriptions[determinedLevel],
+            level,
+            levelDescription: levelDescriptions[level],
             redirectUrl: `/courses/course/${course.slug}/learn`
         });
 
@@ -514,6 +531,7 @@ const determinedLevel = determineLevel(percentage);
         return res.status(500).json({ message: error.message });
     }
 };
+
 
 // ─── ADD / SAVE QUIZ (teacher creates quizzes from courseLessons.ejs) ─────────
 const saveQuiz = async (req, res) => {

@@ -596,7 +596,7 @@ async function submitPlacementQuiz() {
     if (quizId) payload.quizId = quizId;
 
     try {
-        const res  = await fetch('/courses/api/submit-placement-quiz', {
+        const res  = await fetch('/courses/api/submit-quiz', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -624,18 +624,21 @@ function showResult(data) {
 
     const scoreRing = document.getElementById('scoreRing');
     const scorePct  = document.getElementById('scorePct');
+
     scoreRing.className = 'score-ring ' + data.level;
 
     const pill = document.getElementById('levelPill');
     pill.className = 'level-pill ' + data.level;
     pill.textContent = data.level.charAt(0).toUpperCase() + data.level.slice(1);
 
-    const icons = { beginner: '🌱', intermediate: '🔥', advanced: '🚀' };
-    document.getElementById('resultIcon').textContent = icons[data.level] || '🎓';
     document.getElementById('resultDesc').textContent = data.levelDescription || '';
-    document.getElementById('startLearningBtn').href  = data.redirectUrl || '#';
 
     animateNumber(scorePct, 0, Math.round(data.score), 800);
+
+    // ✅ HERE IS THE FIX 👇
+    setTimeout(() => {
+        window.location.href = data.redirectUrl;
+    }, 2000);
 }
 
 function animateNumber(el, from, to, duration) {
