@@ -89,37 +89,53 @@ const courseSchema = new Schema({
 
     lessons: [lessonSchema],
 
+   // Dans courseModel.js - Modifier le schema quizzes
     quizzes: [
-  {
-    title: { type: String, required: true },
-
-    questions: [
-      {
-        question: { type: String, required: true },
-
-        options: {
-          type: [String],
-          required: true
+    {
+        title: { type: String, required: true },
+        level: {  // ← AJOUTER CE CHAMP
+        type: String,
+        enum: ["beginner", "intermediate", "advanced"],
+        required: true
         },
-
-        correctAnswer: {
-          type: Number,
-          required: true
+        questions: [
+        {
+            question: { type: String, required: true },
+            options: {
+            type: [String],
+            required: true
+            },
+            correctAnswer: {
+            type: Number,
+            required: true
+            }
         }
-      }
-    ],
-
-    createdAt: {
-      type: Date,
-      default: Date.now
+        ],
+        passingScore: {  // ← AJOUTER
+        type: Number,
+        default: 70
+        },
+        createdAt: {
+        type: Date,
+        default: Date.now
+        }
     }
-  }
-],
-    
+    ],
+        
 
     placementQuiz: {
-    type: Schema.Types.ObjectId,
-    ref: "quiz"
+        type: {
+            title: { type: String, required: true },
+            passingScore: { type: Number, default: 70 },
+            questions: [
+                {
+                    question: { type: String, required: true },
+                    options: { type: [String], required: true },
+                    correctAnswer: { type: Number, required: true }
+                }
+            ]
+        },
+        required: false
     },
 
     resources: [resourceSchema],

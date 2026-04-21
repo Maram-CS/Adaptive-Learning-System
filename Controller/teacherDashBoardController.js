@@ -34,33 +34,43 @@ const getTeacherDashboard = async (req, res) => {
 
 const createQuiz = async (req, res) => {
     try {
-        const { courseId, title, questions } = req.body;
+        const { courseId, title, level, questions, passingScore } = req.body;
 
         const course = await courseModel.findById(courseId);
 
-        if (!course) return res.send("Course not found");
+        if (!course) return res.status(404).send("Course not found");
 
+        // Ajouter le quiz avec le niveau
         course.quizzes.push({
             title,
-            questions
+            level: level || "beginner",  // ← AJOUTER level
+            passingScore: passingScore || 70,  // ← AJOUTER passingScore
+            questions: questions.map(q => ({
+                question: q.question,
+                options: q.options,
+                correctAnswer: parseInt(q.correctAnswer)
+            })),
+            createdAt: new Date()
         });
 
         await course.save();
 
-        res.redirect(`/teacherDashboard/get`);
+        res.redirect(`/courses/content/${course.slug}`);
 
     } catch (error) {
+        console.error("createQuiz error:", error);
         res.status(500).send(error.message);
     }
 };
 
-
-
 const getSelectCourseForQuizPage = async (req, res) => {
-     const course = await courseModel.findById(req.params.courseId);
+    try {
+        const course = await courseModel.findById(req.params.courseId);
         if (!course) return res.send("Course not found");
-    
+        
         res.render("auth/createQuiz", { course });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 };
-
 export { getTeacherDashboard , createQuiz , getSelectCourseForQuizPage};

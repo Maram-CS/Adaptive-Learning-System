@@ -6,6 +6,54 @@
     <title>Course Lessons - <%= course.Title %></title>
     <link rel="stylesheet" href="/Style/courseLesson.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .level-beginner {
+            background: #10B981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .level-intermediate {
+            background: #F59E0B;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .level-advanced {
+            background: #EF4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .lesson-level {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .level-badge-beginner {
+            background: #10B981;
+            color: white;
+        }
+        .level-badge-intermediate {
+            background: #F59E0B;
+            color: white;
+        }
+        .level-badge-advanced {
+            background: #EF4444;
+            color: white;
+        }
+        .quiz-card {
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
@@ -48,18 +96,32 @@
                 ← Back to Dashboard
             </button>
 
-            <!-- LESSONS -->
+            <!-- LESSONS SECTION -->
             <div class="lessons-container">
                 <h3>📚 Course Content</h3>
 
                 <% if (course.lessons && course.lessons.length > 0) { %>
 
-                    <% course.lessons.forEach((lesson, index) => { %>
+                    <% course.lessons.forEach((lesson, index) => { 
+                        let levelClass = '';
+                        let levelText = '';
+                        if(lesson.level === 'beginner') {
+                            levelClass = 'level-badge-beginner';
+                            levelText = 'Beginner';
+                        } else if(lesson.level === 'intermediate') {
+                            levelClass = 'level-badge-intermediate';
+                            levelText = 'Intermediate';
+                        } else if(lesson.level === 'advanced') {
+                            levelClass = 'level-badge-advanced';
+                            levelText = 'Advanced';
+                        }
+                    %>
 
                         <div class="lesson-card">
 
                             <div class="lesson-title">
                                 Lesson <%= index + 1 %>: <%= lesson.name %>
+                                <span class="lesson-level <%= levelClass %>"><%= levelText %></span>
                             </div>
 
                             <div>
@@ -96,59 +158,135 @@
 
             </div>
 
-            <!-- QUIZZES -->
+            <!-- QUIZZES SECTION -->
             <div class="lessons-container" style="margin-top:40px;">
                 <h3>🧠 Course Quizzes</h3>
-
-                <% if (course.quizzes && course.quizzes.length > 0) { %>
-
-                    <% course.quizzes.forEach((quiz, qIndex) => { %>
-
-                        <div class="lesson-card">
-
+                
+                <!-- Beginner Quizzes -->
+                <% if(quizzesByLevel && quizzesByLevel.beginner && quizzesByLevel.beginner.length > 0) { %>
+                    <h4 style="color: #10B981; margin-top: 20px;">🌱 Beginner Level Quizzes</h4>
+                    <% quizzesByLevel.beginner.forEach((quiz, qIndex) => { %>
+                        <div class="lesson-card quiz-card">
                             <div class="lesson-title">
-                                📝 Quiz <%= qIndex + 1 %>: <%= quiz.title %>
+                                📝 Quiz: <%= quiz.title %>
+                                <span class="level-beginner">Beginner</span>
                             </div>
-
-                            <% if (quiz.questions && quiz.questions.length > 0) { %>
-
-                                <% quiz.questions.forEach((q, i) => { %>
-
-                                    <div style="margin-top: 15px; padding: 10px; background: #f9fafb; border-radius: 8px;">
-
-                                        <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
-
-                                        <ul style="margin-top: 8px;">
-                                            <% q.options.forEach((opt, oIndex) => { %>
-                                                <li>
-                                                    <%= opt %>
-                                                    <% if (oIndex === q.correctAnswer) { %>
-                                                        <span style="color: green;"> ✔</span>
-                                                    <% } %>
-                                                </li>
-                                            <% }) %>
-                                        </ul>
-
-                                    </div>
-
-                                <% }) %>
-
-                            <% } else { %>
-                                <p style="color:#999;">No questions in this quiz</p>
+                            <div>Passing Score: <%= quiz.passingScore || 70 %>%</div>
+                            <div>Questions: <%= quiz.questions?.length || 0 %></div>
+                            <% if(quiz.questions && quiz.questions.length > 0) { %>
+                                <details style="margin-top: 10px;">
+                                    <summary style="cursor: pointer; color: #4F46E5;">View Questions</summary>
+                                    <% quiz.questions.forEach((q, i) => { %>
+                                        <div style="margin-top: 10px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+                                            <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
+                                            <ul style="margin-top: 5px; margin-bottom: 5px;">
+                                                <% q.options.forEach((opt, oIndex) => { %>
+                                                    <li>
+                                                        <%= opt %>
+                                                        <% if (oIndex === q.correctAnswer) { %>
+                                                            <span style="color: green;"> ✔ (Correct)</span>
+                                                        <% } %>
+                                                    </li>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    <% }) %>
+                                </details>
                             <% } %>
-
                         </div>
-
                     <% }) %>
-
-                <% } else { %>
-
+                <% } %>
+                
+                <!-- Intermediate Quizzes -->
+                <% if(quizzesByLevel && quizzesByLevel.intermediate && quizzesByLevel.intermediate.length > 0) { %>
+                    <h4 style="color: #F59E0B; margin-top: 20px;">⚡ Intermediate Level Quizzes</h4>
+                    <% quizzesByLevel.intermediate.forEach((quiz, qIndex) => { %>
+                        <div class="lesson-card quiz-card">
+                            <div class="lesson-title">
+                                📝 Quiz: <%= quiz.title %>
+                                <span class="level-intermediate">Intermediate</span>
+                            </div>
+                            <div>Passing Score: <%= quiz.passingScore || 70 %>%</div>
+                            <div>Questions: <%= quiz.questions?.length || 0 %></div>
+                            <% if(quiz.questions && quiz.questions.length > 0) { %>
+                                <details style="margin-top: 10px;">
+                                    <summary style="cursor: pointer; color: #4F46E5;">View Questions</summary>
+                                    <% quiz.questions.forEach((q, i) => { %>
+                                        <div style="margin-top: 10px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+                                            <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
+                                            <ul style="margin-top: 5px; margin-bottom: 5px;">
+                                                <% q.options.forEach((opt, oIndex) => { %>
+                                                    <li>
+                                                        <%= opt %>
+                                                        <% if (oIndex === q.correctAnswer) { %>
+                                                            <span style="color: green;"> ✔ (Correct)</span>
+                                                        <% } %>
+                                                    </li>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    <% }) %>
+                                </details>
+                            <% } %>
+                        </div>
+                    <% }) %>
+                <% } %>
+                
+                <!-- Advanced Quizzes -->
+                <% if(quizzesByLevel && quizzesByLevel.advanced && quizzesByLevel.advanced.length > 0) { %>
+                    <h4 style="color: #EF4444; margin-top: 20px;">🚀 Advanced Level Quizzes</h4>
+                    <% quizzesByLevel.advanced.forEach((quiz, qIndex) => { %>
+                        <div class="lesson-card quiz-card">
+                            <div class="lesson-title">
+                                📝 Quiz: <%= quiz.title %>
+                                <span class="level-advanced">Advanced</span>
+                            </div>
+                            <div>Passing Score: <%= quiz.passingScore || 70 %>%</div>
+                            <div>Questions: <%= quiz.questions?.length || 0 %></div>
+                            <% if(quiz.questions && quiz.questions.length > 0) { %>
+                                <details style="margin-top: 10px;">
+                                    <summary style="cursor: pointer; color: #4F46E5;">View Questions</summary>
+                                    <% quiz.questions.forEach((q, i) => { %>
+                                        <div style="margin-top: 10px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+                                            <p><strong>Q<%= i + 1 %>:</strong> <%= q.question %></p>
+                                            <ul style="margin-top: 5px; margin-bottom: 5px;">
+                                                <% q.options.forEach((opt, oIndex) => { %>
+                                                    <li>
+                                                        <%= opt %>
+                                                        <% if (oIndex === q.correctAnswer) { %>
+                                                            <span style="color: green;"> ✔ (Correct)</span>
+                                                        <% } %>
+                                                    </li>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    <% }) %>
+                                </details>
+                            <% } %>
+                        </div>
+                    <% }) %>
+                <% } %>
+                
+                <% if(!quizzesByLevel || 
+                      (!quizzesByLevel.beginner || quizzesByLevel.beginner.length === 0) && 
+                      (!quizzesByLevel.intermediate || quizzesByLevel.intermediate.length === 0) && 
+                      (!quizzesByLevel.advanced || quizzesByLevel.advanced.length === 0)) { %>
                     <div class="no-lessons">
                         <p>🧠 No quizzes added yet</p>
+                        <a href="/App/createQuiz?courseId=<%= course._id %>" class="file-link">
+                            + Add Quiz
+                        </a>
                     </div>
-
                 <% } %>
+            </div>
 
+            <!-- ADD QUIZ BUTTON -->
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="/App/createQuiz?courseId=<%= course._id %>">
+                    <button class="btn-create" style="background: #4F46E5;">
+                        <i class="fas fa-plus"></i> Add New Quiz
+                    </button>
+                </a>
             </div>
 
         </div>
