@@ -1,4 +1,4 @@
-/* ========== IMPORT FONTS ========== */
+ /* ========== IMPORT FONTS ========== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
 
 * {
@@ -109,6 +109,11 @@ body::before {
     display: flex;
     overflow: hidden;
     z-index: 2;
+    transition: var(--transition);
+}
+
+.auth-wrapper:hover {
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
 }
 
 .background-shape,
@@ -135,10 +140,21 @@ body::before {
     margin-bottom: 32px;
     text-align: center;
     letter-spacing: -0.5px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
 }
 
-.credentials-panel h2 span {
-    color: var(--orange);
+.credentials-panel h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue-main), var(--orange));
+    border-radius: 3px;
 }
 
 /* Form */
@@ -146,7 +162,7 @@ body::before {
     width: 100%;
 }
 
-/* Field Wrapper */
+/* Field Wrapper - FIXED ICON POSITION */
 .field-wrapper {
     position: relative;
     width: 100%;
@@ -157,29 +173,30 @@ body::before {
 .field-wrapper select {
     width: 100%;
     height: 56px;
-    background: transparent;
+    background: #f7f9fc;
     border: 2px solid #e2e8f0;
     border-radius: 16px;
     outline: none;
     font-size: 16px;
     font-weight: 500;
     color: var(--text-dark);
-    padding: 0 48px 0 16px;
+    padding: 0 45px 0 20px;
     transition: var(--transition);
     font-family: 'Inter', sans-serif;
 }
-
 .field-wrapper select {
     appearance: none;
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
+    padding-right: 45px;
 }
 
 .field-wrapper input:focus,
 .field-wrapper select:focus {
     border-color: var(--blue-main);
+    background: var(--white);
     box-shadow: 0 0 0 4px rgba(43, 125, 233, 0.1);
 }
 
@@ -188,7 +205,7 @@ body::before {
 .field-wrapper select:focus ~ label,
 .field-wrapper select:valid ~ label {
     top: -10px;
-    left: 12px;
+    left: 16px;
     font-size: 12px;
     font-weight: 600;
     color: var(--blue-main);
@@ -199,7 +216,7 @@ body::before {
 .field-wrapper label {
     position: absolute;
     top: 50%;
-    left: 16px;
+    left: 20px;
     transform: translateY(-50%);
     font-size: 15px;
     font-weight: 500;
@@ -209,7 +226,7 @@ body::before {
     background: transparent;
 }
 
-/* Icons */
+/* Icons - Fixed position INSIDE the input */
 .field-wrapper i {
     position: absolute;
     top: 50%;
@@ -219,9 +236,11 @@ body::before {
     color: #94a3b8;
     transition: var(--transition);
     z-index: 2;
+    pointer-events: none;
 }
 
 .field-wrapper .toggle-password {
+    pointer-events: auto;
     cursor: pointer;
 }
 
@@ -259,7 +278,7 @@ body::before {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
     transition: left 0.5s;
 }
 
@@ -270,6 +289,14 @@ body::before {
 .submit-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(43, 125, 233, 0.3);
+}
+
+.submit-button i {
+    transition: var(--transition);
+}
+
+.submit-button:hover i {
+    transform: translateX(3px);
 }
 
 /* Switch Link */
@@ -285,6 +312,22 @@ body::before {
     text-decoration: none;
     font-weight: 600;
     transition: var(--transition);
+    position: relative;
+}
+
+.switch-link a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--orange);
+    transition: width 0.3s ease;
+}
+
+.switch-link a:hover::after {
+    width: 100%;
 }
 
 .switch-link a:hover {
@@ -316,6 +359,49 @@ body::before {
     background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
     pointer-events: none;
 }
+ /* Graduation Cap animation */
+.welcome-section .cap-icon {
+    position: absolute;
+    top: 15%;
+    right: 10%;
+    font-size: 55px;
+    opacity: 0.12;
+    color: white;
+    animation: floatCap 6s ease-in-out infinite;
+}
+
+@keyframes floatCap {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+/* Code brackets animation */
+.welcome-section .code-icon {
+    position: absolute;
+    bottom: 15%;
+    left: 10%;
+    font-size: 45px;
+    opacity: 0.1;
+    color: white;
+    font-weight: bold;
+    animation: floatCode 7s ease-in-out infinite;
+}
+
+@keyframes floatCode {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(-3deg); }
+}
+
+/* Laptop icon */
+.welcome-section .laptop-icon {
+    position: absolute;
+    top: 50%;
+    left: -15px;
+    font-size: 65px;
+    opacity: 0.07;
+    color: white;
+    transform: rotate(-10deg);
+}
 
 .welcome-section h2 {
     font-size: 32px;
@@ -323,13 +409,17 @@ body::before {
     color: white;
     margin-bottom: 16px;
     line-height: 1.3;
+    position: relative;
+    z-index: 2;
 }
 
 .welcome-section p {
     font-size: 16px;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.85);
     line-height: 1.6;
     max-width: 280px;
+    position: relative;
+    z-index: 2;
 }
 
 /* ========== ANIMATIONS ========== */
@@ -343,7 +433,6 @@ body::before {
 .credentials-panel .slide-element:nth-child(3) { animation-delay: 0.3s; }
 .credentials-panel .slide-element:nth-child(4) { animation-delay: 0.4s; }
 .credentials-panel .slide-element:nth-child(5) { animation-delay: 0.5s; }
-.credentials-panel .slide-element:nth-child(6) { animation-delay: 0.6s; }
 
 .welcome-section .slide-element {
     animation: slideInLeft 0.6s ease forwards;
@@ -372,12 +461,6 @@ body::before {
         transform: translateX(0);
         opacity: 1;
     }
-}
-
-/* ========== SELECT OPTIONS ========== */
-.field-wrapper select option {
-    color: var(--text-dark);
-    background: var(--white);
 }
 
 /* ========== RESPONSIVE ========== */
@@ -411,7 +494,7 @@ body::before {
         font-size: 28px;
     }
 
-    .floating-element {
+    .cap-icon, .code-icon, .laptop-icon {
         display: none;
     }
 
