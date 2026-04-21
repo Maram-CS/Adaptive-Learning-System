@@ -186,7 +186,7 @@
             font-size: 11px;
         }
 
-        .notification-delete-page {
+        .delete-btn{
     background: #fde2e2;
     border: none;
     color: #e74c3c;
@@ -199,16 +199,23 @@
     border-radius: 10px;
     transition: 0.2s;
     opacity: 1; /* دايما باينة */
+    
 }
 
-.notification-delete-page i {
+.delete-btn i {
     font-size: 15px;
 }
 
-.notification-delete-page:hover {
+.delete-btn:hover {
     background: #e74c3c;
     color: white;
     transform: scale(1.05);
+}
+.notification-item-page {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 🔥 هذا يديه لليمين */
+    padding: 12px 15px;
 }
 
         /* Empty State */
