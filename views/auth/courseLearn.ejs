@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><%= course.Title %> | Course Details</title>
+<title><%= course.Title %> | Course Learning</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root {
@@ -142,6 +142,9 @@ body { background:var(--bg-light); color:var(--text-dark); line-height:1.6; }
   width: 100%;
   position: relative;
   overflow: hidden;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .sidebar .logout::before {
@@ -198,66 +201,7 @@ body { background:var(--bg-light); color:var(--text-dark); line-height:1.6; }
   from { opacity:0; transform:translateY(20px); }
   to   { opacity:1; transform:translateY(0); }
 }
-.item {
-  background:white; border-radius:15px;
-  padding:22px 18px 16px; display:flex;
-  flex-direction:column; gap:8px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.05);
-  transition:transform 0.3s,box-shadow 0.3s;
-  border-top:4px solid var(--blue-light);
-  animation:cardIn 0.4s ease both;
-  margin-bottom:22px;
-}
-.item:hover        { transform:translateY(-4px); box-shadow:0 15px 30px rgba(43,125,233,0.12); border-top-color:var(--orange); }
-.item.lesson-completed { border-top-color:#10B981; }
-.item.quiz-section { border-top-color:var(--orange); }
 
-.card-divider { width:100%; height:1px; background:var(--blue-light); margin:4px 0; }
-.completed-badge { color:#10B981; font-weight:600; font-size:13px; }
-
-/* ─── BUTTONS ─── */
-.view-details-btn {
-  padding:8px 18px; background:var(--blue-main);
-  color:white; border:none; border-radius:20px;
-  font-size:13px; font-weight:600; cursor:pointer;
-  transition:all 0.3s ease; position:relative; overflow:hidden; display:inline-block;
-}
-.view-details-btn::before {
-  content:''; position:absolute; top:0; left:-100%;
-  width:100%; height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
-  transition:left 0.5s;
-}
-.view-details-btn:hover::before { left:100%; }
-.view-details-btn:hover    { background:var(--orange); transform:translateY(-2px); box-shadow:0 4px 12px rgba(244,166,64,0.4); }
-.view-details-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
-
-/* ─── QUIZ ─── */
-.quiz-question { background:#f4f7fb; padding:16px; border-radius:10px; margin-bottom:14px; }
-.quiz-option {
-  display:flex; align-items:center; gap:10px;
-  margin-top:8px; font-size:14px; color:var(--text-dark); cursor:pointer;
-}
-.quiz-option input { accent-color:var(--blue-main); }
-
-/* ─── RESULT BANNERS ─── */
-.result-banner {
-  display:flex; align-items:flex-start; gap:16px;
-  padding:18px 20px; border-radius:12px;
-  font-size:14px; font-weight:500;
-}
-.result-banner.success { background:#d1fae5; color:#065f46; }
-.result-banner.error   { background:#fee2e2; color:#991b1b; }
-
-/* ─── RESPONSIVE ─── */
-@media (max-width:900px) {
-  .sidebar { transform:translateX(-260px); }
-  .main { margin-left:0; }
-  .main-header { flex-direction:column; gap:15px; text-align:center; }
-}
-@media (max-width:768px) { .main { padding:20px; } }
-
-/* NEW: Compact lesson card style like the image */
 .lesson-compact-card {
   display: flex;
   align-items: center;
@@ -351,6 +295,49 @@ body { background:var(--bg-light); color:var(--text-dark); line-height:1.6; }
   align-items: center;
   gap: 6px;
 }
+
+.item {
+  background:white; border-radius:15px;
+  padding:22px 18px 16px; display:flex;
+  flex-direction:column; gap:8px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.05);
+  transition:transform 0.3s,box-shadow 0.3s;
+  border-top:4px solid var(--blue-light);
+  animation:cardIn 0.4s ease both;
+  margin-bottom:22px;
+}
+.item:hover { transform:translateY(-4px); box-shadow:0 15px 30px rgba(43,125,233,0.12); border-top-color:var(--orange); }
+.item.quiz-section { border-top-color:var(--orange); }
+
+.view-details-btn {
+  padding:8px 18px; background:var(--blue-main);
+  color:white; border:none; border-radius:20px;
+  font-size:13px; font-weight:600; cursor:pointer;
+  transition:all 0.3s ease;
+  display:inline-block;
+}
+.view-details-btn:hover { background:var(--orange); transform:translateY(-2px); }
+
+.quiz-question { background:#f4f7fb; padding:16px; border-radius:10px; margin-bottom:14px; }
+.quiz-option {
+  display:flex; align-items:center; gap:10px;
+  margin-top:8px; font-size:14px; color:var(--text-dark); cursor:pointer;
+}
+.quiz-option input { accent-color:var(--blue-main); }
+
+.result-banner {
+  display:flex; align-items:flex-start; gap:16px;
+  padding:18px 20px; border-radius:12px;
+  font-size:14px; font-weight:500;
+}
+.result-banner.success { background:#d1fae5; color:#065f46; }
+.result-banner.error   { background:#fee2e2; color:#991b1b; }
+
+@media (max-width:900px) {
+  .sidebar { transform:translateX(-260px); }
+  .main { margin-left:0; }
+}
+@media (max-width:768px) { .main { padding:20px; } }
 </style>
 </head>
 <body>
@@ -358,40 +345,25 @@ body { background:var(--bg-light); color:var(--text-dark); line-height:1.6; }
 <div class="page-container">
 
 <div class="sidebar">
-
   <div class="logo">
     <img src="/img/logoBleu.png" class="logo-img" alt="Eduphin logo">
     <span>My Courses</span>
   </div>
-
   <div class="menu">
     <ul>
-      <li class="active"><a href="/courses/All">All Courses</a></li>
+      <li><a href="/courses/All">All Courses</a></li>
       <li><a href="/studentDashboard/">Dashboard</a></li>
       <li><a href="/favoriteCourses/All">Favorite Courses</a></li>
       <li><a href="/profile/Profile-view">My Profile</a></li>
     </ul>
   </div>
-
   <div class="lessons-list" style="margin-top:20px;">
-    <h4 style="color:var(--blue-light);margin-bottom:10px;">
+    <h4 style="color:var(--blue-light);margin-bottom:10px;" id="sidebarLevelTitle">
       <%= currentLevel.toUpperCase() %> Lessons
     </h4>
-    <div id="sidebarLessonsList">
-      <% currentLessons.forEach((lesson, idx) => {
-          const isCompleted = completedLessonIds.includes(lesson._id.toString());
-      %>
-        <div class="lesson-list-item <%= isCompleted ? 'completed' : '' %>"
-             id="sidebar-<%= lesson._id %>"
-             onclick="scrollToLesson('<%= lesson._id %>')">
-          <i class="fas <%= isCompleted ? 'fa-check-circle' : 'fa-circle' %>"></i>
-          <span>Lesson <%= idx + 1 %>: <%= lesson.name %></span>
-        </div>
-      <% }) %>
-    </div>
+    <div id="sidebarLessonsList"></div>
   </div>
-
-  <a href="/home" class="logout" style="text-align:center;text-decoration:none;">
+  <a href="/home" class="logout">
     <i class="fas fa-sign-out-alt"></i> Sign out
   </a>
 </div>
@@ -399,138 +371,108 @@ body { background:var(--bg-light); color:var(--text-dark); line-height:1.6; }
 <div class="main">
   <div class="main-header">
     <h2><%= course.Title %> — <span id="headerLevelLabel"><%= currentLevel %></span></h2>
-    <div class="header-actions">
-      <span class="level-badge" id="levelBadge"><%= currentLevel %></span>
-    </div>
+    <span class="level-badge" id="levelBadge"><%= currentLevel %></span>
   </div>
 
-  <!-- LESSONS LIST - COMPACT CARD STYLE (like the image) -->
-  <div id="lessonsContainer">
-    <% currentLessons.forEach((lesson, idx) => {
-        const isCompleted = completedLessonIds.includes(lesson._id.toString());
-        const lessonType = lesson.type === 'pdf' ? 'PDF' : (lesson.type === 'video' ? 'Video' : 'Lesson');
-    %>
-      <div id="lesson-<%= lesson._id %>"
-           class="lesson-compact-card <%= isCompleted ? 'lesson-completed' : '' %>"
-           data-lesson-id="<%= lesson._id %>">
-        
-        <div class="lesson-info">
-          <div class="lesson-title">
-            Lesson <%= idx + 1 %>: <%= lesson.name %>
-          </div>
-          <div class="lesson-meta">
-            <span><i class="fas fa-file-alt"></i> <%= lessonType %> · <%= currentLevel %></span>
-          </div>
-        </div>
-        
-        <div class="lesson-actions">
-          <% if(!isCompleted) { %>
-            <button class="btn-view" onclick="viewLessonContent('<%= lesson._id %>', '<%= lesson.type %>', '<%= lesson.file ? lesson.file.replace(/'/g, "\\'") : '' %>', '<%= lesson.name.replace(/'/g, "\\'") %>')">
-              <i class="fas fa-eye"></i> View Lesson
-            </button>
-            <button class="btn-complete" onclick="completeLesson('<%= lesson._id %>', this)">
-              <i class="fas fa-check"></i> Mark as Completed
-            </button>
-          <% } else { %>
-            <button class="btn-view" onclick="viewLessonContent('<%= lesson._id %>', '<%= lesson.type %>', '<%= lesson.file ? lesson.file.replace(/'/g, "\\'") : '' %>', '<%= lesson.name.replace(/'/g, "\\'") %>')">
-              <i class="fas fa-eye"></i> View Lesson
-            </button>
-            <span class="completed-badge-sm">
-              <i class="fas fa-check-circle"></i> Completed
-            </span>
-          <% } %>
-        </div>
-      </div>
-    <% }) %>
-  </div>
-
-  <!-- Modal for viewing lesson content (PDF/Video) -->
-  <div id="lessonModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:10000; justify-content:center; align-items:center; backdrop-filter:blur(3px);">
-    <div style="background:white; width:85%; max-width:1000px; border-radius:24px; overflow:hidden; box-shadow:0 25px 50px rgba(0,0,0,0.3); animation:modalFade 0.2s ease;">
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:var(--navy); color:white;">
-        <h3 id="modalTitle" style="font-size:18px; margin:0;">Lesson Content</h3>
-        <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
-      </div>
-      <div id="modalBody" style="padding:24px; min-height:400px; max-height:70vh; overflow-y:auto;">
-        <!-- dynamic content -->
-      </div>
-    </div>
-  </div>
-
-  <div id="levelActionArea" style="margin-top:10px;">
-    <% if(allLessonsCompleted && showQuiz && quiz) { %>
-      <div class="item" style="width:100%;flex-direction:column;align-items:center;padding:32px;text-align:center;border-top:4px solid var(--blue-main);">
-        <div style="font-size:48px;margin-bottom:12px;">📝</div>
-        <h2 style="color:var(--blue-dark);margin-bottom:8px;">All Lessons Completed!</h2>
-        <p style="color:var(--text-muted);margin-bottom:20px;">
-          You've finished all lessons in the <strong><%= currentLevel %></strong> level.
-          Pass the quiz to unlock the next level.
-        </p>
-        <button class="view-details-btn" style="padding:14px 32px;font-size:15px;"
-                onclick="showQuizForm(<%- JSON.stringify(quiz) %>)">
-          <i class="fas fa-puzzle-piece"></i> Take the Quiz
-        </button>
-      </div>
-    <% } %>
-  </div>
+  <div id="lessonsContainer"></div>
+  <div id="levelActionArea"></div>
 </div>
+
+<!-- Modal for lesson content -->
+<div id="lessonModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:10000; justify-content:center; align-items:center;">
+  <div style="background:white; width:85%; max-width:1000px; border-radius:24px; overflow:hidden;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:var(--navy); color:white;">
+      <h3 id="modalTitle" style="font-size:18px;">Lesson Content</h3>
+      <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
+    </div>
+    <div id="modalBody" style="padding:24px; min-height:400px; max-height:70vh; overflow-y:auto;"></div>
+  </div>
 </div>
 
 <script>
 const APP = {
-    courseId:    '<%= course._id %>',
-    courseSlug:  '<%= course.slug %>',
-    currentLevel:'<%= currentLevel %>',
+    courseId: '<%= course._id %>',
+    currentLevel: '<%= currentLevel %>',
     completedIds: <%- JSON.stringify(completedLessonIds) %>,
     totalLessons: <%= currentLessons.length %>,
     levels: ['beginner', 'intermediate', 'advanced']
 };
 
 let completedCount = APP.completedIds.length;
-let totalLessons   = APP.totalLessons;
+let currentLessonsData = <%- JSON.stringify(currentLessons) %>;
 
-// View lesson content in modal (PDF opens in new tab, video plays in modal)
-function viewLessonContent(lessonId, lessonType, fileUrl, lessonName) {
+// Initialize page
+function init() {
+    renderLessons(currentLessonsData);
+    renderSidebar(currentLessonsData);
+    if (completedCount >= APP.totalLessons && APP.totalLessons > 0) {
+        checkAndShowQuiz();
+    }
+}
+init();
+
+function renderLessons(lessons) {
+    const container = document.getElementById('lessonsContainer');
+    container.innerHTML = '';
+    lessons.forEach((lesson, idx) => {
+        const isCompleted = APP.completedIds.includes(lesson._id);
+        const lessonType = lesson.type === 'pdf' ? 'PDF' : (lesson.type === 'video' ? 'Video' : 'Lesson');
+        container.innerHTML += `
+            <div id="lesson-${lesson._id}" class="lesson-compact-card ${isCompleted ? 'lesson-completed' : ''}">
+                <div class="lesson-info">
+                    <div class="lesson-title">Lesson ${idx+1}: ${escapeHtml(lesson.name)}</div>
+                    <div class="lesson-meta"><span><i class="fas fa-file-alt"></i> ${lessonType} · ${APP.currentLevel}</span></div>
+                </div>
+                <div class="lesson-actions">
+                    <button class="btn-view" onclick="viewLesson('${lesson._id}', '${lesson.type}', '${escapeAttr(lesson.file)}', '${escapeAttr(lesson.name)}')">
+                        <i class="fas fa-eye"></i> View Lesson
+                    </button>
+                    ${!isCompleted ? 
+                        `<button class="btn-complete" onclick="completeLesson('${lesson._id}', this)"><i class="fas fa-check"></i> Mark as Completed</button>` :
+                        `<span class="completed-badge-sm"><i class="fas fa-check-circle"></i> Completed</span>`
+                    }
+                </div>
+            </div>`;
+    });
+}
+
+function renderSidebar(lessons) {
+    const list = document.getElementById('sidebarLessonsList');
+    list.innerHTML = '';
+    lessons.forEach((lesson, idx) => {
+        const isCompleted = APP.completedIds.includes(lesson._id);
+        list.innerHTML += `
+            <div class="lesson-list-item ${isCompleted ? 'completed' : ''}" id="sidebar-${lesson._id}" onclick="scrollToLesson('${lesson._id}')">
+                <i class="fas ${isCompleted ? 'fa-check-circle' : 'fa-circle'}"></i>
+                <span>Lesson ${idx+1}: ${escapeHtml(lesson.name)}</span>
+            </div>`;
+    });
+}
+
+function viewLesson(lessonId, lessonType, fileUrl, lessonName) {
     const modal = document.getElementById('lessonModal');
-    const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
-    
-    modalTitle.innerText = lessonName || 'Lesson Content';
+    document.getElementById('modalTitle').innerText = lessonName;
     
     if (lessonType === 'video') {
-        modalBody.innerHTML = `
-            <video src="${fileUrl}" controls autoplay style="width:100%; border-radius:12px; outline:none;"></video>
-            <p style="margin-top:16px; color:var(--text-muted); font-size:14px;">Watching the video will help you understand the topic. Don't forget to mark as completed when done.</p>
-        `;
-        modal.style.display = 'flex';
-    } 
-    else if (lessonType === 'pdf' || (fileUrl && fileUrl.toLowerCase().includes('.pdf'))) {
-        // For PDF: open in new tab (clean view like image shows "View Lesson" button that opens PDF)
+        modalBody.innerHTML = `<video src="${fileUrl}" controls autoplay style="width:100%; border-radius:12px;"></video>`;
+    } else if (lessonType === 'pdf' || fileUrl.toLowerCase().includes('.pdf')) {
         window.open(fileUrl, '_blank');
+        closeModal();
         return;
+    } else {
+        modalBody.innerHTML = `<iframe src="${fileUrl}" style="width:100%; height:500px; border:none;"></iframe>`;
     }
-    else {
-        // Generic iframe for other content
-        modalBody.innerHTML = `
-            <iframe src="${fileUrl}" style="width:100%; height:500px; border:none; border-radius:12px;"></iframe>
-            <p style="margin-top:16px; color:var(--text-muted); font-size:14px;">Review the material and mark as completed when ready.</p>
-        `;
-        modal.style.display = 'flex';
-    }
+    modal.style.display = 'flex';
 }
 
 function closeModal() {
     document.getElementById('lessonModal').style.display = 'none';
-    const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = '';
 }
 
-// Mark lesson as completed
-async function completeLesson(lessonId, btnElement) {
-    if (btnElement) {
-        btnElement.disabled = true;
-        btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-    }
+async function completeLesson(lessonId, btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     
     try {
         const res = await fetch('/courses/api/complete-lesson', {
@@ -541,203 +483,218 @@ async function completeLesson(lessonId, btnElement) {
         const data = await res.json();
         
         if (data.success) {
-            // Update card UI
+            // Update UI
             const card = document.getElementById(`lesson-${lessonId}`);
             if (card) {
                 card.classList.add('lesson-completed');
                 const actionsDiv = card.querySelector('.lesson-actions');
-                if (actionsDiv) {
-                    const viewBtn = actionsDiv.querySelector('.btn-view');
-                    actionsDiv.innerHTML = viewBtn ? viewBtn.outerHTML : '';
-                    actionsDiv.innerHTML += `<span class="completed-badge-sm"><i class="fas fa-check-circle"></i> Completed</span>`;
-                }
+                const viewBtn = actionsDiv.querySelector('.btn-view');
+                actionsDiv.innerHTML = viewBtn.outerHTML;
+                actionsDiv.innerHTML += `<span class="completed-badge-sm"><i class="fas fa-check-circle"></i> Completed</span>`;
             }
             
-            // Update sidebar
             const sidebarItem = document.getElementById(`sidebar-${lessonId}`);
             if (sidebarItem) {
                 sidebarItem.classList.add('completed');
-                const icon = sidebarItem.querySelector('i');
-                if (icon) icon.className = 'fas fa-check-circle';
+                sidebarItem.querySelector('i').className = 'fas fa-check-circle';
             }
             
             completedCount++;
-            if (completedCount >= totalLessons) {
-                await handleAllLessonsCompleted();
+            
+            if (completedCount >= APP.totalLessons) {
+                await checkAndShowQuiz();
             }
-        } else {
-            if (btnElement) {
-                btnElement.disabled = false;
-                btnElement.innerHTML = '<i class="fas fa-check"></i> Mark as Completed';
-            }
-            alert(data.message || 'Failed to mark lesson as completed');
         }
     } catch(err) {
         console.error(err);
-        if (btnElement) {
-            btnElement.disabled = false;
-            btnElement.innerHTML = '<i class="fas fa-check"></i> Mark as Completed';
-        }
-        alert('Error completing lesson. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check"></i> Mark as Completed';
     }
 }
 
-async function handleAllLessonsCompleted() {
+async function checkAndShowQuiz() {
     try {
         const res = await fetch(`/courses/api/level-quiz?courseId=${APP.courseId}&level=${APP.currentLevel}`);
         const data = await res.json();
         const area = document.getElementById('levelActionArea');
         
         if (data.quiz && !data.quizPassed) {
-            area.innerHTML = `
-                <div class="item" style="width:100%;flex-direction:column;align-items:center;padding:32px;text-align:center;border-top:4px solid var(--blue-main);">
-                    <div style="font-size:48px;margin-bottom:12px;">📝</div>
-                    <h2 style="color:var(--blue-dark);margin-bottom:8px;">All Lessons Completed!</h2>
-                    <p style="color:var(--text-muted);margin-bottom:20px;">
-                        You've finished all lessons in <strong>${APP.currentLevel}</strong> level.
-                        Pass the quiz to unlock the next level.
-                    </p>
-                    <button class="view-details-btn" style="padding:14px 32px;font-size:15px;"
-                            onclick='showQuizForm(${JSON.stringify(data.quiz).replace(/</g,"\\u003c")})'>
-                        <i class="fas fa-puzzle-piece"></i> Take the Quiz
-                    </button>
-                </div>`;
-        } else {
-            showNextLevelBanner(area);
+            showQuizForm(data.quiz);
+        } else if (data.quizPassed) {
+            // Quiz already passed, show next level button
+            const nextIdx = APP.levels.indexOf(APP.currentLevel) + 1;
+            if (nextIdx < APP.levels.length) {
+                area.innerHTML = `
+                    <div class="item" style="text-align:center;padding:32px;">
+                        <div style="font-size:48px;">🎉</div>
+                        <h2>Level Complete!</h2>
+                        <p>Ready for <strong>${APP.levels[nextIdx]}</strong>?</p>
+                        <button class="view-details-btn" onclick="loadNextLevel('${APP.levels[nextIdx]}')">Go to ${APP.levels[nextIdx]} Level</button>
+                    </div>`;
+            }
         }
     } catch(err) {
-        console.error('handleAllLessonsCompleted error:', err);
+        console.error(err);
     }
 }
 
 function showQuizForm(quiz) {
     const area = document.getElementById('levelActionArea');
     let questionsHtml = '';
+    
     quiz.questions.forEach((q, idx) => {
         let inputsHtml = '';
         if (q.questionType === 'written') {
-            inputsHtml = `<input type="text" name="answers[${idx}]" required placeholder="Type your answer…" style="width:100%;padding:10px 14px;border:2px solid var(--blue-light);border-radius:10px;font-size:14px;margin-top:8px;outline:none;">`;
+            inputsHtml = `<input type="text" name="answers[${idx}]" placeholder="Type your answer..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">`;
         } else {
-            const opts = q.options || ['True','False'];
+            const opts = q.options || ['True', 'False'];
             const isMulti = q.questionType === 'multi-select';
             const inputType = isMulti ? 'checkbox' : 'radio';
             const nameAttr = isMulti ? `name="answers[${idx}][]"` : `name="answers[${idx}]"`;
             opts.forEach((opt, optIdx) => {
-                inputsHtml += `<label class="quiz-option"><input type="${inputType}" ${nameAttr} value="${optIdx}"><span>${String.fromCharCode(65+optIdx)}. ${escHtml(opt)}</span></label>`;
+                inputsHtml += `
+                    <label class="quiz-option">
+                        <input type="${inputType}" ${nameAttr} value="${optIdx}">
+                        <span>${String.fromCharCode(65+optIdx)}. ${escapeHtml(opt)}</span>
+                    </label>`;
             });
         }
-        questionsHtml += `<div class="quiz-question"><h4 style="margin-bottom:10px;font-size:14px;">Question ${idx+1}: ${escHtml(q.question)}</h4>${inputsHtml}</div>`;
+        questionsHtml += `
+            <div class="quiz-question">
+                <h4>Question ${idx+1}: ${escapeHtml(q.question)}</h4>
+                ${inputsHtml}
+            </div>`;
     });
     
-    area.innerHTML = `<div class="item quiz-section" style="padding:28px;"><div style="margin-bottom:20px;"><h2 style="font-size:20px;color:var(--blue-dark);"><i class="fas fa-puzzle-piece" style="color:var(--orange);"></i> ${escHtml(quiz.title)}</h2><p style="font-size:13px;">Passing score: ${quiz.passingScore || 70}%</p></div><form id="quizForm" onsubmit="submitQuiz(event, '${quiz._id}')">${questionsHtml}<button type="submit" id="quizSubmitBtn" class="view-details-btn" style="background:#10B981;margin-top:10px;padding:12px 24px;"><i class="fas fa-paper-plane"></i> Submit Quiz</button></form><div id="quizResult" style="margin-top:16px;"></div></div>`;
+    area.innerHTML = `
+        <div class="item quiz-section">
+            <h2><i class="fas fa-puzzle-piece"></i> ${escapeHtml(quiz.title)}</h2>
+            <p>Passing score: ${quiz.passingScore || 70}%</p>
+            <form id="quizForm" onsubmit="submitQuiz(event, '${quiz._id}')">
+                ${questionsHtml}
+                <button type="submit" class="view-details-btn" style="background:#10B981;margin-top:10px;">
+                    <i class="fas fa-paper-plane"></i> Submit Quiz
+                </button>
+            </form>
+            <div id="quizResult"></div>
+        </div>`;
     area.scrollIntoView({ behavior: 'smooth' });
 }
 
-async function submitQuiz(e, quizId) {
-    e.preventDefault();
+async function submitQuiz(event, quizId) {
+    event.preventDefault();
     const form = document.getElementById('quizForm');
-    const submitBtn = document.getElementById('quizSubmitBtn');
+    const submitBtn = form.querySelector('button[type="submit"]');
     const resultDiv = document.getElementById('quizResult');
+    
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+    
     const formData = new FormData(form);
     const answers = {};
     for (let [key, value] of formData.entries()) {
         const match = key.match(/answers\[(\d+)\](\[\])?/);
-        if (!match) continue;
-        const idx = match[1];
-        if (match[2]) { if (!answers[idx]) answers[idx] = []; answers[idx].push(value); } 
-        else { answers[idx] = value; }
+        if (match) {
+            const idx = match[1];
+            if (match[2]) {
+                if (!answers[idx]) answers[idx] = [];
+                answers[idx].push(value);
+            } else {
+                answers[idx] = value;
+            }
+        }
     }
+    
     try {
-        const res = await fetch('/courses/api/submit-quiz', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ courseId: APP.courseId, quizId, level: APP.currentLevel, answers }) });
+        const res = await fetch('/quiz/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                courseId: APP.courseId,
+                quizId: quizId,
+                level: APP.currentLevel,
+                answers: answers
+            })
+        });
         const result = await res.json();
+        
         if (result.passed) {
-            resultDiv.innerHTML = `<div class="result-banner success"><div style="font-size:36px;">🏆</div><div><strong>Congratulations! You passed!</strong><br>${escHtml(result.message)}</div></div>`;
+            resultDiv.innerHTML = `<div class="result-banner success"><strong>✓ Passed!</strong> Score: ${result.percentage}%<br>${result.message}</div>`;
+            
             if (result.nextLevel) {
                 setTimeout(() => {
-                    document.getElementById('levelActionArea').innerHTML = `<div class="item" style="text-align:center;padding:32px;"><div style="font-size:48px;">🎉</div><h2>Level Complete!</h2><p>Ready for <strong>${result.nextLevel}</strong>?</p><button class="view-details-btn" onclick="loadNextLevel('${result.nextLevel}')">Go to ${cap(result.nextLevel)} Level</button></div>`;
-                    document.getElementById('levelActionArea').scrollIntoView({ behavior:'smooth' });
-                }, 1800);
-            } else { setTimeout(showCourseComplete, 1800); }
+                    document.getElementById('levelActionArea').innerHTML = `
+                        <div class="item" style="text-align:center;padding:32px;">
+                            <div style="font-size:48px;">🎉</div>
+                            <h2>Level Complete!</h2>
+                            <p>Ready for <strong>${result.nextLevel}</strong>?</p>
+                            <button class="view-details-btn" onclick="loadNextLevel('${result.nextLevel}')">Go to ${result.nextLevel} Level</button>
+                        </div>`;
+                }, 2000);
+            }
         } else {
-            resultDiv.innerHTML = `<div class="result-banner error"><div style="font-size:36px;">📚</div><div><strong>Keep going!</strong><br>${escHtml(result.message)}<br><span style="font-size:13px;">Review lessons and try again.</span></div></div><button class="view-details-btn" style="margin-top:14px;background:#6b7280;" onclick="scrollToLessons()">Review Lessons</button><button class="view-details-btn" style="margin-top:14px;margin-left:10px;" onclick="retryQuiz()">Try Again</button>`;
+            resultDiv.innerHTML = `<div class="result-banner error"><strong>❌ Not yet!</strong> Score: ${result.percentage}%<br>${result.message}<br><button class="view-details-btn" onclick="location.reload()">Try Again</button></div>`;
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Quiz';
         }
-    } catch(err) { resultDiv.innerHTML = `<div class="result-banner error">Error: ${err.message}</div>`; submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Quiz'; }
+    } catch(err) {
+        resultDiv.innerHTML = `<div class="result-banner error">Error: ${err.message}</div>`;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Quiz';
+    }
 }
 
 async function loadNextLevel(nextLevel) {
     try {
         const res = await fetch(`/courses/api/level-lessons?courseId=${APP.courseId}&level=${nextLevel}`);
         const data = await res.json();
-        if (!data.success) return;
-        APP.currentLevel = nextLevel;
-        APP.completedIds = data.completedIds || [];
-        completedCount = APP.completedIds.length;
-        totalLessons = data.lessons.length;
-        document.getElementById('headerLevelLabel').textContent = nextLevel;
-        document.getElementById('levelBadge').textContent = nextLevel;
-        renderLessonsCompact(data.lessons);
-        renderSidebarLessons(data.lessons);
-        document.getElementById('levelActionArea').innerHTML = '';
-        if (completedCount >= totalLessons && totalLessons > 0) await handleAllLessonsCompleted();
-        document.querySelector('.main').scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(err) { console.error(err); }
+        
+        if (data.success) {
+            APP.currentLevel = nextLevel;
+            APP.completedIds = data.completedIds || [];
+            completedCount = APP.completedIds.length;
+            APP.totalLessons = data.lessons.length;
+            currentLessonsData = data.lessons;
+            
+            document.getElementById('headerLevelLabel').innerText = nextLevel;
+            document.getElementById('levelBadge').innerText = nextLevel;
+            document.getElementById('sidebarLevelTitle').innerHTML = nextLevel.toUpperCase() + ' Lessons';
+            
+            renderLessons(data.lessons);
+            renderSidebar(data.lessons);
+            document.getElementById('levelActionArea').innerHTML = '';
+            
+            if (completedCount >= APP.totalLessons && APP.totalLessons > 0) {
+                await checkAndShowQuiz();
+            }
+            
+            document.querySelector('.main').scrollTop = 0;
+        }
+    } catch(err) {
+        console.error(err);
+        alert('Error loading next level');
+    }
 }
 
-function renderLessonsCompact(lessons) {
-    const container = document.getElementById('lessonsContainer');
-    container.innerHTML = '';
-    lessons.forEach((lesson, idx) => {
-        const isCompleted = APP.completedIds.includes(lesson._id.toString());
-        const lessonType = lesson.type === 'pdf' ? 'PDF' : (lesson.type === 'video' ? 'Video' : 'Lesson');
-        container.innerHTML += `
-            <div id="lesson-${lesson._id}" class="lesson-compact-card ${isCompleted ? 'lesson-completed' : ''}">
-                <div class="lesson-info">
-                    <div class="lesson-title">Lesson ${idx+1}: ${escHtml(lesson.name)}</div>
-                    <div class="lesson-meta"><span><i class="fas fa-file-alt"></i> ${lessonType} · ${APP.currentLevel}</span></div>
-                </div>
-                <div class="lesson-actions">
-                    ${!isCompleted ? 
-                        `<button class="btn-view" onclick="viewLessonContent('${lesson._id}', '${lesson.type}', '${escAttr(lesson.file)}', '${escAttr(lesson.name)}')"><i class="fas fa-eye"></i> View Lesson</button>
-                         <button class="btn-complete" onclick="completeLesson('${lesson._id}', this)"><i class="fas fa-check"></i> Mark as Completed</button>` :
-                        `<button class="btn-view" onclick="viewLessonContent('${lesson._id}', '${lesson.type}', '${escAttr(lesson.file)}', '${escAttr(lesson.name)}')"><i class="fas fa-eye"></i> View Lesson</button>
-                         <span class="completed-badge-sm"><i class="fas fa-check-circle"></i> Completed</span>`
-                    }
-                </div>
-            </div>`;
+function scrollToLesson(lessonId) {
+    const el = document.getElementById(`lesson-${lessonId}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
     });
 }
 
-function renderSidebarLessons(lessons) {
-    const list = document.getElementById('sidebarLessonsList');
-    if (!list) return;
-    list.innerHTML = '';
-    lessons.forEach((lesson, idx) => {
-        const isCompleted = APP.completedIds.includes(lesson._id.toString());
-        list.innerHTML += `<div class="lesson-list-item ${isCompleted ? 'completed' : ''}" id="sidebar-${lesson._id}" onclick="scrollToLesson('${lesson._id}')"><i class="fas ${isCompleted ? 'fa-check-circle' : 'fa-circle'}"></i><span>Lesson ${idx+1}: ${escHtml(lesson.name)}</span></div>`;
-    });
+function escapeAttr(str) {
+    if (!str) return '';
+    return String(str).replace(/'/g, "\\'");
 }
-
-function showNextLevelBanner(area) {
-    const nextIdx = APP.levels.indexOf(APP.currentLevel) + 1;
-    const nextLevel = APP.levels[nextIdx];
-    if (!nextLevel) { showCourseComplete(); return; }
-    area.innerHTML = `<div class="item" style="text-align:center;padding:32px;"><div style="font-size:48px;">🎉</div><h2>Level Complete!</h2><p>You've mastered <strong>${APP.currentLevel}</strong>. Ready for <strong>${nextLevel}</strong>?</p><button class="view-details-btn" onclick="loadNextLevel('${nextLevel}')">Go to ${cap(nextLevel)} Level</button></div>`;
-}
-
-function showCourseComplete() {
-    document.getElementById('levelActionArea').innerHTML = `<div class="item" style="text-align:center;padding:40px;"><div style="font-size:64px;">🎓</div><h2>Course Complete!</h2><p>Outstanding! You have completed all levels.</p><a href="/courses/All" class="view-details-btn" style="text-decoration:none;">Browse More Courses</a></div>`;
-}
-
-function scrollToLesson(lessonId) { const el = document.getElementById(`lesson-${lessonId}`); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
-function scrollToLessons() { document.getElementById('lessonsContainer').scrollIntoView({ behavior: 'smooth' }); }
-function retryQuiz() { document.getElementById('levelActionArea').scrollIntoView({ behavior: 'smooth' }); }
-function escHtml(str) { if (!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function escAttr(str) { if (!str) return ''; return String(str).replace(/'/g, "\\'"); }
-function cap(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 </script>
 </body>
 </html>
