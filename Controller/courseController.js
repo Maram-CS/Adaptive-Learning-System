@@ -2,6 +2,8 @@ import courseModel from "../Model/courseModel.js";
 import { notifyNewCourse } from "./notificationController.js";
 import levelProgressModel from "../Model/progressLevelModel.js";
 import progressModel from "../Model/Progress.js";
+import QuizMistake from "../Model/recommandation.js";
+import { extractTopic } from "../utils/topicExtractor.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -403,6 +405,36 @@ const getCourseLearnPage = async (req, res) => {
     }
 };
 
+function scoreQuestionLocal(question, rawAnswer) {
+    const type = question.questionType || "multiple-choice";
+    switch (type) {
+        case "multiple-choice":
+        case "true-false":
+            return parseInt(rawAnswer) === question.correctAnswer ? 1 : 0;
+        case "multi-select": {
+            const submitted = (Array.isArray(rawAnswer) ? rawAnswer : [rawAnswer]).map(Number).sort();
+            const correct = [...(question.correctAnswers || [])].sort();
+            if (submitted.length !== correct.length) return 0;
+            return submitted.every((v, i) => v === correct[i]) ? 1 : 0;
+        }
+        case "written": {
+            const expected = (question.correctAnswerText || "").trim().toLowerCase();
+            const given = (rawAnswer || "").toString().trim().toLowerCase();
+            return given === expected ? 1 : 0;
+        }
+        default:
+            return 0;
+    }
+}
+
+function getCorrectDisplay(question) {
+    const type = question.questionType || "multiple-choice";
+    if (type === "written") return question.correctAnswerText || "";
+    if (type === "multi-select") return (question.correctAnswers || []).join(", ");
+    const idx = question.correctAnswer ?? 0;
+    return question.options?.[idx] ?? String(idx);
+}
+
 // ─── SUBMIT PLACEMENT QUIZ ────────────────────────────────────────────────────
 // Returns JSON with { success, score, level, message } — displayed inline on course.ejs
 const submitPlacementQuiz = async (req, res) => {
@@ -411,73 +443,57 @@ const submitPlacementQuiz = async (req, res) => {
         const userId = req.id;
 
         const course = await courseModel.findById(courseId);
-        if (!course) {
-            return res.status(404).json({ message: "Course not found" });
-        }
+        if (!course) return res.status(404).json({ message: "Course not found" });
 
-        // get quiz
-        let placementQuiz = null;
+        // Find the placement quiz
+        let placementQuiz = quizId ? course.quizzes.id(quizId) : null;
+        if (!placementQuiz) placementQuiz = course.quizzes.find(q => q.quizType === "placement");
+        if (!placementQuiz) return res.status(404).json({ message: "Placement quiz not found" });
 
-        if (quizId) {
-            placementQuiz = course.quizzes.id(quizId);
-        }
-
-        if (!placementQuiz) {
-            placementQuiz = course.quizzes.find(q => q.quizType === "placement");
-        }
-
-        if (!placementQuiz) {
-            return res.status(404).json({ message: "Placement quiz not found" });
-        }
-
-        // SCORE
+        // Score all questions
         let score = 0;
-
         placementQuiz.questions.forEach((q, i) => {
-            const type = q.questionType || "multiple-choice";
-            const raw = answers?.[i];
-
-            if (type === "multi-select") {
-                const submitted = (Array.isArray(raw) ? raw : [raw]).map(Number).sort();
-                const correct = [...(q.correctAnswers || [])].sort();
-
-                if (
-                    submitted.length === correct.length &&
-                    submitted.every((v, idx) => v === correct[idx])
-                ) {
-                    score++;
-                }
-
-            } else if (type === "written") {
-                const expected = (q.correctAnswerText || "").trim().toLowerCase();
-                const given = (raw || "").toString().trim().toLowerCase();
-
-                if (given === expected) score++;
-
-            } else {
-                if (parseInt(raw) === q.correctAnswer) {
-                    score++;
-                }
-            }
+            score += scoreQuestionLocal(q, answers?.[i]);
         });
 
         const percentage = Math.round((score / placementQuiz.questions.length) * 100);
 
-        // LEVEL LOGIC
+        // ── Save wrong answers as QuizMistakes ────────────────────────────────
+        const mistakeDocs = [];
+        placementQuiz.questions.forEach((q, i) => {
+            const correct = scoreQuestionLocal(q, answers?.[i]);
+            if (!correct) {
+                mistakeDocs.push({
+                    userId,
+                    courseId,
+                    quizId:        placementQuiz._id,
+                    quizType:      "placement",
+                    level:         null,
+                    questionIndex: i,
+                    questionText:  q.question || `Question ${i + 1}`,
+                    studentAnswer: answers?.[i],
+                    correctAnswer: getCorrectDisplay(q),
+                    topic:         extractTopic(q.question || "")
+                });
+            }
+        });
+
+        if (mistakeDocs.length > 0) {
+            await QuizMistake.deleteMany({ userId, courseId, quizId: placementQuiz._id });
+            await QuizMistake.insertMany(mistakeDocs);
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
+        // Determine level
         const determineLevel = (p) => {
             if (p >= 70) return "advanced";
             if (p >= 40) return "intermediate";
             return "beginner";
         };
-
         const level = determineLevel(percentage);
 
-        // FIND OR CREATE PROGRESS
-        let levelProgress = await levelProgressModel.findOne({
-            userId,
-            courseId
-        });
-
+        // Find or create LevelProgress
+        let levelProgress = await levelProgressModel.findOne({ userId, courseId });
         if (!levelProgress) {
             levelProgress = new levelProgressModel({
                 userId,
@@ -486,36 +502,27 @@ const submitPlacementQuiz = async (req, res) => {
                 placementCompleted: true,
                 placementScore: percentage,
                 levels: {
-                    beginner: { quizPassed: false, quizAttempts: 0, lastScore: 0 },
+                    beginner:     { quizPassed: false, quizAttempts: 0, lastScore: 0 },
                     intermediate: { quizPassed: false, quizAttempts: 0, lastScore: 0 },
-                    advanced: { quizPassed: false, quizAttempts: 0, lastScore: 0 }
+                    advanced:     { quizPassed: false, quizAttempts: 0, lastScore: 0 }
                 }
             });
         } else {
             levelProgress.currentLevel = level;
             levelProgress.placementCompleted = true;
             levelProgress.placementScore = percentage;
-
-            if (!levelProgress.levels) {
-                levelProgress.levels = {};
-            }
-
+            if (!levelProgress.levels) levelProgress.levels = {};
             if (!levelProgress.levels[level]) {
-                levelProgress.levels[level] = {
-                    quizPassed: false,
-                    quizAttempts: 0,
-                    lastScore: 0
-                };
+                levelProgress.levels[level] = { quizPassed: false, quizAttempts: 0, lastScore: 0 };
             }
         }
 
-        // ✅ IMPORTANT FIX (SAVE DB)
         await levelProgress.save();
 
         const levelDescriptions = {
-            beginner: "You're just starting out. We'll build your foundation step by step.",
+            beginner:     "You're just starting out. We'll build your foundation step by step.",
             intermediate: "Great foundation! You're ready for more challenging concepts.",
-            advanced: "Excellent knowledge! Jump straight into advanced topics."
+            advanced:     "Excellent knowledge! Jump straight into advanced topics."
         };
 
         return res.json({
@@ -531,7 +538,6 @@ const submitPlacementQuiz = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
-
 
 // ─── ADD / SAVE QUIZ (teacher creates quizzes from courseLessons.ejs) ─────────
 const saveQuiz = async (req, res) => {
