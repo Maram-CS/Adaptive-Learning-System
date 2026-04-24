@@ -4,560 +4,265 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Favorite Courses - Eduphin</title>
-
 <link rel="stylesheet" href="/Style/favoriteCourses.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
 </head>
-
 <body>
 
 <div class="page-container">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="/img/logoBleu.png" class="logo-img">
+      <span>My Courses</span>
+    </div>
+    <div class="menu">
+      <ul>
+        <li><a href="/courses/All">All Courses</a></li>
+        <li><a href="/studentDashboard/">Dashboard</a></li>
+        <li class="active"><a href="/favoriteCourses/All">Favorite Courses</a></li>
+        <li><a href="/profile/Profile-view">My Profile</a></li>
+      </ul>
+    </div>
+    <br><br><br><br><br><br><br><br>
+    <a href="/home">
+      <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
+    </a>
+  </div>
 
-<div class="logo">
-<img src="/img/logoBleu.png" class="logo-img">
-<span>My Courses</span>
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HEADER -->
+    <div class="main-header">
+      <h2>Favorite <span>Courses</span></h2>
+      <div class="header-actions">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search favorites...">
+        <div class="buttons">
+          <a href="/App/notifications" class="notif-btn">
+            <button class="icon-btn">🔔 <span class="notif-badge">0</span></button>
+          </a>
+          <button class="icon-btn">💬</button>
+          <a href="/profile/Profile-view"><button class="icon-btn">👤</button></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-pill">❤️ <span id="favCount">0</span> Saved</div>
+      <div class="stat-pill">⭐ <span id="ratedCount">0</span> Rated</div>
+      <button class="clear-all-btn" onclick="clearAllFavorites()">🗑️ Clear All</button>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-buttons">
+      <button onclick="filterFavorites('all',this)" class="active-filter">All</button>
+      <button onclick="filterFavorites('frontend',this)">Frontend</button>
+      <button onclick="filterFavorites('backend',this)">Backend</button>
+      <button onclick="filterFavorites('database',this)">Database</button>
+      <button onclick="filterFavorites('tools',this)">Tools</button>
+      <button onclick="filterFavorites('design',this)">Design</button>
+      <button onclick="filterFavorites('deployment',this)">Deployment</button>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState" style="display:none">
+      <h3>No Favorites Yet</h3>
+      <p>You haven't saved any courses yet</p>
+      <a href="/courses/All" class="browse-btn">Browse Courses</a>
+    </div>
+
+    <!-- COURSES -->
+    <div class="courses-container" id="favoritesContainer"></div>
+
+  </div>
 </div>
 
-<div class="menu">
-<ul>
-
-<li>
-<a href="/courses/All">All Courses</a>
-</li>
-
-<li>
-<a href="/studentDashboard/">Dashboard</a>
-</li>
-
-<li class="active">
-<a href="/favoriteCourses/All">Favorite Courses</a>
-</li>
-
-<li>
-<a href="/profile/Profile-view">My Profile</a>
-</li>
-
-</ul>
-</div>
-<br> <br> <br> <br> <br>  <br> <br> <br> 
-<a href="/home">
-<button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
-</a>
-
-</div>
-
-
-
-<!-- MAIN -->
-<div class="main">
-
-<!-- HEADER -->
-
-<div class="main-header">
-
-<h2>
-Favorite <span>Courses</span>
-</h2>
-
-<div class="header-actions">
-
-<input 
-type="text"
-id="searchInput"
-class="search-bar"
-placeholder="Search favorites..."
->
-
-<div class="buttons">
-
-<a href="/App/notifications" class="notif-btn">
-    <button class="icon-btn">
-        🔔
-        <span class="notif-badge">0</span>
-    </button>
-</a>
-<button class="icon-btn">💬</button>
-
-<a href="/profile/Profile-view">
-<button class="icon-btn">👤</button>
-</a>
-
-</div>
-</div>
-</div>
-
-
-
-<!-- STATS -->
-
-<div class="stats-bar">
-
-<div class="stat-pill">
-❤️ 
-<span id="favCount">0</span>
-Saved
-</div>
-
-<div class="stat-pill">
-⭐ 
-<span id="ratedCount">0</span>
-Rated
-</div>
-
-<button 
-class="clear-all-btn"
-onclick="clearAllFavorites()"
->
-🗑️ Clear All
-</button>
-
-</div>
-
-
-
-<!-- FILTER -->
-
-<div class="filter-buttons">
-
-<button 
-onclick="filterFavorites('all',this)"
-class="active-filter">
-All
-</button>
-
-<button onclick="filterFavorites('frontend',this)">
-Frontend
-</button>
-
-<button onclick="filterFavorites('backend',this)">
-Backend
-</button>
-
-<button onclick="filterFavorites('database',this)">
-Database
-</button>
-
-<button onclick="filterFavorites('tools',this)">
-Tools
-</button>
-
-<button onclick="filterFavorites('design',this)">
-Design
-</button>
-
-<button onclick="filterFavorites('deployment',this)">
-Deployment
-</button>
-
-</div>
-
-
-
-<!-- EMPTY STATE -->
-
-<div 
-class="empty-state"
-id="emptyState"
-style="display:none"
->
-
-<h3>No Favorites Yet</h3>
-
-<p>
-You haven't saved any courses yet
-</p>
-
-<a href="/courses/All" class="browse-btn">
-Browse Courses
-</a>
-
-</div>
-
-
-
-<!-- COURSES -->
-
-<div 
-class="courses-container"
-id="favoritesContainer"
->
-
-</div>
-
-</div>
-
-</div>
-
-<div class="footer">
-© 2026 Eduphin
-</div>
-
-
+<div class="footer">© 2026 Eduphin</div>
 
 <script>
 
-const allCourses = JSON.parse('<%- JSON.stringify(courses) %>')
+/* ── COURSE LOOKUP MAP ──
+   FIX: String(_id) so ObjectId keys match localStorage plain strings */
+const allCourses = JSON.parse('<%- JSON.stringify(courses) %>');
+const courseById = {};
+allCourses.forEach(c => { courseById[String(c._id)] = c; });
 
-const courseById = {}
-const ratingsState = {}
+const ratingsState  = {};
+let   currentCategory = 'all';
 
-allCourses.forEach(c=>{
+/* ── FAVORITES ── */
+function getFavorites() { return JSON.parse(localStorage.getItem('favorites')) || []; }
 
-courseById[c._id]=c
-
-})
-
-
-
-/* FAVORITES */
-
-function getFavorites(){
-
-return JSON.parse(localStorage.getItem("favorites")) || []
-
+function toggleFavorite(id) {
+  const strId = String(id);
+  let favs = getFavorites();
+  favs = favs.includes(strId) ? favs.filter(f => f !== strId) : [...favs, strId];
+  localStorage.setItem('favorites', JSON.stringify(favs));
+  renderFavorites(currentCategory);
 }
 
-function toggleFavorite(id){
-
-let favs = getFavorites()
-
-if(favs.includes(id)){
-
-favs = favs.filter(f=>f!==id)
-
-}else{
-
-favs.push(id)
-
+function clearAllFavorites() {
+  if (!confirm('Clear all favorites?')) return;
+  localStorage.setItem('favorites', '[]');
+  renderFavorites(currentCategory);
 }
 
-localStorage.setItem("favorites",JSON.stringify(favs))
+/* ── RATING ── */
+const ratingText = { 0:'Tap to rate', 1:'Poor', 2:'Fair', 3:'Good', 4:'Very Good', 5:'Excellent 🎉' };
 
-renderFavorites()
-
+function labelText(saved, average, count) {
+  const avg = `Avg ${Number(average).toFixed(1)} (${count})`;
+  return saved ? `${ratingText[saved]} • ${avg}` : `Tap to rate • ${avg}`;
 }
 
+async function buildStars(container) {
+  const id    = container.dataset.course;
+  const label = container.nextElementSibling;
+  let saved = 0, average = 0, ratingsCount = 0;
 
+  // ✅ Correct path: /courses/api/rating/:courseId
+  try {
+    const res  = await fetch(`/courses/api/rating/${id}`);
+    const data = await res.json();
+    if (data.success) {
+      saved            = Number(data.userRating    || 0);
+      average          = Number(data.averageRating || 0);
+      ratingsCount     = Number(data.ratingsCount  || 0);
+      ratingsState[id] = saved;
+    }
+  } catch (err) { console.error('Error loading rating:', err); }
 
-function clearAllFavorites(){
+  container.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement('span');
+    star.classList.add('star');
+    star.innerHTML = '★';
+    star.dataset.value = i;
+    if (i <= saved) star.classList.add('filled');
 
-if(!confirm("Clear all favorites ?")) return
-
-localStorage.setItem("favorites","[]")
-
-renderFavorites()
-
+    star.addEventListener('mouseenter', () => { highlightStars(container, i); label.textContent = ratingText[i]; });
+    star.addEventListener('mouseleave', () => { highlightStars(container, saved); label.textContent = labelText(saved, average, ratingsCount); });
+    star.addEventListener('click', async () => {
+      try {
+        // ✅ Correct path: /courses/api/rate
+        const response = await fetch('/courses/api/rate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ courseId: id, rating: i })
+        });
+        const data = await response.json();
+        if (data.success) {
+          saved            = Number(data.userRating    || i);
+          average          = Number(data.averageRating || 0);
+          ratingsCount     = Number(data.ratingsCount  || 0);
+          ratingsState[id] = saved;
+          highlightStars(container, saved);
+          label.textContent = labelText(saved, average, ratingsCount);
+          updateStats();
+        } else {
+          alert(data.message || 'Failed to save rating');
+        }
+      } catch (error) { console.error(error); alert('Error sending rating'); }
+    });
+    container.appendChild(star);
+  }
+  highlightStars(container, saved);
+  label.textContent = labelText(saved, average, ratingsCount);
+  updateStats();
 }
 
-
-
-/* RATING */
-
-const ratingText={
-
-0:"Tap to rate",
-1:"Poor",
-2:"Fair",
-3:"Good",
-4:"Very Good",
-5:"Excellent 🎉"
-
+function highlightStars(container, val) {
+  container.querySelectorAll('.star').forEach(star => {
+    star.classList.toggle('filled', parseInt(star.dataset.value) <= val);
+  });
 }
 
-
-
-async function buildStars(container){
-
-const id = container.dataset.course
-
-const label = container.nextElementSibling
-let saved = 0
-let average = 0
-let ratingsCount = 0
-
-try{
-
-const res = await fetch(`/courses/api/rating/${id}`)
-const data = await res.json()
-
-if(data.success){
-saved = Number(data.userRating || 0)
-average = Number(data.averageRating || 0)
-ratingsCount = Number(data.ratingsCount || 0)
-ratingsState[id] = saved
+/* ── STATS ── */
+function updateStats() {
+  const favs = getFavorites();
+  document.getElementById('favCount').textContent  = favs.length;
+  document.getElementById('ratedCount').textContent = favs.filter(id => ratingsState[String(id)]).length;
 }
 
-}catch(err){
-console.log("Error loading rating")
+/* ── RENDER ── */
+function renderFavorites(category = 'all') {
+  currentCategory = category;
+  const container = document.getElementById('favoritesContainer');
+  const empty     = document.getElementById('emptyState');
+  const favs      = getFavorites();
+
+  // FIX: String(id) lookup
+  const matched  = favs.map(id => courseById[String(id)]).filter(Boolean);
+  const filtered = matched.filter(c => category === 'all' || c.category === category);
+
+  container.innerHTML = '';
+
+  if (favs.length === 0) {
+    empty.style.display     = 'flex';
+    container.style.display = 'none';
+    updateStats();
+    return;
+  }
+
+  empty.style.display     = 'none';
+  container.style.display = 'flex';
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<p style="padding:2rem;opacity:.6;">No favorites in this category.</p>`;
+    updateStats();
+    return;
+  }
+
+  filtered.forEach(course => {
+    const strId = String(course._id);
+    const card  = document.createElement('div');
+    card.className        = 'item';
+    card.dataset.category = course.category;
+    card.innerHTML = `
+      <button class="heart-btn active" onclick="toggleFavorite('${strId}')">❤️</button>
+      <img src="${course.image}" class="course-img" alt="${course.Title}">
+      <h3>${course.Title}</h3>
+      <p>${course.Description}</p>
+      <div class="card-divider"></div>
+      <div class="star-rating" data-course="${strId}"></div>
+      <div class="rating-label">Tap to rate</div>
+      <button class="view-details-btn" onclick="viewCourseDetails('${course.slug}')">View Details</button>
+    `;
+    container.appendChild(card);
+  });
+
+  container.querySelectorAll('.star-rating').forEach(buildStars);
+  updateStats();
 }
 
-container.innerHTML=""
-
-for(let i=1;i<=5;i++){
-
-const star=document.createElement("span")
-
-star.classList.add("star")
-
-star.innerHTML="★"
-
-star.dataset.value=i
-
-if(i<=saved) star.classList.add("filled")
-
-star.onclick=async()=>{
-
-try{
-
-const response = await fetch('/courses/api/rate',{
-method:'POST',
-headers:{
-'Content-Type':'application/json'
-},
-body:JSON.stringify({
-courseId:id,
-rating:i
-})
-})
-
-const data = await response.json()
-
-if(!data.success){
-alert(data.message || "Failed to save rating")
-return
+/* ── FILTER ── */
+function filterFavorites(cat, btn) {
+  document.querySelectorAll('.filter-buttons button').forEach(b => b.classList.remove('active-filter'));
+  btn.classList.add('active-filter');
+  renderFavorites(cat);
 }
 
-saved = Number(data.userRating || i)
-average = Number(data.averageRating || 0)
-ratingsCount = Number(data.ratingsCount || 0)
-ratingsState[id] = saved
+/* ── SEARCH ── */
+document.getElementById('searchInput').addEventListener('keyup', function () {
+  const val = this.value.toLowerCase();
+  document.querySelectorAll('.item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(val) ? 'flex' : 'none';
+  });
+});
 
-highlightStars(container,saved)
-
-label.textContent=`${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
-
-updateStats()
-
-}catch(error){
-console.error(error)
-alert("Error sending rating")
+/* ── NAV ── */
+function viewCourseDetails(slug) {
+  localStorage.setItem('selectedCourse', slug);
+  window.location.href = '/courses/course/' + slug;
 }
 
-}
-
-container.appendChild(star)
-
-}
-
-highlightStars(container,saved)
-
-label.textContent = saved
-? `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
-: `Tap to rate • Avg ${average.toFixed(1)} (${ratingsCount})`
-
-updateStats()
-
-}
-
-
-function highlightStars(container,val){
-
-container.querySelectorAll(".star")
-.forEach(star=>{
-
-star.classList.toggle(
-"filled",
-star.dataset.value<=val
-)
-
-})
-
-}
-
-
-
-/* STATS */
-
-function updateStats(){
-
-const favs = getFavorites()
-
-document
-.getElementById("favCount")
-.textContent = favs.length
-
-let rated=0
-
-favs.forEach(id=>{
-
-if(ratingsState[id]){
-rated++
-}
-
-})
-
-document
-.getElementById("ratedCount")
-.textContent=rated
-
-}
-
-
-
-/* RENDER */
-
-function renderFavorites(category="all"){
-
-const container =
-document.getElementById("favoritesContainer")
-
-const empty =
-document.getElementById("emptyState")
-
-const favs = getFavorites()
-
-const filtered = favs
-.map(id=>courseById[id])
-.filter(c=>c && (category==="all" || c.category===category))
-
-container.innerHTML=""
-
-if(favs.length===0){
-
-empty.style.display="flex"
-
-container.style.display="none"
-
-updateStats()
-
-return
-
-}
-
-empty.style.display="none"
-
-container.style.display="flex"
-
-
-
-filtered.forEach(course=>{
-
-const card=document.createElement("div")
-
-card.className="item"
-
-card.dataset.category=course.category
-
-card.innerHTML=`
-
-<button 
-class="heart-btn active"
-onclick="toggleFavorite('${course._id}')">
-❤️
-</button>
-
-<img src="${course.image}" class="course-img">
-
-<h3>${course.Title}</h3>
-
-<p>${course.Description}</p>
-
-<div class="card-divider"></div>
-
-<div class="star-rating" data-course="${course._id}">
-</div>
-
-<div class="rating-label">
-Tap to rate
-</div>
-
-<button 
-class="view-details-btn"
-onclick="viewCourseDetails('${course.slug}')">
-View Details
-</button>
-
-`
-
-container.appendChild(card)
-
-})
-
-
-document
-.querySelectorAll(".star-rating")
-.forEach(buildStars)
-
-updateStats()
-
-}
-
-
-
-/* FILTER */
-
-function filterFavorites(cat,btn){
-
-document
-.querySelectorAll(".filter-buttons button")
-.forEach(b=>b.classList.remove("active-filter"))
-
-btn.classList.add("active-filter")
-
-renderFavorites(cat)
-
-}
-
-
-
-/* SEARCH */
-
-document
-.getElementById("searchInput")
-.addEventListener("keyup",function(){
-
-const val=this.value.toLowerCase()
-
-document
-.querySelectorAll(".item")
-.forEach(item=>{
-
-item.style.display =
-item.textContent
-.toLowerCase()
-.includes(val)
-? "flex"
-: "none"
-
-})
-
-})
-
-
-
-/* VIEW DETAILS */
-
-function viewCourseDetails(slug){
-
-localStorage.setItem("selectedCourse",slug)
-window.location.href="/courses/course/"+slug
-
-}
-
-
-
-/* INIT */
-
-renderFavorites()
-
-
+/* ── INIT ── */
+renderFavorites();
 </script>
 <script src="/js/notifications.js"></script>
-
 
 </body>
 </html>
