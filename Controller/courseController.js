@@ -2,6 +2,13 @@ import courseModel from "../Model/courseModel.js";
 import { notifyNewCourse } from "./notificationController.js";
 import levelProgressModel from "../Model/progressLevelModel.js";
 import progressModel from "../Model/Progress.js";
+import {
+    calculateCurrentStreak,
+    calculateQuizAverage,
+    calculateCourseProgressPercent,
+    calculateTimeSpentMinutes,
+    formatMinutesAsHoursAndMinutes
+} from "../utils/learningStats.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -169,6 +176,20 @@ const getCourseBySlugForStudent = async (req, res) => {
 
         const userId = req.id;
         const levelProgress = await levelProgressModel.findOne({ userId, courseId: course._id });
+        const courseProgress = await progressModel.find({ userId, courseId: course._id }).sort({ lastUpdated: -1 });
+        const allUserProgress = await progressModel.find({ userId }).sort({ lastUpdated: -1 });
+        const completedLessons = courseProgress.filter(item => item.completed).length;
+        const timeSpent = formatMinutesAsHoursAndMinutes(
+            calculateTimeSpentMinutes(course, courseProgress)
+        );
+        const courseStats = {
+            completedLessons,
+            totalLessons: course.lessons?.length || 0,
+            progressPercent: calculateCourseProgressPercent(course, courseProgress),
+            currentStreak: calculateCurrentStreak(allUserProgress),
+            timeSpentText: `${timeSpent.hours}h ${timeSpent.minutes}m`,
+            quizAverage: calculateQuizAverage(levelProgress ? [levelProgress] : [])
+        };
 
         // Already placed → go straight to learning
         if (levelProgress && levelProgress.placementCompleted) {
@@ -182,6 +203,7 @@ const getCourseBySlugForStudent = async (req, res) => {
 
         return res.render("auth/course", {
             course,
+            courseStats,
             placementQuiz,
             showPlacementQuiz: !!placementQuiz
         });
@@ -647,11 +669,83 @@ const getLevelLessons = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
+// ========== Rating Course ==========
+const rateCourse = async (req, res) => {
+    try {
+        const { courseId, rating } = req.body;
+        const userId = req.id;
+        const numericRating = Number(rating);
 
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "User not authenticated" });
+        }
+
+        if (!numericRating || numericRating < 1 || numericRating > 5) {
+            return res.status(400).json({ success: false, message: "Rating must be between 1 and 5" });
+        }
+
+        const course = await courseModel.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        const existingIndex = course.rating.findIndex(r => String(r.userId) === String(userId));
+
+        if (existingIndex !== -1) {
+            course.rating[existingIndex].value = numericRating;
+            course.rating[existingIndex].createdAt = new Date();
+        } else {
+            course.rating.push({
+                userId,
+                value: numericRating,
+                createdAt: new Date()
+            });
+        }
+
+        await course.save();
+
+        return res.json({
+            success: true,
+            averageRating: course.averageRating,
+            userRating: numericRating,
+            ratingsCount: course.rating.length
+        });
+
+    } catch (error) {
+        console.error("rateCourse error:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ========== Get User Rating ==========
+const getUserRating = async (req, res) => {
+    try {
+        const { courseId } = req.params;
+        const userId = req.id;
+
+        const course = await courseModel.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        const rating = course.rating.find(r => String(r.userId) === String(userId));
+
+        return res.json({
+            success: true,
+            userRating: rating ? rating.value : 0,
+            averageRating: course.averageRating || 0,
+            ratingsCount: course.rating.length
+        });
+
+    } catch (error) {
+        console.error("getUserRating error:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
 export {
     createCourse, getAllCourses, editCourse, deleteCourse,
     getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent,
     getEditCoursePage, getLessonsByLevel, getCourseLearnPage,
-    completeLesson, submitPlacementQuiz, saveQuiz, deleteQuiz, getLevelQuiz, getLevelLessons 
+    completeLesson, submitPlacementQuiz, saveQuiz, deleteQuiz, getLevelQuiz, getLevelLessons, rateCourse, getUserRating 
 };
 
