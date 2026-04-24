@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/Style/dashboard.css">
     <style> 
-        /* يمكنك نقل هذه الستايلات إلى ملف main.css */
         .loading { text-align: center; padding: 50px; font-size: 18px; color: #2b7de9; }
         .error { text-align: center; padding: 50px; color: #e74c3c; }
         .toast { position: fixed; bottom: 30px; right: 30px; background: #0c1e36; color: white; padding: 12px 24px; border-radius: 50px; z-index: 1000; animation: slideIn 0.3s ease-out; }
@@ -44,9 +43,40 @@
         .completed-badge { background: #2ecc71; color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .small-continue-btn { background: #2b7de9; color: white; border: none; padding: 5px 15px; border-radius: 30px; font-size: 12px; cursor: pointer; margin-top: 8px; }
         .small-continue-btn:hover { background: #f4a640; }
+        
+        /* ── Smart Recommendations ── */
         .recommendations-list { list-style: none; padding-left: 0; }
-        .recommendations-list li { margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
-        .recommendations-list li:hover { transform: translateX(5px); color: #2b7de9; }
+        .recommendations-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .recommendations-list li:hover { transform: translateX(5px); background: #e8f4fd; border-left-color: #2b7de9; }
+        .rec-icon { font-size: 22px; color: #2b7de9; min-width: 28px; margin-top: 2px; }
+        .rec-body { flex: 1; }
+        .rec-topic { font-weight: 700; color: #1f2d3d; font-size: 15px; }
+        .rec-message { font-size: 13px; color: #555; margin-top: 3px; line-height: 1.4; }
+        .rec-badge {
+            background: #fff3cd;
+            color: #856404;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            white-space: nowrap;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        .rec-badge.danger { background: #f8d7da; color: #842029; }
+        .rec-badge.success { background: #d1e7dd; color: #0a3622; }
+
         .leaderboard-table { width: 100%; border-collapse: collapse; }
         .leaderboard-table th { text-align: left; padding: 12px 8px; background: #f8f9fa; }
         .leaderboard-table td { padding: 12px 8px; border-bottom: 1px solid #ecf0f1; }
@@ -76,7 +106,7 @@
                 <li><a href="/profile/Profile-view">My Profile</a></li>
             </ul>
         </div>
-        <br> <br> <br> <br> <br>  <br> <br> <br> 
+        <br><br><br><br><br><br><br><br>
         <a href="/home"><button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button></a>
     </div>
 
@@ -90,11 +120,8 @@
                 <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
                 <div class="buttons">
                     <a href="/App/notifications" class="notif-btn">
-    <button class="icon-btn">
-        🔔
-        <span class="notif-badge">0</span>
-    </button>
-</a>
+                        <button class="icon-btn">🔔<span class="notif-badge">0</span></button>
+                    </a>
                     <button class="icon-btn">💬</button>
                     <a href="/profile/Profile-view"><button class="icon-btn">👤</button></a>
                 </div>
@@ -113,7 +140,7 @@
 </div>
 
 <script>
-    
+
     function showToast(message) {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -136,19 +163,14 @@
     }
 
     function animateNumbers() {
-        const numbers = document.querySelectorAll('.stat-number');
-        numbers.forEach(el => {
+        document.querySelectorAll('.stat-number').forEach(el => {
             const target = parseInt(el.getAttribute('data-target'));
             let current = 0;
             const increment = target / 50;
             const updateNumber = () => {
                 current += increment;
-                if (current < target) {
-                    el.textContent = Math.floor(current);
-                    requestAnimationFrame(updateNumber);
-                } else {
-                    el.textContent = target;
-                }
+                if (current < target) { el.textContent = Math.floor(current); requestAnimationFrame(updateNumber); }
+                else el.textContent = target;
             };
             updateNumber();
         });
@@ -156,74 +178,91 @@
 
     async function fetchLeaderboard() {
         try {
-            const response = await fetch(`/studentDashboard/leaderboard`, {
-                credentials: "include"
-            });
+            const response = await fetch(`/studentDashboard/leaderboard`, { credentials: "include" });
             const data = await response.json();
             return data.success ? data.leaderboard : [];
-        } catch (error) {
-            console.error("Leaderboard error:", error);
+        } catch { return []; }
+    }
+
+    // ── NEW: fetch real recommendations from the backend ──────────────────────
+    async function fetchSmartRecommendations() {
+        try {
+            const response = await fetch(`/studentDashboard/recommendations`, { credentials: "include" });
+            const data = await response.json();
+            return data.success ? data.recommendations : [];
+        } catch {
             return [];
         }
     }
 
-    function generateRecommendations(courses) {
-        const recommendations = [];
-        for (const course of courses) {
-            for (const lesson of course.lessons) {
-                if (!lesson.completed && lesson.progress > 0) {
-                    recommendations.push({
-                        icon: "fas fa-code",
-                        title: lesson.title,
-                        reason: `Continue where you left off in ${course.title}`
-                    });
-                    break;
-                }
-            }
+    // ── Render a recommendation item ──────────────────────────────────────────
+    function renderRecommendation(rec) {
+        // Badge colour by mistake count
+        let badgeClass = "success";
+        let badgeText  = "✓ Good to review";
+        if (rec.count >= 4) { badgeClass = "danger"; badgeText = `⚠️ ${rec.count} mistakes`; }
+        else if (rec.count >= 2) { badgeClass = "";      badgeText = `${rec.count} mistakes`; }
+        else if (rec.count === 1) { badgeClass = "success"; badgeText = "1 mistake"; }
+
+        // If it's the motivational default (no quiz taken yet)
+        if (rec.count === 0) {
+            return `
+                <li onclick="showToast('Complete a quiz to unlock your personal study plan!')">
+                    <span class="rec-icon"><i class="${rec.icon}"></i></span>
+                    <div class="rec-body">
+                        <div class="rec-topic">${rec.topic}</div>
+                        <div class="rec-message">${rec.message}</div>
+                    </div>
+                </li>`;
         }
-        while (recommendations.length < 3) {
-            recommendations.push({
-                icon: "fas fa-graduation-cap",
-                title: "Explore New Courses",
-                reason: "Discover new skills to advance your career"
-            });
-        }
-        return recommendations.slice(0, 3);
+
+        return `
+            <li onclick="showToast('📚 Review: ${rec.topic}')">
+                <span class="rec-icon"><i class="${rec.icon}"></i></span>
+                <div class="rec-body">
+                    <div class="rec-topic">Review: ${rec.topic}</div>
+                    <div class="rec-message">${rec.message}</div>
+                    <span class="rec-badge ${badgeClass}">${badgeText}</span>
+                </div>
+            </li>`;
     }
 
     async function loadDashboard() {
         const container = document.getElementById('dashboard-container');
         container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading your dashboard...</div>';
-        
+
         try {
-            const dashboardRes = await fetch(`/studentDashboard/get`, {
-                credentials: "include" // مهم باش يبعث cookie
-            });
-            const dashboardData = await dashboardRes.json();
-            
-            if (!dashboardData.success) throw new Error(dashboardData.message);
-            
-            const leaderboard = await fetchLeaderboard();
-            const recommendations = generateRecommendations(dashboardData.courses);
-            
-            renderDashboard(dashboardData, leaderboard, recommendations);
+            // Fetch all 3 data sources in parallel
+            const [dashboardRes, leaderboard, recommendations] = await Promise.all([
+                fetch(`/studentDashboard/get`, { credentials: "include" }).then(r => r.json()),
+                fetchLeaderboard(),
+                fetchSmartRecommendations()
+            ]);
+
+            if (!dashboardRes.success) throw new Error(dashboardRes.message);
+
+            renderDashboard(dashboardRes, leaderboard, recommendations);
         } catch (error) {
             console.error("Error:", error);
-            container.innerHTML = `<div class="error">❌ Failed to load dashboard. <button onclick="loadDashboard()" style="margin-top:10px; padding:8px 20px; background:#2b7de9; color:white; border:none; border-radius:20px;">Retry</button></div>`;
+            container.innerHTML = `<div class="error">❌ Failed to load dashboard. <button onclick="loadDashboard()" style="margin-top:10px;padding:8px 20px;background:#2b7de9;color:white;border:none;border-radius:20px;">Retry</button></div>`;
         }
     }
 
     function renderDashboard(data, leaderboard, recommendations) {
         const { userData, courses, completedLessons, totalLessons, avgProgress } = data;
         const container = document.getElementById('dashboard-container');
-        
+
+        const recommendationsHTML = recommendations.length > 0
+            ? recommendations.map(renderRecommendation).join('')
+            : `<li><span class="rec-icon"><i class="fas fa-rocket"></i></span><div class="rec-body"><div class="rec-topic">All good!</div><div class="rec-message">No weak spots found yet. Keep learning!</div></div></li>`;
+
         container.innerHTML = `
             <div class="welcome-card">
                 <div class="welcome-text">
                     <h1><i class="fas fa-smile-wink"></i> Hello, ${userData.firstName}!</h1>
                     <p>You are enrolled in <strong>${courses.length} courses</strong><br>Click on any course to see its lessons.</p>
                 </div>
-                <div class="streak-badge" onclick="showToast('🔥 You're on a ${userData.streakDays}-day streak!')">
+                <div class="streak-badge" onclick="showToast('🔥 You\\'re on a ${userData.streakDays}-day streak!')">
                     <i class="fas fa-fire"></i> Day ${userData.streakDays} 🔥
                 </div>
             </div>
@@ -235,10 +274,11 @@
                     <div class="progress-bar"><div class="progress-fill" style="width: ${avgProgress}%"></div></div>
                     <p><i class="fas fa-check-circle"></i> ${completedLessons}/${totalLessons} lessons completed</p>
                 </div>
+
                 <div class="dashboard-card">
                     <div class="card-header"><i class="fas fa-lightbulb"></i><h3>Smart Recommendations</h3></div>
                     <ul class="recommendations-list">
-                        ${recommendations.map(rec => `<li onclick="showToast('📚 Recommended: ${rec.title}')"><i class="${rec.icon}"></i> <strong>${rec.title}</strong> – ${rec.reason}</li>`).join('')}
+                        ${recommendationsHTML}
                     </ul>
                 </div>
             </div>
@@ -274,11 +314,11 @@
             <div class="dashboard-grid-2">
                 <div class="dashboard-card"><div class="card-header"><i class="fas fa-trophy"></i><h3>Weekly Leaderboard</h3></div>
                     <table class="leaderboard-table"><thead><tr><th>Rank</th><th>Student</th><th>Points</th></tr></thead><tbody>
-                    ${leaderboard.map((item, idx) => `<tr onclick="showToast('${item.name}: ${item.points} pts')"><td>${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx+1}</td><td><strong>${item.name}</strong></td><td>${item.points}</td></tr>`).join('')}
+                    ${leaderboard.map((item, idx) => `<tr onclick="showToast('${item.name}: ${item.points} pts')"><td>${idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':idx+1}</td><td><strong>${item.name}</strong></td><td>${item.points}</td></tr>`).join('')}
                     </tbody></table>
                 </div>
                 <div class="dashboard-card"><div class="card-header"><i class="fas fa-calendar-day"></i><h3>Today's Learning Path</h3></div>
-                    <ul class="today-path-list">${courses.slice(0, 3).map(course => `<li><i class="${course.icon}"></i> <strong>${course.title}:</strong> ${course.lastLesson} (${course.lastLessonTime} min)</li>`).join('')}</ul>
+                    <ul class="today-path-list">${courses.slice(0,3).map(course => `<li><i class="${course.icon}"></i> <strong>${course.title}:</strong> ${course.lastLesson} (${course.lastLessonTime} min)</li>`).join('')}</ul>
                 </div>
             </div>
 
@@ -286,12 +326,11 @@
                 <ul class="assessments-list"><li><i class="fas fa-clock"></i> <strong>Tomorrow:</strong> JavaScript Functions Quiz (Full-Stack)</li><li><i class="fas fa-clock"></i> <strong>In 3 days:</strong> Final Project – Calculator App (Full-Stack)</li><li><i class="fas fa-clock"></i> <strong>Next week:</strong> Pandas Quiz (Python for Data Science)</li></ul>
             </div>
         `;
-        
+
         setTimeout(animateNumbers, 500);
     }
 
     loadDashboard();
-
 </script>
 <script src="/js/notifications.js"></script>
 </body>
