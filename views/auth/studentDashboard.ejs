@@ -300,14 +300,15 @@
                         <div class="progress-bar"><div class="progress-fill" style="width: ${course.overallProgress}%"></div></div>
                         <div class="last-lesson"><i class="fas fa-clock"></i> Last: ${course.lastLesson} — ${course.lastLessonTime} min left</div>
                         <div class="course-actions"><button class="continue-btn" onclick="event.stopPropagation(); showToast('📚 Continue ${course.title}')"><i class="fas fa-play"></i> Continue Course</button><i id="expand-icon-${course.id}" class="fas fa-chevron-right expand-icon"></i></div>
-                        <div id="lessons-${course.id}" class="lessons-container"><div class="lessons-header"><i class="fas fa-list"></i> Lessons in this course</div>
-                        ${course.lessons.map(lesson => `
-                            <div class="lesson-item" onclick="event.stopPropagation(); continueLesson('${lesson.title}', '${course.title}')">
-                                <div class="lesson-title"><span><i class="${lesson.icon}"></i> <strong>${lesson.title}</strong></span>${lesson.completed ? '<span class="completed-badge"><i class="fas fa-check"></i> Done</span>' : `<span>${lesson.progress}%</span>`}</div>
-                                <div class="progress-bar"><div class="progress-fill" style="width: ${lesson.progress}%"></div></div>
-                                ${!lesson.completed ? `<button class="small-continue-btn" onclick="event.stopPropagation(); continueLesson('${lesson.title}', '${course.title}')"><i class="fas fa-play"></i> ${lesson.progress > 0 ? 'Continue' : 'Start'} Lesson</button>` : ''}
-                            </div>
-                        `).join('')}
+                        <div id="lessons-${course.id}" class="lessons-container">
+                            <div class="lessons-header"><i class="fas fa-list"></i> Lessons in this course</div>
+                            ${course.lessons.map(lesson => `
+                                <div class="lesson-item" onclick="event.stopPropagation(); continueLesson('${lesson.title}', '${course.title}')">
+                                    <div class="lesson-title"><span><i class="${lesson.icon}"></i> <strong>${lesson.title}</strong></span>${lesson.completed ? '<span class="completed-badge"><i class="fas fa-check"></i> Done</span>' : `<span>${lesson.progress}%</span>`}</div>
+                                    <div class="progress-bar"><div class="progress-fill" style="width: ${lesson.progress}%"></div></div>
+                                    ${!lesson.completed ? `<button class="small-continue-btn" onclick="event.stopPropagation(); continueLesson('${lesson.title}', '${course.title}')"><i class="fas fa-play"></i> ${lesson.progress > 0 ? 'Continue' : 'Start'} Lesson</button>` : ''}
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 `).join('')}
