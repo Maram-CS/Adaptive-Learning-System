@@ -1,76 +1,110 @@
 import userModel from "../Model/userModel.js";
 import progressModel from "../Model/Progress.js";
 import courseModel from "../Model/courseModel.js";
+import levelProgressModel from "../Model/progressLevelModel.js";
+import QuizMistake from "../Model/recommandation.js";
+import { buildRecommendations } from "../utils/topicExtractor.js";
+import {
+    calculateCurrentStreak,
+    calculateQuizAverage,
+    calculateCourseProgressPercent,
+    calculateTimeSpentMinutes,
+    formatMinutesAsHoursAndMinutes,
+    parseDurationToMinutes
+} from "../utils/learningStats.js";
 
-// ─── Get student dashboard data ───────────────────────────────────────────────
 const getStudentDashboardData = async (req, res) => {
     try {
         const userId = req.params.userId || req.id;
-        if (!userId) return res.status(400).json({ success: false, message: "User ID is required" });
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "User ID is required" });
+        }
 
         const user = await userModel.findById(userId);
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
-
-        const allProgress = await progressModel.find({ userId });
-
-        const completedLessons = allProgress.filter(p => p.completed === true).length;
-        
-        let totalProgress = 0;
-        if (allProgress.length > 0) {
-            totalProgress = allProgress.reduce((sum, p) => sum + p.progress, 0);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
         }
-        const avgProgress = allProgress.length > 0 ? Math.round(totalProgress / allProgress.length) : 0;
+
+        const allProgress = await progressModel.find({ userId }).sort({ lastUpdated: -1 });
+        const completedLessons = allProgress.filter(progress => progress.completed).length;
 
         const coursesMap = new Map();
         allProgress.forEach(progress => {
             const courseKey = String(progress.courseId);
             if (!coursesMap.has(courseKey)) {
-                coursesMap.set(courseKey, { lessons: [] });
+                coursesMap.set(courseKey, []);
             }
-            coursesMap.get(courseKey).lessons.push(progress);
+            coursesMap.get(courseKey).push(progress);
         });
 
-       // const course = await courseModel.findById(progress.courseId);
+        const courseIds = [...coursesMap.keys()];
+        const courseDocs = await courseModel.find({ _id: { $in: courseIds } });
+        const courseById = new Map(courseDocs.map(course => [String(course._id), course]));
+        const levelProgressDocs = await levelProgressModel.find({ userId });
 
-        const courses = [];
-            for (let [courseId, data] of coursesMap.entries()) {
+        const courses = [...coursesMap.entries()].map(([courseId, progressEntries]) => {
+            const course = courseById.get(courseId);
+            const latestProgress = progressEntries[0];
+            const latestLesson = course?.lessons?.find(
+                lesson => String(lesson._id) === String(latestProgress?.lessonId)
+            );
 
-        const course = await courseModel.findById(courseId);
+            return {
+                id: courseId,
+                title: course?.Title || "Course",
+                icon: "fas fa-book",
+                overallProgress: calculateCourseProgressPercent(course, progressEntries),
+                lastLesson: latestLesson?.name || course?.lessons?.[0]?.name || "Lesson",
+                lastLessonTime: parseDurationToMinutes(latestLesson?.duration || ""),
+                lessons: progressEntries.map(progress => {
+                    const lessonDoc = course?.lessons?.find(
+                        lesson => String(lesson._id) === String(progress.lessonId)
+                    );
 
-        const lessons = data.lessons.map(lesson => ({
-        title: `Lesson ${lesson.lessonId}`,
-        progress: lesson.progress,
-        completed: lesson.completed,
-        icon: lesson.completed 
-        ? "fas fa-check-circle" 
-        : (lesson.progress > 0 
-        ? "fas fa-play-circle" 
-        : "fas fa-lock")
-        }));
-
-        const courseOverallProgress =
-        lessons.length > 0
-        ? Math.round(
-        lessons.reduce((sum, l) => sum + l.progress, 0) / lessons.length
-        )
-        : 0;
-
-        courses.push({
-        id: courseId,
-        title: course?.Title || "Course",
-        icon: "fas fa-book",
-        overallProgress: courseOverallProgress,
-        lastLesson: course?.lessons?.[0]?.name || "Lesson",
-        lastLessonTime: 10,
-        lessons: lessons
+                    return {
+                        title: lessonDoc?.name || "Lesson",
+                        progress: Number(progress.progress || 0),
+                        completed: Boolean(progress.completed),
+                        icon: progress.completed
+                            ? "fas fa-check-circle"
+                            : (progress.progress > 0 ? "fas fa-play-circle" : "fas fa-lock")
+                    };
+                })
+            };
         });
-        }
+
+        const totalLessonsCount = courseDocs.reduce(
+            (sum, course) => sum + (course.lessons?.length || 0),
+            0
+        );
+
+        const avgProgress = courseDocs.length > 0
+            ? Math.round(
+                courseDocs.reduce((sum, course) => {
+                    const courseProgress = allProgress.filter(
+                        progress => String(progress.courseId) === String(course._id)
+                    );
+                    return sum + calculateCourseProgressPercent(course, courseProgress);
+                }, 0) / courseDocs.length
+            )
+            : 0;
+
+        const totalLearningMinutesValue = courseDocs.reduce((sum, course) => {
+            const courseProgress = allProgress.filter(
+                progress => String(progress.courseId) === String(course._id)
+            );
+            return sum + calculateTimeSpentMinutes(course, courseProgress);
+        }, 0);
+        const totalLearningTime = formatMinutesAsHoursAndMinutes(totalLearningMinutesValue);
 
         const userData = {
             firstName: user.userName,
             streakDays: calculateCurrentStreak(allProgress),
             totalLearningHours: totalLearningTime.hours,
             totalLearningMinutes: totalLearningTime.minutes,
+            totalLearningDisplay: totalLearningTime.hours > 0
+                ? `${totalLearningTime.hours}h ${totalLearningTime.minutes}m`
+                : `${totalLearningTime.minutes}m`,
             quizAverage: calculateQuizAverage(levelProgressDocs)
         };
 
@@ -82,27 +116,18 @@ const getStudentDashboardData = async (req, res) => {
             totalLessons: totalLessonsCount,
             avgProgress
         });
-
     } catch (error) {
         console.error("Dashboard API Error:", error);
         return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
 
-// ─── NEW: Smart Recommendations ───────────────────────────────────────────────
-// GET /studentDashboard/recommendations
-// Returns personalised recommendations based on the student's quiz mistakes
 const getSmartRecommendations = async (req, res) => {
     try {
         const userId = req.id;
-
-        // Fetch all mistakes for this user, most recent first
-        const mistakes = await QuizMistake.find({ userId })
-            .sort({ createdAt: -1 })
-            .lean();
+        const mistakes = await QuizMistake.find({ userId }).sort({ createdAt: -1 }).lean();
 
         if (mistakes.length === 0) {
-            // No mistakes yet → return motivational defaults
             return res.json({
                 success: true,
                 recommendations: [
@@ -116,18 +141,16 @@ const getSmartRecommendations = async (req, res) => {
             });
         }
 
-        // Build topic-based recommendations from the mistake records
-        const recommendations = buildRecommendations(mistakes, 3);
-
-        return res.json({ success: true, recommendations });
-
+        return res.json({
+            success: true,
+            recommendations: buildRecommendations(mistakes, 3)
+        });
     } catch (error) {
         console.error("Recommendations API Error:", error);
         return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
 
-// ─── Leaderboard ──────────────────────────────────────────────────────────────
 const getLeaderboardData = async (req, res) => {
     try {
         const users = await userModel.find({}, "userName");
@@ -143,39 +166,32 @@ const getLeaderboardData = async (req, res) => {
         ]);
 
         const leaderboard = leaderboardData.map((item, index) => {
-            const user = users.find(u => u._id.toString() === item._id.toString());
+            const user = users.find(entry => entry._id.toString() === item._id.toString());
             return {
                 name: user ? user.userName : "Unknown",
                 points: item.totalPoints,
                 badge: index === 0 ? "🔥" : index === 1 ? "⭐" : index === 2 ? "📈" : "",
-                isCurrentUser: false
+                isCurrentUser: String(item._id) === String(req.id)
             };
         });
 
         return res.json({ success: true, leaderboard });
-
     } catch (error) {
         console.error("Leaderboard API Error:", error);
         return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
 
-// ─── Render dashboard page ────────────────────────────────────────────────────
 const getStudentDashboard = async (req, res) => {
     try {
         const user = await userModel.findById(req.id);
-        if (user) {
-            res.render("auth/studentDashboard", { userId: user._id.toString() });
-        } else {
-            res.render("auth/studentDashboard", { userId: null });
-        }
+        return res.render("auth/studentDashboard", { userId: user ? user._id.toString() : null });
     } catch (error) {
         console.error("Error rendering dashboard:", error);
-        res.render("auth/studentDashboard", { userId: null });
+        return res.render("auth/studentDashboard", { userId: null });
     }
 };
 
-// ─── Student course lessons ───────────────────────────────────────────────────
 const studentCourseLessons = async (req, res) => {
     try {
         const course = await courseModel.findById(req.params.courseId);
@@ -183,17 +199,21 @@ const studentCourseLessons = async (req, res) => {
 
         const user = await userModel.findById(req.id);
         const userLevel = user?.level || "beginner";
-        const lessons = course.lessons.filter(l => l.level === userLevel);
+        const lessons = course.lessons.filter(lesson => lesson.level === userLevel);
 
-        res.render("auth/studentCourseLessons", { course, lessons, userLevel });
+        return res.render("auth/studentCourseLessons", {
+            course,
+            lessons,
+            userLevel
+        });
     } catch (error) {
-        res.status(500).send(error.message);
+        return res.status(500).send(error.message);
     }
 };
 
 export {
     getStudentDashboardData,
-    getSmartRecommendations,   // ← NEW export
+    getSmartRecommendations,
     getLeaderboardData,
     getStudentDashboard,
     studentCourseLessons
