@@ -203,6 +203,7 @@ id="favoritesContainer"
 const allCourses = JSON.parse('<%- JSON.stringify(courses) %>')
 
 const courseById = {}
+const ratingsState = {}
 
 allCourses.forEach(c=>{
 
@@ -269,14 +270,30 @@ const ratingText={
 
 
 
-function buildStars(container){
+async function buildStars(container){
 
 const id = container.dataset.course
 
-const saved =
-parseInt(localStorage.getItem("rating_"+id)) || 0
-
 const label = container.nextElementSibling
+let saved = 0
+let average = 0
+let ratingsCount = 0
+
+try{
+
+const res = await fetch(`/courses/api/rating/${id}`)
+const data = await res.json()
+
+if(data.success){
+saved = Number(data.userRating || 0)
+average = Number(data.averageRating || 0)
+ratingsCount = Number(data.ratingsCount || 0)
+ratingsState[id] = saved
+}
+
+}catch(err){
+console.log("Error loading rating")
+}
 
 container.innerHTML=""
 
@@ -292,15 +309,43 @@ star.dataset.value=i
 
 if(i<=saved) star.classList.add("filled")
 
-star.onclick=()=>{
+star.onclick=async()=>{
 
-localStorage.setItem("rating_"+id,i)
+try{
 
-highlightStars(container,i)
+const response = await fetch('/courses/api/rate',{
+method:'POST',
+headers:{
+'Content-Type':'application/json'
+},
+body:JSON.stringify({
+courseId:id,
+rating:i
+})
+})
 
-label.textContent=ratingText[i]
+const data = await response.json()
+
+if(!data.success){
+alert(data.message || "Failed to save rating")
+return
+}
+
+saved = Number(data.userRating || i)
+average = Number(data.averageRating || 0)
+ratingsCount = Number(data.ratingsCount || 0)
+ratingsState[id] = saved
+
+highlightStars(container,saved)
+
+label.textContent=`${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
 
 updateStats()
+
+}catch(error){
+console.error(error)
+alert("Error sending rating")
+}
 
 }
 
@@ -310,7 +355,11 @@ container.appendChild(star)
 
 highlightStars(container,saved)
 
-label.textContent=ratingText[saved]
+label.textContent = saved
+? `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
+: `Tap to rate • Avg ${average.toFixed(1)} (${ratingsCount})`
+
+updateStats()
 
 }
 
@@ -345,7 +394,7 @@ let rated=0
 
 favs.forEach(id=>{
 
-if(localStorage.getItem("rating_"+id)){
+if(ratingsState[id]){
 rated++
 }
 

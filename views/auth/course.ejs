@@ -340,7 +340,10 @@
             <h1><%= course.Title %></h1>
             <div class="course-meta">
                 <span><i class="fas fa-chalkboard-user"></i> <%= course.Instructor?.userName || "Instructor" %></span>
-                <span><i class="fas fa-star" style="color:var(--orange)"></i> 4.8 (245 ratings)</span>
+                <span>
+                    <i class="fas fa-star" style="color:var(--orange)"></i>
+                    <%= course.rating?.length ? `${Number(course.averageRating || 0).toFixed(1)} (${course.rating.length} ratings)` : "No ratings yet" %>
+                </span>
                 <span><i class="fas fa-book"></i> <%= course.lessons?.length || 0 %> lessons</span>
             </div>
             <p class="course-description"><%= course.Description %></p>
@@ -360,10 +363,10 @@
             <div class="progress-section">
                 <div class="progress-label">
                     <span>Your Progress</span>
-                    <span><strong id="progressPercent">0%</strong></span>
+                    <span><strong id="progressPercent"><%= courseStats?.progressPercent || 0 %>%</strong></span>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-fill" id="progressFill" style="width:<%= courseStats?.progressPercent || 0 %>%"></div>
                 </div>
             </div>
         </div>
@@ -374,22 +377,22 @@
                 <div class="stat-item">
                     <i class="fas fa-check-circle"></i>
                     <span>Lessons Completed</span>
-                    <strong id="completedCount">0</strong>
+                    <strong id="completedCount"><%= courseStats?.completedLessons || 0 %>/<%= courseStats?.totalLessons || 0 %></strong>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-fire"></i>
                     <span>Current Streak</span>
-                    <strong>5 days</strong>
+                    <strong><%= courseStats?.currentStreak || 0 %> days</strong>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-hourglass-half"></i>
                     <span>Time Spent</span>
-                    <strong id="timeSpent">0h</strong>
+                    <strong id="timeSpent"><%= courseStats?.timeSpentText || "0h 0m" %></strong>
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-trophy"></i>
                     <span>Quiz Average</span>
-                    <strong>0%</strong>
+                    <strong><%= courseStats?.quizAverage || 0 %>%</strong>
                 </div>
             </div>
         </div>

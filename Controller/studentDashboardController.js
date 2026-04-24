@@ -1,6 +1,15 @@
 import userModel from "../Model/userModel.js";
 import progressModel from "../Model/Progress.js";
 import courseModel from "../Model/courseModel.js";
+import levelProgressModel from "../Model/progressLevelModel.js";
+import {
+    calculateCurrentStreak,
+    calculateQuizAverage,
+    calculateCourseProgressPercent,
+    calculateTimeSpentMinutes,
+    formatMinutesAsHoursAndMinutes,
+    parseDurationToMinutes
+} from "../utils/learningStats.js";
 
 // جلب بيانات داشبورد الطالب
  const getStudentDashboardData = async (req, res) => {
@@ -17,66 +26,77 @@ import courseModel from "../Model/courseModel.js";
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        const allProgress = await progressModel.find({ userId });
+        const allProgress = await progressModel.find({ userId }).sort({ lastUpdated: -1 });
 
         const completedLessons = allProgress.filter(p => p.completed === true).length;
         
-        let totalProgress = 0;
-        if (allProgress.length > 0) {
-            totalProgress = allProgress.reduce((sum, p) => sum + p.progress, 0);
-        }
-        const avgProgress = allProgress.length > 0 ? Math.round(totalProgress / allProgress.length) : 0;
-
         const coursesMap = new Map();
         allProgress.forEach(progress => {
-            if (!coursesMap.has(progress.courseId)) {
-                coursesMap.set(progress.courseId, { lessons: [] });
+            const courseKey = String(progress.courseId);
+            if (!coursesMap.has(courseKey)) {
+                coursesMap.set(courseKey, { lessons: [] });
             }
-            coursesMap.get(progress.courseId).lessons.push(progress);
+            coursesMap.get(courseKey).lessons.push(progress);
         });
 
-       // const course = await courseModel.findById(progress.courseId);
+        const courseIds = [...coursesMap.keys()];
+        const courseDocs = await courseModel.find({ _id: { $in: courseIds } });
+        const courseById = new Map(courseDocs.map(course => [String(course._id), course]));
+        const levelProgressDocs = await levelProgressModel.find({ userId });
 
         const courses = [];
-            for (let [courseId, data] of coursesMap.entries()) {
+        for (let [courseId, data] of coursesMap.entries()) {
+            const course = courseById.get(courseId);
+            const latestProgress = data.lessons[0];
 
-        const course = await courseModel.findById(courseId);
+            const lessons = data.lessons.map(lesson => {
+                const lessonDoc = course?.lessons?.find(item => String(item._id) === String(lesson.lessonId));
+                return {
+                    title: lessonDoc?.name || "Lesson",
+                    progress: lesson.progress,
+                    completed: lesson.completed,
+                    icon: lesson.completed
+                        ? "fas fa-check-circle"
+                        : (lesson.progress > 0 ? "fas fa-play-circle" : "fas fa-lock")
+                };
+            });
 
-        const lessons = data.lessons.map(lesson => ({
-        title: `Lesson ${lesson.lessonId}`,
-        progress: lesson.progress,
-        completed: lesson.completed,
-        icon: lesson.completed 
-        ? "fas fa-check-circle" 
-        : (lesson.progress > 0 
-        ? "fas fa-play-circle" 
-        : "fas fa-lock")
-        }));
+            const latestLessonDoc = course?.lessons?.find(
+                item => String(item._id) === String(latestProgress?.lessonId)
+            );
 
-        const courseOverallProgress =
-        lessons.length > 0
-        ? Math.round(
-        lessons.reduce((sum, l) => sum + l.progress, 0) / lessons.length
-        )
-        : 0;
-
-        courses.push({
-        id: courseId,
-        title: course?.Title || "Course",
-        icon: "fas fa-book",
-        overallProgress: courseOverallProgress,
-        lastLesson: course?.lessons?.[0]?.name || "Lesson",
-        lastLessonTime: 10,
-        lessons: lessons
-        });
+            courses.push({
+                id: courseId,
+                title: course?.Title || "Course",
+                icon: "fas fa-book",
+                overallProgress: calculateCourseProgressPercent(course, data.lessons),
+                lastLesson: latestLessonDoc?.name || course?.lessons?.[0]?.name || "Lesson",
+                lastLessonTime: parseDurationToMinutes(latestLessonDoc?.duration || ""),
+                lessons
+            });
         }
+
+        const totalLearningMinutesValue = courseDocs.reduce((sum, course) => {
+            const courseProgress = allProgress.filter(progress => String(progress.courseId) === String(course._id));
+            return sum + calculateTimeSpentMinutes(course, courseProgress);
+        }, 0);
+        const totalLearningTime = formatMinutesAsHoursAndMinutes(totalLearningMinutesValue);
+        const totalLessonsCount = courseDocs.reduce((sum, course) => sum + (course.lessons?.length || 0), 0);
+        const avgProgress = courseDocs.length > 0
+            ? Math.round(
+                courseDocs.reduce((sum, course) => {
+                    const courseProgress = allProgress.filter(progress => String(progress.courseId) === String(course._id));
+                    return sum + calculateCourseProgressPercent(course, courseProgress);
+                }, 0) / courseDocs.length
+            )
+            : 0;
 
         const userData = {
             firstName: user.userName,
-            streakDays: 5,
-            totalLearningHours: Math.floor(allProgress.reduce((sum, p) => sum + (p.progress / 100), 0)),
-            totalLearningMinutes: 20,
-            quizAverage: 85
+            streakDays: calculateCurrentStreak(allProgress),
+            totalLearningHours: totalLearningTime.hours,
+            totalLearningMinutes: totalLearningTime.minutes,
+            quizAverage: calculateQuizAverage(levelProgressDocs)
         };
 
         res.json({
@@ -84,7 +104,7 @@ import courseModel from "../Model/courseModel.js";
             userData,
             courses,
             completedLessons,
-            totalLessons: allProgress.length,
+            totalLessons: totalLessonsCount,
             avgProgress
         });
 

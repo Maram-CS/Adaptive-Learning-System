@@ -111,30 +111,90 @@ function syncHearts() {
 
 const ratingText = { 0:'Tap to rate', 1:'Poor', 2:'Fair', 3:'Good', 4:'Very Good', 5:'Excellent 🎉' };
 
-function buildStars(container) {
-  const id    = container.dataset.course;
-  const saved = parseInt(localStorage.getItem('rating_' + id)) || 0;
+async function buildStars(container) {
+  const id = container.dataset.course;
   const label = container.nextElementSibling;
+
+  let saved = 0;
+  let average = 0;
+  let ratingsCount = 0;
+
+  // 🔹 نجيب التقييم من السيرفر
+  try {
+    const res = await fetch(`/courses/api/rating/${id}`);
+    const data = await res.json();
+
+    if (data.success) {
+      saved = Number(data.userRating || 0);
+      average = Number(data.averageRating || 0);
+      ratingsCount = Number(data.ratingsCount || 0);
+    }
+  } catch (err) {
+    console.log("Error loading rating");
+  }
+
   container.innerHTML = '';
+
   for (let i = 1; i <= 5; i++) {
     const star = document.createElement('span');
     star.innerHTML = '★';
     star.dataset.value = i;
     star.classList.add('star');
+
     if (i <= saved) star.classList.add('filled');
-    star.addEventListener('mouseenter', () => { highlightStars(container, i); label.textContent = ratingText[i]; });
-    star.addEventListener('mouseleave', () => { highlightStars(container, saved); label.textContent = ratingText[saved]; });
-    star.addEventListener('click', () => {
-      localStorage.setItem('rating_' + id, i);
+
+    star.addEventListener('mouseenter', () => {
       highlightStars(container, i);
       label.textContent = ratingText[i];
     });
+
+    star.addEventListener('mouseleave', () => {
+      highlightStars(container, saved);
+      label.textContent = saved
+        ? `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
+        : `Tap to rate • Avg ${average.toFixed(1)} (${ratingsCount})`;
+    });
+
+    // ⭐ إرسال التقييم للسيرفر
+    star.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/courses/api/rate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            courseId: id,
+            rating: i
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          saved = Number(data.userRating || i);
+          average = Number(data.averageRating || 0);
+          ratingsCount = Number(data.ratingsCount || 0);
+          highlightStars(container, saved);
+          label.textContent = `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`;
+        } else {
+          alert(data.message);
+        }
+
+      } catch (error) {
+        console.error(error);
+        alert("Error sending rating");
+      }
+    });
+
     container.appendChild(star);
   }
-  highlightStars(container, saved);
-  label.textContent = ratingText[saved];
-}
 
+  highlightStars(container, saved);
+  label.textContent = saved
+    ? `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
+    : `Tap to rate • Avg ${average.toFixed(1)} (${ratingsCount})`;
+}
 function highlightStars(container, val) {
   container.querySelectorAll('.star').forEach(star => {
     star.classList.toggle('filled', parseInt(star.dataset.value) <= val);
