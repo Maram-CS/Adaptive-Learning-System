@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -164,7 +164,9 @@
 
     function animateNumbers() {
         document.querySelectorAll('.stat-number').forEach(el => {
-            const target = parseInt(el.getAttribute('data-target'));
+            const rawTarget = el.getAttribute('data-target');
+            const target = Number(rawTarget);
+            if (!rawTarget || Number.isNaN(target)) return;
             let current = 0;
             const increment = target / 50;
             const updateNumber = () => {
@@ -286,7 +288,7 @@
             <div class="stats-grid">
                 <div class="stat-card" onclick="showToast('📖 ${completedLessons} lessons completed')"><i class="fas fa-book-open"></i><div class="stat-number" data-target="${completedLessons}">0</div><div class="stat-label">Lessons Done</div></div>
                 <div class="stat-card" onclick="showToast('🔥 ${userData.streakDays}-day streak!')"><i class="fas fa-fire"></i><div class="stat-number" data-target="${userData.streakDays}">0</div><div class="stat-label">Day Streak</div></div>
-                <div class="stat-card" onclick="showToast('⏱️ ${userData.totalLearningHours}h ${userData.totalLearningMinutes}m')"><i class="fas fa-hourglass-half"></i><div class="stat-number" data-target="${userData.totalLearningHours}">0</div><div class="stat-label">Learning Hours</div></div>
+                <div class="stat-card" onclick="showToast('${userData.totalLearningDisplay}')"><i class="fas fa-hourglass-half"></i><div class="stat-number">${userData.totalLearningDisplay}</div><div class="stat-label">Learning Time</div></div>
                 <div class="stat-card" onclick="showToast('📊 ${userData.quizAverage}% average')"><i class="fas fa-chart-simple"></i><div class="stat-number" data-target="${userData.quizAverage}">0</div><div class="stat-label">Quiz Average</div></div>
             </div>
 
