@@ -16,6 +16,7 @@ import favoriteCourseRouter from "./Router/favoriteCoursesRouter.js";
 import adminRouter from "./Router/AdminRouter.js"; 
 import notificationRoutes from "./Router/notificationRoutes.js";
 import quizRouter from "./Router/quizRouter.js";
+
 dotenv.config();
 
 const App = express();
@@ -27,6 +28,8 @@ const __dirname = dirname(__filename);
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
 App.use(cookieParser());
+
+
 
 
 // ⚠️ Sert le dossier Public/uploads pour les fichiers uploadés

@@ -289,6 +289,52 @@ const completeLesson = async (req, res) => {
     }
 };
 
+// Record lesson open/read activity so streak can count daily lesson visits
+const openLesson = async (req, res) => {
+    try {
+        const { courseId, lessonId } = req.body;
+        const userId = req.id;
+
+        if (!courseId || !lessonId) {
+            return res.status(400).json({ success: false, message: "courseId and lessonId are required" });
+        }
+
+        const course = await courseModel.findById(courseId).select("_id lessons._id");
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        const lessonExists = course.lessons.some(lesson => String(lesson._id) === String(lessonId));
+        if (!lessonExists) {
+            return res.status(404).json({ success: false, message: "Lesson not found in this course" });
+        }
+
+        let progress = await progressModel.findOne({ userId, courseId, lessonId });
+        if (!progress) {
+            progress = new progressModel({
+                userId,
+                courseId,
+                lessonId,
+                progress: 1,
+                completed: false,
+                pointsEarned: 0,
+                lastUpdated: new Date()
+            });
+        } else {
+            progress.lastUpdated = new Date();
+            if (!progress.completed && Number(progress.progress || 0) < 1) {
+                progress.progress = 1;
+            }
+        }
+
+        await progress.save();
+        return res.json({ success: true });
+    } catch (err) {
+        console.error("openLesson error:", err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+};
+
 // ─── EDIT COURSE ──────────────────────────────────────────────────────────────
 const editCourse = async (req, res) => {
     try {
@@ -752,6 +798,6 @@ export {
     createCourse, getAllCourses, editCourse, deleteCourse,
     getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent,
     getEditCoursePage, getLessonsByLevel, getCourseLearnPage,
-    completeLesson, submitPlacementQuiz, saveQuiz, deleteQuiz, getLevelQuiz, getLevelLessons, rateCourse, getUserRating 
+    completeLesson, openLesson, submitPlacementQuiz, saveQuiz, deleteQuiz, getLevelQuiz, getLevelLessons, rateCourse, getUserRating 
 };
 

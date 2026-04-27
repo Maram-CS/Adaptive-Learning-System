@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
     getAllCourses, getCourseBySlug, createCourse, editCourse, deleteCourse,
     getCourseLessonsPage, getCourseBySlugForStudent, getEditCoursePage,
-    getLessonsByLevel, getCourseLearnPage, completeLesson,
+    getLessonsByLevel, getCourseLearnPage, completeLesson, openLesson,
     submitPlacementQuiz, saveQuiz, deleteQuiz, getLevelQuiz, getLevelLessons,
     rateCourse, getUserRating   // ⭐ إضافة جديدة
 } from "../Controller/courseController.js";
@@ -45,6 +45,7 @@ coursesRouter.get("/:courseId/lessons/:level", getLessonsByLevel);
 
 // ── API endpoints ─────────────────────────────────────────────────────
 coursesRouter.post("/api/complete-lesson", authRequest, completeLesson);
+coursesRouter.post("/api/open-lesson", authRequest, openLesson);
 coursesRouter.post("/api/submit-quiz", authRequest, submitPlacementQuiz);
 
 coursesRouter.get("/api/level-quiz", authRequest, getLevelQuiz);
