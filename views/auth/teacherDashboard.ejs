@@ -111,11 +111,14 @@
 
     <div class="course">
 
+      <% if (course.averageRating >= 4) { %>
+        <span class="badge-top">🔥 Top Rated</span>
+      <% } %>
+
       <h4><%= course.Title %></h4>
 
       <img src="<%= course.image %>" class="course-img">
-
-      <div class="buttons">
+         <div class="buttons">
 
         <button onclick="getCourse('<%= course.slug %>')">
           Edit
@@ -128,14 +131,34 @@
         <button class="content-btn" onclick="window.location.href='/courses/content/<%= course.slug %>'">
           Content
         </button>
-       
-        
-
       </div>
 
-      <p>
-        <%= course.students ? course.students.length : 0 %> students
+      <%
+        let ratingClass = "low";
+        if (course.averageRating >= 4) ratingClass = "good";
+        else if (course.averageRating >= 3) ratingClass = "mid";
+      %>
+
+      <p class="rating <%= ratingClass %>">
+        ⭐ <%= course.averageRating %> / 5
       </p>
+
+      <p>
+        (<%= course.ratingsCount %> ratings)
+      </p>
+
+      <p class="insight">
+  👥 <%= course.ratingsCount %> reviews •
+  <% if (course.averageRating >= 4) { %>
+    Excellent performance 🚀
+  <% } else if (course.averageRating >= 3) { %>
+    Stable course 📈
+  <% } else if (course.ratingsCount > 0) { %>
+    Low satisfaction ⚠️
+  <% } else { %>
+    No student feedback yet
+  <% } %>
+</p>
 
     </div>
 
