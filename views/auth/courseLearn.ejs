@@ -450,6 +450,8 @@ function renderSidebar(lessons) {
 }
 
 function viewLesson(lessonId, lessonType, fileUrl, lessonName) {
+    trackLessonOpen(lessonId);
+
     const modal = document.getElementById('lessonModal');
     const modalBody = document.getElementById('modalBody');
     document.getElementById('modalTitle').innerText = lessonName;
@@ -464,6 +466,18 @@ function viewLesson(lessonId, lessonType, fileUrl, lessonName) {
         modalBody.innerHTML = `<iframe src="${fileUrl}" style="width:100%; height:500px; border:none;"></iframe>`;
     }
     modal.style.display = 'flex';
+}
+
+async function trackLessonOpen(lessonId) {
+    try {
+        await fetch('/courses/api/open-lesson', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ courseId: APP.courseId, lessonId })
+        });
+    } catch (err) {
+        console.error('trackLessonOpen error:', err);
+    }
 }
 
 function closeModal() {
