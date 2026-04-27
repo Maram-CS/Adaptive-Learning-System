@@ -44,6 +44,10 @@ const UserSchema = new Schema({
     type: String,
     required: false,  
     },
+    
+    resetToken: String,
+    resetTokenExpire: Date,
+    
 },{timestamps: true});
 
 UserSchema.pre("save",async function(next) {
