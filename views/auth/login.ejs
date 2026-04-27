@@ -34,6 +34,9 @@
                 <br>
                 <a href="/register">Sign Up</a>
             </div>
+            <div class="switch-link slide-element" >
+                <a href="/forgot-password">Forgot Password?</a>
+            </div>
         </form>
     </div>
 
@@ -81,7 +84,12 @@
   alert("<%= error %>");
 </script>
 <% } %>
-
+<script>
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("reset") === "success") {
+    alert("✅ Password updated successfully");
+  }
+</script>
 
 </body>
 </html>
