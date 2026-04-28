@@ -18,6 +18,13 @@ publicRouter.get("/contact",(req,res)=>{
     res.render("auth/contactUs");
 });
 
+// forgot password & reset password
+publicRouter.get("/forgot-password", (req,res)=>{
+    res.render("auth/forgotPassword");
+});
 
+publicRouter.get("/reset-password/:token", (req,res)=>{
+    res.render("auth/resetPassword", { token: req.params.token });
+});
 
 export default publicRouter;

@@ -107,9 +107,9 @@ p {
             <p>Duration: <%= lesson.duration %></p>
 
             <% if (lesson.type === "video") { %>
-                <a href="<%= lesson.file %>" target="_blank">▶ Watch Video</a>
+                <a href="<%= lesson.file %>" target="_blank" onclick="trackLessonOpen('<%= lesson._id %>')">▶ Watch Video</a>
             <% } else { %>
-                <a href="<%= lesson.file %>" target="_blank">📄 Open PDF</a>
+                <a href="<%= lesson.file %>" target="_blank" onclick="trackLessonOpen('<%= lesson._id %>')">📄 Open PDF</a>
             <% } %>
 
         </div>
@@ -123,6 +123,18 @@ p {
 <% } %>
 
 </div>
+
+<script>
+function trackLessonOpen(lessonId) {
+    fetch('/courses/api/open-lesson', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId: '<%= course._id %>', lessonId }),
+        keepalive: true
+    }).catch(() => {});
+    return true;
+}
+</script>
 
 </body>
 </html>
