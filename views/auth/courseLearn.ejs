@@ -367,17 +367,22 @@ body { background:var(--bg-light); color:var(--text-dark); line-height:1.6; }
 </div>
 
 <script>
+
+
+var completedIds = <%- JSON.stringify(completedLessonIds) %>;
+var totalLessons = <%= currentLessons.length %>;
+var currentLessonsData = <%- JSON.stringify(currentLessons) %>;
+
 const APP = {
-    courseId:    '<%= course._id %>',
-    courseSlug:  '<%= course.slug %>',
-    currentLevel: '<%= currentLevel %>',
-    completedIds: <%- JSON.stringify(completedLessonIds) %>,
-    totalLessons: <%= currentLessons.length %>,
-    levels: ['beginner', 'intermediate', 'advanced']
+  courseId: '<%= course._id %>',
+  courseSlug: '<%= course.slug %>',
+  currentLevel: '<%= currentLevel %>',
+  completedIds: completedIds,
+  totalLessons: totalLessons,
+  levels: ['beginner', 'intermediate', 'advanced']
 };
 
-let completedCount    = APP.completedIds.length;
-let currentLessonsData = <%- JSON.stringify(currentLessons) %>;
+let completedCount = APP.completedIds.length;
 
 /* ── INIT ── */
 function init() {
@@ -431,7 +436,7 @@ function renderSidebar(lessons) {
 
 /* ── VIEW LESSON ── */
 function viewLesson(lessonId, lessonType, fileUrl, lessonName) {
-    const modal     = document.getElementById('lessonModal');
+    const modal = document.getElementById('lessonModal');
     const modalBody = document.getElementById('modalBody');
     document.getElementById('modalTitle').innerText = lessonName;
 
@@ -445,6 +450,18 @@ function viewLesson(lessonId, lessonType, fileUrl, lessonName) {
         modalBody.innerHTML = `<iframe src="${fileUrl}" style="width:100%;height:500px;border:none;"></iframe>`;
     }
     modal.style.display = 'flex';
+}
+
+async function trackLessonOpen(lessonId) {
+    try {
+        await fetch('/courses/api/open-lesson', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ courseId: APP.courseId, lessonId })
+        });
+    } catch (err) {
+        console.error('trackLessonOpen error:', err);
+    }
 }
 
 function closeModal() {
