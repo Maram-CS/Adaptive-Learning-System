@@ -1,12 +1,12 @@
-import {connect} from "mongoose";
+import mongoose from "mongoose";
 
-const UserDB = async (userDB) => {
-    try {
-        await connect (`mongodb://localhost:27017/${userDB}`);
-        console.log('Connected to UserDB');
-    }catch(err) {
-        console.log('Error connecting to UserDB:', err);
-    }
-}
+const UserDB = async () => {
+  try {
+    await mongoose.connect(process.env.nameDb);
+    console.log("✅ Connected to MongoDB");
+  } catch (err) {
+    console.log("❌ Error connecting to UserDB:", err.message);
+  }
+};
 
 export default UserDB;
