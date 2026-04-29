@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[2026-04-27 7:21 PM] Marwa💜: <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,7 +10,7 @@
 
 </head>
 
-<body>
+
 
 <div class="page-container">
 
@@ -103,7 +103,7 @@ Saved
 </div>
 
 <div class="stat-pill">
-⭐ 
+⭐️ 
 <span id="ratedCount">0</span>
 Rated
 </div>
@@ -112,7 +112,7 @@ Rated
 class="clear-all-btn"
 onclick="clearAllFavorites()"
 >
-🗑️ Clear All
+🗑 Clear All
 </button>
 
 </div>
@@ -284,12 +284,12 @@ try{
 const res = await fetch(`/courses/api/rating/${id}`)
 const data = await res.json()
 
-if(data.success){
-saved = Number(data.userRating || 0)
-average = Number(data.averageRating || 0)
-ratingsCount = Number(data.ratingsCount || 0)
-ratingsState[id] = saved
-}
+  if(data.success){
+    saved = Number(data.userRating || 0)
+    average = Number(data.averageRating || 0)
+    ratingsCount = Number(data.ratingsCount || 0)
+    ratingsState[id] = saved
+  }
 
 }catch(err){
 console.log("Error loading rating")
@@ -297,69 +297,50 @@ console.log("Error loading rating")
 
 container.innerHTML=""
 
-for(let i=1;i<=5;i++){
+  for(let i=1;i<=5;i++){
+    const star = document.createElement("span");
+    star.classList.add("star");
+    star.innerHTML = "★";
+    star.dataset.value = i;
+    if(i <= saved) star.classList.add("filled");
+    star.onclick = async () => {
+      try {
+        const response = await fetch('/courses/api/rate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            courseId: id,
+            rating: i
+          })
+        });
+        const data = await response.json();
+        if(!data.success){
+          alert(data.message || "Failed to save rating");
+          return;
+        }
+        saved = Number(data.userRating || i);
+        average = Number(data.averageRating || 0);
+        ratingsCount = Number(data.ratingsCount || 0);
+        ratingsState[id] = saved;
+        highlightStars(container, saved);
+        label.textContent = `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`;
+        updateStats();
+      } catch(error) {
+        console.error(error);
+        alert("Error sending rating");
+      }
+    };
+    container.appendChild(star);
+  }
 
-const star=document.createElement("span")
 
-star.classList.add("star")
-
-star.innerHTML="★"
-
-star.dataset.value=i
-
-if(i<=saved) star.classList.add("filled")
-
-star.onclick=async()=>{
-
-try{
-
-const response = await fetch('/courses/api/rate',{
-method:'POST',
-headers:{
-'Content-Type':'application/json'
-},
-body:JSON.stringify({
-courseId:id,
-rating:i
-})
-})
-
-const data = await response.json()
-
-if(!data.success){
-alert(data.message || "Failed to save rating")
-return
-}
-
-saved = Number(data.userRating || i)
-average = Number(data.averageRating || 0)
-ratingsCount = Number(data.ratingsCount || 0)
-ratingsState[id] = saved
-
-highlightStars(container,saved)
-
-label.textContent=`${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
-
-updateStats()
-
-}catch(error){
-console.error(error)
-alert("Error sending rating")
-}
-
-}
-
-container.appendChild(star)
-
-}
-
-highlightStars(container,saved)
-
-label.textContent = saved
-? `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
-: `Tap to rate • Avg ${average.toFixed(1)} (${ratingsCount})`
-
-updateStats()
+  highlightStars(container, saved);
+  label.textContent = saved
+    ? `${ratingText[saved]} • Avg ${average.toFixed(1)} (${ratingsCount})`
+    : `Tap to rate • Avg ${average.toFixed(1)} (${ratingsCount})`;
+  updateStats();
 
 }
 
@@ -558,6 +539,6 @@ renderFavorites()
 </script>
 <script src="/js/notifications.js"></script>
 
-
+</style>
 </body>
 </html>
