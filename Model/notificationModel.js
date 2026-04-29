@@ -11,17 +11,19 @@ const notificationSchema = new Schema({
     teacherId: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: false   // ✅ مهم جدا باش ما يطيحش error
+        required: false
     },
 
+    // ✅ Added "ai" to support AI Agent notifications
     type: {
         type: String,
-        enum: ["course", "quiz", "info"],
+        enum: ["course", "quiz", "info", "ai"],
         required: true
     },
 
-    title: String,
+    title:   String,
     message: String,
+    emoji:   { type: String, default: "🤖" }, // ✅ New: for AI notifications
 
     relatedId: {
         type: Schema.Types.ObjectId,
