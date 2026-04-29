@@ -177,37 +177,44 @@ const getCourseBySlugForStudent = async (req, res) => {
         if (!course) return res.status(404).send("Course not found");
 
         const userId = req.id;
-        const levelProgress = await levelProgressModel.findOne({ userId, courseId: course._id });
-        const courseProgress = await progressModel.find({ userId, courseId: course._id }).sort({ lastUpdated: -1 });
+        const levelProgress   = await levelProgressModel.findOne({ userId, courseId: course._id });
+        const courseProgress  = await progressModel.find({ userId, courseId: course._id }).sort({ lastUpdated: -1 });
         const allUserProgress = await progressModel.find({ userId }).sort({ lastUpdated: -1 });
+
         const completedLessons = courseProgress.filter(item => item.completed).length;
         const timeSpent = formatMinutesAsHoursAndMinutes(
             calculateTimeSpentMinutes(course, courseProgress)
         );
+
         const courseStats = {
             completedLessons,
-            totalLessons: course.lessons?.length || 0,
+            totalLessons:    course.lessons?.length || 0,
             progressPercent: calculateCourseProgressPercent(course, courseProgress),
-            currentStreak: calculateCurrentStreak(allUserProgress),
-            timeSpentText: `${timeSpent.hours}h ${timeSpent.minutes}m`,
-            quizAverage: calculateQuizAverage(levelProgress ? [levelProgress] : [])
+            currentStreak:   calculateCurrentStreak(allUserProgress),
+            timeSpentText:   `${timeSpent.hours}h ${timeSpent.minutes}m`,
+            quizAverage:     calculateQuizAverage(levelProgress ? [levelProgress] : [])
         };
 
-        // Already placed → go straight to learning
-        if (levelProgress && levelProgress.placementCompleted) {
+        // FIX: check if student completed the entire course (advanced quiz passed)
+        const advancedPassed = levelProgress?.levels?.advanced?.quizPassed === true;
+
+        // If placement done but advanced NOT yet passed → go to learn page
+        if (levelProgress && levelProgress.placementCompleted && !advancedPassed) {
             return res.redirect(`/courses/course/${course.slug}/learn`);
         }
 
-        // Find the placement quiz (quizType = "placement")
+        // If advanced is passed → fall through and render the course page
+        // with updated stats so the student sees their completed state
+
         const placementQuiz = course.quizzes.find(q => q.quizType === "placement")
-            || course.placementQuiz   // fallback: old structure
+            || course.placementQuiz
             || null;
 
         return res.render("auth/course", {
             course,
             courseStats,
             placementQuiz,
-            showPlacementQuiz: !!placementQuiz
+            showPlacementQuiz: !!placementQuiz && !advancedPassed
         });
 
     } catch (err) {
@@ -215,6 +222,8 @@ const getCourseBySlugForStudent = async (req, res) => {
         return res.status(500).send("Error loading course");
     }
 };
+
+
 
 // ─── GET LESSONS PAGE (teacher) ───────────────────────────────────────────────
 const getCourseLessonsPage = async (req, res) => {
@@ -606,6 +615,8 @@ const submitPlacementQuiz = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // ─── ADD / SAVE QUIZ (teacher creates quizzes from courseLessons.ejs) ─────────
 const saveQuiz = async (req, res) => {
