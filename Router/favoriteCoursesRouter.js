@@ -1,4 +1,4 @@
-import {Router} from "express";
+import { Router } from "express";
 import { getAllCourses } from "../Controller/favoriteCourseController.js";
 
 const favoriteCoursesRouter = Router();
