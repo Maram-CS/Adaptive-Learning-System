@@ -7,7 +7,7 @@ import { config } from "dotenv";
 
 config();
 
-const userDB = process.env.nameDb;
+const userDB = process.env.NAME_DB;
 UserDB(userDB);
 
 
