@@ -8,7 +8,70 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-
+<style>
+    /* ========== CODE PLAYGROUND STYLES ========== */
+.code-playground {
+    background: #1e1e2f;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 10px;
+}
+.code-playground textarea {
+    width: 100%;
+    background: #2d2d3a;
+    color: #e0e0e0;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+.code-playground textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #2b7de9;
+}
+.code-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+#runCodeBtn {
+    background: #2b7de9;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 30px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+#runCodeBtn:hover {
+    background: #1a5bbf;
+}
+#resetCodeBtn {
+    background: #ecf0f1;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 30px;
+    color: #2c3e50;
+    font-weight: 600;
+    cursor: pointer;
+}
+.live-result {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+}
+.result-frame {
+    width: 100%;
+    height: 300px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    margin-top: 10px;
+}
+</style>
 <div class="page-container">
 
     <!-- SIDEBAR -->
@@ -43,7 +106,32 @@
                 </div>
             </div>
         </div>
+<!-- ========== CODE PLAYGROUND SECTION ========== -->
+<div class="dashboard-card">
+  <div class="card-header">
+    <i class="fas fa-laptop-code"></i>
+    <h3>Live Code Editor</h3>
+  </div>
+  <p style="color: #555; margin-bottom: 15px;">
+    Write, run, and experiment with HTML, CSS, and JavaScript directly in your browser.
+  </p>
 
+  <div class="code-playground">
+    <textarea id="htmlCode" rows="8" placeholder='Write your HTML/CSS/JS code here...'>
+<h2 style="color: #2b7de9;">Hello, Eduphin! 🚀</h2>
+<p>This is my first live code.</p>
+<button onclick="alert('🎉 You clicked!')">Click me</button>
+    </textarea>
+    <div class="code-actions">
+      <button id="runCodeBtn" onclick="runLiveCode()">▶️ Run Code</button>
+      <button id="resetCodeBtn" onclick="resetCode()">⟳ Reset</button>
+    </div>
+    <div class="live-result">
+      <strong>📱 Result:</strong>
+      <iframe id="liveResult" class="result-frame" title="Live Code Preview" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"></iframe>
+    </div>
+  </div>
+</div>
         <!-- DASHBOARD CONTENT (Dynamic) -->
         <div id="dashboard-container"></div>
 
@@ -309,6 +397,43 @@
     }
 
     loadDashboardData();
+    
+   // ========== CODE PLAYGROUND FUNCTIONS ==========
+function runLiveCode() {
+    const code = document.getElementById('htmlCode').value;
+    const iframe = document.getElementById('liveResult');
+    
+    const doc = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    padding: 20px;
+                    margin: 0;
+                }
+            </style>
+        </head>
+        <body>
+            ${code}
+        </body>
+        </html>
+    `;
+    
+    iframe.srcdoc = doc;
+}
+
+function resetCode() {
+    const defaultCode = `<h2 style="color: #2b7de9;">Hello, Eduphin! 🚀</h2>
+<p>This is my first live code.</p>
+<button onclick="alert('🎉 You clicked!')">Click me</button>`;
+    document.getElementById('htmlCode').value = defaultCode;
+    runLiveCode();
+}
+
 </script>
 </body>
 </html>
