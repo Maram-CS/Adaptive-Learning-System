@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 
 config();
 
-const password = process.env.secret;
+const password = process.env.SECRET;
 const  createToken = (id, role)=> {
     return jwt.sign({id, role},password,{expiresIn: "3d"});
 }

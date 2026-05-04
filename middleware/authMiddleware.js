@@ -3,7 +3,7 @@ import { config } from "dotenv";
 
 config();
 
-const password = process.env.secret;
+const password = process.env.SECRET;
 
 const authRequest = (req,res,next)=>{
 
