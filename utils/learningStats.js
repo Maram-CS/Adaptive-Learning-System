@@ -1,45 +1,72 @@
 function startOfLocalDay(dateInput = new Date()) {
     const date = new Date(dateInput);
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
 }
 
 function getDayKey(dateInput) {
     const date = startOfLocalDay(dateInput);
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 function calculateCurrentStreak(progressRecords = []) {
-    const activeDays = new Set(
-        progressRecords
-            .map(record => record?.lastUpdated || record?.updatedAt || record?.createdAt)
-            .filter(Boolean)
-            .map(getDayKey)
-    );
+    if (!Array.isArray(progressRecords) || progressRecords.length === 0) {
+        return 0;
+    }
+
+    // Collect all unique days with activity
+    const activeDays = new Set();
+    for (const record of progressRecords) {
+        const timestamp = record?.lastUpdated || record?.updatedAt || record?.createdAt;
+        if (timestamp) {
+            try {
+                const dayKey = getDayKey(new Date(timestamp));
+                activeDays.add(dayKey);
+            } catch (e) {
+                console.error("Error processing timestamp:", timestamp, e);
+            }
+        }
+    }
 
     if (activeDays.size === 0) {
         return 0;
     }
 
+    // Get today and yesterday
     const today = startOfLocalDay(new Date());
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
+    const todayKey = getDayKey(today);
+    const yesterdayKey = getDayKey(yesterday);
+
+    // Check if there's activity today or yesterday
     let streak = 0;
     let cursor;
 
-    if (activeDays.has(getDayKey(today))) {
+    if (activeDays.has(todayKey)) {
+        // Activity today
         streak = 1;
         cursor = new Date(today);
         cursor.setDate(cursor.getDate() - 1);
-    } else if (activeDays.has(getDayKey(yesterday))) {
+    } else if (activeDays.has(yesterdayKey)) {
+        // Activity yesterday but not today
         streak = 1;
         cursor = new Date(yesterday);
         cursor.setDate(cursor.getDate() - 1);
     } else {
+        // No activity today or yesterday - streak is broken
         return 0;
     }
 
-    while (activeDays.has(getDayKey(cursor))) {
+    // Count consecutive days backward
+    while (true) {
+        const cursorKey = getDayKey(cursor);
+        if (!activeDays.has(cursorKey)) {
+            break;
+        }
         streak += 1;
         cursor.setDate(cursor.getDate() - 1);
     }

@@ -470,8 +470,11 @@ function closeModal() {
 
 /* ── COMPLETE LESSON ── */
 async function completeLesson(lessonId, btn) {
+    const originalHTML = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    console.log('Completing lesson:', { lessonId, courseId: APP.courseId });
 
     try {
         const res  = await fetch('/courses/api/complete-lesson', {
@@ -479,7 +482,17 @@ async function completeLesson(lessonId, btn) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ courseId: APP.courseId, lessonId })
         });
+
+        console.log('Response status:', res.status);
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error('HTTP Error:', res.status, errorText);
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
         const data = await res.json();
+        console.log('Response data:', data);
 
         if (data.success) {
             const card = document.getElementById(`lesson-${lessonId}`);
@@ -500,11 +513,16 @@ async function completeLesson(lessonId, btn) {
             if (completedCount >= APP.totalLessons) {
                 await checkAndShowQuiz();
             }
+
+            showToast('✅ Lesson completed successfully!');
+        } else {
+            throw new Error(data.message || 'Failed to complete lesson');
         }
     } catch(err) {
-        console.error(err);
+        console.error('Complete lesson error:', err);
+        showToast('❌ Failed to complete lesson. Please try again.');
         btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-check"></i> Mark as Completed';
+        btn.innerHTML = originalHTML;
     }
 }
 

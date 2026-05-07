@@ -260,29 +260,77 @@ const completeLesson = async (req, res) => {
         const { courseId, lessonId } = req.body;
         const userId = req.id;
 
+        console.log('Complete lesson request:', { userId, courseId, lessonId });
+
+        // Validate required fields
+        if (!courseId || !lessonId) {
+            console.log('Missing required fields');
+            return res.status(400).json({
+                success: false,
+                message: "Course ID and Lesson ID are required"
+            });
+        }
+
+        console.log(`Completing lesson: userId=${userId}, courseId=${courseId}, lessonId=${lessonId}`);
+
         let progress = await progressModel.findOne({ userId, courseId, lessonId });
+        console.log('Found progress:', progress ? 'existing' : 'none');
+
         if (!progress) {
+            console.log('Creating new progress record');
             progress = new progressModel({
                 userId, courseId, lessonId,
                 completed: true, progress: 100, pointsEarned: 10, lastUpdated: new Date()
             });
         } else {
+            console.log('Updating existing progress record');
             progress.completed = true;
             progress.progress = 100;
             progress.pointsEarned = 10;
             progress.lastUpdated = new Date();
         }
+
         await progress.save();
+        console.log('Progress saved successfully');
 
         const course = await courseModel.findById(courseId);
+        if (!course) {
+            console.log('Course not found:', courseId);
+            return res.status(404).json({
+                success: false,
+                message: "Course not found"
+            });
+        }
+
         const levelProgress = await levelProgressModel.findOne({ userId, courseId });
-        const currentLevelLessons = course.lessons.filter(l => l.level === levelProgress.currentLevel);
+        if (!levelProgress) {
+            console.log('Level progress not found, creating default level progress');
+            // Create a default level progress if it doesn't exist
+            const newLevelProgress = new levelProgressModel({
+                userId,
+                courseId,
+                currentLevel: 'beginner',
+                placementCompleted: true,
+                placementScore: 0,
+                levels: {
+                    beginner:     { quizPassed: false, quizAttempts: 0, lastScore: 0 },
+                    intermediate: { quizPassed: false, quizAttempts: 0, lastScore: 0 },
+                    advanced:     { quizPassed: false, quizAttempts: 0, lastScore: 0 }
+                }
+            });
+            await newLevelProgress.save();
+            console.log('Created default level progress');
+        }
+
+        const currentLevelLessons = course.lessons.filter(l => l.level === (levelProgress ? levelProgress.currentLevel : 'beginner'));
         const completedLessons = await progressModel.find({
             userId, courseId,
             lessonId: { $in: currentLevelLessons.map(l => l._id) },
             completed: true
         });
         const allCompleted = completedLessons.length === currentLevelLessons.length;
+
+        console.log(`Lesson completed. All completed: ${allCompleted}`);
 
         return res.json({
             success: true,
@@ -293,8 +341,11 @@ const completeLesson = async (req, res) => {
         });
 
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: err.message });
+        console.error('Complete lesson error:', err);
+        return res.status(500).json({
+            success: false,
+            message: err.message || "Failed to complete lesson"
+        });
     }
 };
 
