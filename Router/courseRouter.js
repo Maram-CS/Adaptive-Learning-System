@@ -19,7 +19,7 @@ const courseUpload = upload.fields([
 ]);
 
 // ── Public ─────────────────────────────────────────────────────────────
-coursesRouter.get("/All", getAllCourses);
+coursesRouter.get("/All",authRequest, getAllCourses);
 coursesRouter.get("/getCourse/:slug", getCourseBySlug);
 
 // ── Instructor ────────────────────────────────────────────────────────

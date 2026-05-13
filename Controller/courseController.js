@@ -1,4 +1,7 @@
 import courseModel from "../Model/courseModel.js";
+import favoriteCourseModel from "../Model/favoriteCourseModel.js";
+
+
 import { notifyNewCourse } from "./notificationController.js";
 import levelProgressModel from "../Model/progressLevelModel.js";
 import progressModel from "../Model/Progress.js";
@@ -141,7 +144,15 @@ const createCourse = async (req, res) => {
 const getAllCourses = async (req, res) => {
     try {
         const allCourses = await courseModel.find({ isPublished: true });
-        return res.render("auth/courses", { courses: allCourses });
+
+        // favorites for current logged-in user
+        const favoriteIds = [];
+        if (req.id) {
+            const favorites = await favoriteCourseModel.find({ userId: req.id }).select("courseId");
+            favoriteIds.push(...favorites.map(f => f.courseId));
+        }
+
+        return res.render("auth/courses", { courses: allCourses, favoriteIds: favoriteIds.map(String) });
     } catch (err) {
         return res.status(500).json({ message: "Internal server error" });
     }

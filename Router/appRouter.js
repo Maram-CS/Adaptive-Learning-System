@@ -9,7 +9,7 @@ AppRouter.get("/createProfile",(req,res)=>{
 });
 
 AppRouter.get("/courses",(req,res)=>{
-    res.render("auth/courses");
+    return res.redirect("/courses/All");
 });
 
 AppRouter.get("/editProfile",authRequest,(req,res)=>{
@@ -25,7 +25,7 @@ AppRouter.get("/course",(req,res)=>{
 });
 
 AppRouter.get("/favoriteCourses",(req,res)=>{
-    res.render("auth/favoriteCourses");
+    return res.redirect("/favoriteCourses/All");
 });
 
 AppRouter.get("/teacherDashboard", async (req, res) => {

@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "./env.js";
 import mongoose from "mongoose";
 import Notification from "./Model/notificationModel.js";
 import userModel from "./Model/userModel.js";
@@ -36,21 +36,29 @@ async function getRealLastScore(userId) {
   return { score: getLatestLevelScore(latestProgress.levels), courseId: latestProgress.courseId };
 }
 
-async function getCourseAndLessonDetails(userId, courseId) {
+async function getCourseAndLessonDetails(userId, courseId, lessonId = null) {
   try {
-    const course = await courseModel.findById(courseId).select("Title lessons");
-    
-    if (!course) return { courseName: "Unknown Course", lessonName: "Unknown Lesson" };
+    if (!courseId) {
+      return { courseName: "Unknown Course", lessonName: "Unknown Lesson" };
+    }
 
-    // Get the most recent lesson the student was working on
-    const studentProgress = await Progress.findOne({ userId, courseId })
-      .sort({ lastUpdated: -1 })
-      .select("lessonId");
+    const course = await courseModel.findById(courseId).select("Title lessons");
+    if (!course) {
+      return { courseName: "Unknown Course", lessonName: "Unknown Lesson" };
+    }
+
+    let targetLessonId = lessonId;
+    if (!targetLessonId) {
+      const studentProgress = await Progress.findOne({ userId, courseId })
+        .sort({ lastUpdated: -1 })
+        .select("lessonId");
+      targetLessonId = studentProgress?.lessonId;
+    }
 
     let lessonName = "Unknown Lesson";
-    if (studentProgress && course.lessons) {
+    if (targetLessonId && course.lessons) {
       const lesson = course.lessons.find(
-        (l) => l._id.toString() === studentProgress.lessonId.toString()
+        (l) => l._id.toString() === targetLessonId.toString()
       );
       if (lesson) {
         lessonName = lesson.name;
@@ -59,7 +67,7 @@ async function getCourseAndLessonDetails(userId, courseId) {
 
     return {
       courseName: course.Title || "Unknown Course",
-      lessonName: lessonName,
+      lessonName,
     };
   } catch (error) {
     console.error("Error fetching course/lesson details:", error);
@@ -130,6 +138,7 @@ async function runAgentForStudent(student, stats, scoreData, courseDetails) {
 }
 
 async function runNotificationAgent() {
+  console.log("Connecting to:", process.env.NAME_DB);
   await mongoose.connect(process.env.NAME_DB);
   console.log("Connected to MongoDB. Agent starting...");
 
@@ -141,11 +150,22 @@ async function runNotificationAgent() {
   for (const student of students) {
     const stats = getStudentStats(student);
     const scoreData = await getRealLastScore(student._id);
-    
-    // Get course and lesson details
+
     let courseDetails = { courseName: "Unknown Course", lessonName: "Unknown Lesson" };
     if (scoreData && scoreData.courseId) {
       courseDetails = await getCourseAndLessonDetails(student._id, scoreData.courseId);
+    } else {
+      const latestProgress = await Progress.findOne({ userId: student._id })
+        .sort({ lastUpdated: -1 })
+        .select("courseId lessonId");
+
+      if (latestProgress?.courseId) {
+        courseDetails = await getCourseAndLessonDetails(
+          student._id,
+          latestProgress.courseId,
+          latestProgress.lessonId
+        );
+      }
     }
 
     const realScore = scoreData ? scoreData.score : null;

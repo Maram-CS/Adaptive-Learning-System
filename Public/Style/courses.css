@@ -223,17 +223,17 @@ body {
 
 .buttons { display: flex; gap: 8px; }
 .icon-btn {
-  position: relative; /* 🔥 مهم */
+  position: relative;
   background: white;
   border: 2px solid var(--blue-light);
   border-radius: 50%;
-  width: 40px; 
+  width: 40px;
   height: 40px;
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
@@ -244,32 +244,26 @@ body {
 }
 
 .notif-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-
-    background: #e74c3c;
-    color: white;
-
-    font-size: 11px;
-    font-weight: bold;
-
-    padding: 3px 6px;
-    border-radius: 50%;
-
-    min-width: 18px;
-    text-align: center;
-
-    box-shadow: 0 0 0 2px white;
-    animation: pulse 1.5s infinite;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #e74c3c;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 3px 6px;
+  border-radius: 50%;
+  min-width: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 2px white;
+  animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.15); }
   100% { transform: scale(1); }
 }
-
 
 /* ─── FILTER BUTTONS ──────────────────────────────── */
 .filter-buttons {
@@ -367,33 +361,54 @@ body {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: none;
+  background: rgba(255, 255, 255, 0.92);
   border: none;
-  font-size: 18px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  transition: transform 0.25s;
-  /* Inactive state: greyed out */
-  filter: grayscale(1);
-  opacity: 0.35;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   z-index: 2;
-}
-
-/* Active (favorited) state: full color */
-.heart-btn.active {
-  filter: grayscale(0);
-  opacity: 1;
+  padding: 0;
+  /* NO filter, NO opacity — let the icon color do the work */
 }
 
 .heart-btn:hover {
-  transform: scale(1.35);
-  opacity: 0.8;
+  transform: scale(1.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
 }
 
-.heart-btn.active:hover {
-  transform: scale(1.35);
-  opacity: 1;
+/* inactive: grey icon */
+.heart-btn .fa-heart {
+  font-size: 15px;
+  color: #ccc;
+  transition: color 0.2s ease;
+  pointer-events: none;
+}
+
+/* active (favorited): red icon */
+.heart-btn.active .fa-heart {
+  color: #e53935;
+}
+
+.heart-btn.active {
+  box-shadow: 0 2px 8px rgba(229, 57, 53, 0.35);
+}
+
+/* pop animation */
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.45); }
+  70%  { transform: scale(0.88); }
+  100% { transform: scale(1); }
+}
+
+.heart-btn.heart-pop .fa-heart {
+  animation: heartPop 0.35s ease forwards;
 }
 
 /* ─── TOAST NOTIFICATION ──────────────────────────── */
@@ -578,14 +593,14 @@ body {
     font-size: 12px;
   }
 }
-/* زر رابط يشبه الزر العادي */
+
 .a-btn {
-  display: inline-block;        /* يخليه مثل الزر */
-  padding: 8px 16px;            /* مساحة داخلية */
-  background: var(--blue-main); /* لون الخلفية */
-  color: white;                 /* لون النص */
-  border-radius: 20px;          /* زوايا مستديرة */
-  text-decoration: none;        /* إزالة underline من الرابط */
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--blue-main);
+  color: white;
+  border-radius: 20px;
+  text-decoration: none;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -594,7 +609,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* تأثير التحريك عند hover */
 .a-btn::before {
   content: '';
   position: absolute;
