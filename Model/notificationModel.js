@@ -30,6 +30,12 @@ const notificationSchema = new Schema({
         required: false
     },
 
+    link: {
+        type: String,
+        required: false,
+        default: ""
+    },
+
     is_read: {
         type: Boolean,
         default: false

@@ -39,16 +39,23 @@ const UserSchema = new Schema({
         type : String,
         required : false,
     },
-    
+
+    // Counts how many times a student clicked “View Lesson” (POST /courses/api/open-lesson)
+    lessonOpenClicks: {
+        type: Number,
+        default: 0,
+    },
+
     bio: {
     type: String,
     required: false,  
     },
-    
+
     resetToken: String,
     resetTokenExpire: Date,
     
 },{timestamps: true});
+
 
 UserSchema.pre("save",async function(next) {
     const user = this;

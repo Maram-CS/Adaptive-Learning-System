@@ -185,6 +185,16 @@ function trackLessonOpen(lessonId) {
     }).catch(() => {});
     return true;
 }
+
+const lessonSearchInput = document.getElementById('searchInput');
+if (lessonSearchInput) {
+    lessonSearchInput.addEventListener('keyup', function () {
+        const filter = this.value.toLowerCase();
+        document.querySelectorAll('.lesson-card').forEach(card => {
+            card.style.display = card.textContent.toLowerCase().includes(filter) ? 'block' : 'none';
+        });
+    });
+}
 </script>
 <script src="//code.tidio.co/ihlzjyy4poj2j2yjxbswichcqxzfdlfk.js" async></script>
 <script>

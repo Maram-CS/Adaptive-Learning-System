@@ -232,6 +232,16 @@ const getCourse = async (slug) => {
  window.location.href = `/courses/getCourse/${slug}`;
 }
 
+const teacherSearchInput = document.getElementById('searchInput');
+if (teacherSearchInput) {
+    teacherSearchInput.addEventListener('keyup', function () {
+        const filter = this.value.toLowerCase();
+        document.querySelectorAll('.course').forEach(card => {
+            card.style.display = card.textContent.toLowerCase().includes(filter) ? 'block' : 'none';
+        });
+    });
+}
+
 </script>
 
 </body>

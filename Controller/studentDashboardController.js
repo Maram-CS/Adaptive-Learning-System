@@ -13,6 +13,7 @@ import {
     parseDurationToMinutes
 } from "../utils/learningStats.js";
 
+// Get student dashboard data (courses, progress, stats) for API endpoint
 const getStudentDashboardData = async (req, res) => {
     try {
         const userId = req.params.userId || req.id;
@@ -99,7 +100,10 @@ const getStudentDashboardData = async (req, res) => {
 
         const userData = {
             firstName: user.userName,
+            // Keep day-based streak (existing logic)
             streakDays: calculateCurrentStreak(allProgress),
+            // New click counter (increments on EVERY “View Lesson” click)
+            lessonOpenClicks: Number(user.lessonOpenClicks || 0),
             totalLearningHours: totalLearningTime.hours,
             totalLearningMinutes: totalLearningTime.minutes,
             totalLearningDisplay: totalLearningTime.hours > 0
@@ -107,6 +111,9 @@ const getStudentDashboardData = async (req, res) => {
                 : `${totalLearningTime.minutes}m`,
             quizAverage: calculateQuizAverage(levelProgressDocs)
         };
+
+        // Ensure new counter exists even for old users
+        userData.lessonOpenClicks = Number(user.lessonOpenClicks || 0);
 
         return res.json({
             success: true,
@@ -122,6 +129,7 @@ const getStudentDashboardData = async (req, res) => {
     }
 };
 
+// get smart recommendations based on user's quiz mistakes for API endpoint
 const getSmartRecommendations = async (req, res) => {
     try {
         const userId = req.id;
@@ -151,6 +159,7 @@ const getSmartRecommendations = async (req, res) => {
     }
 };
 
+// get leaderboard data for API endpoint
 const getLeaderboardData = async (req, res) => {
     try {
         const users = await userModel.find({}, "userName");
@@ -182,6 +191,7 @@ const getLeaderboardData = async (req, res) => {
     }
 };
 
+//get student dashboard page (renders the dashboard template, which then calls the above APIs to populate data)
 const getStudentDashboard = async (req, res) => {
     try {
         const user = await userModel.findById(req.id);
@@ -192,6 +202,7 @@ const getStudentDashboard = async (req, res) => {
     }
 };
 
+// get lessons for a course filtered by user's current level (used when student clicks on a course to see its lessons)
 const studentCourseLessons = async (req, res) => {
     try {
         const course = await courseModel.findById(req.params.courseId);

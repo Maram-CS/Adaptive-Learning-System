@@ -444,25 +444,37 @@ function viewLesson(lessonId, lessonType, fileUrl, lessonName) {
         modalBody.innerHTML = `<video src="${fileUrl}" controls autoplay style="width:100%;border-radius:12px;"></video>`;
     } else if (lessonType === 'pdf' || fileUrl.toLowerCase().includes('.pdf')) {
         window.open(fileUrl, '_blank');
+        trackLessonOpen(lessonId);
         closeModal();
         return;
     } else {
         modalBody.innerHTML = `<iframe src="${fileUrl}" style="width:100%;height:500px;border:none;"></iframe>`;
     }
     modal.style.display = 'flex';
+    // Track streak: every time the student opens/views a lesson, record activity for today
+    trackLessonOpen(lessonId);
+    // ensure only one request runs at a time (avoid duplicate rapid clicks)
+    // (backend will upsert/overwrite progress)
+
 }
+
+
 
 async function trackLessonOpen(lessonId) {
     try {
-        await fetch('/courses/api/open-lesson', {
+        const res = await fetch('/courses/api/open-lesson', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ courseId: APP.courseId, lessonId })
         });
+
+        const data = await res.json().catch(() => null);
+        console.log('open-lesson response:', res.status, data);
     } catch (err) {
         console.error('trackLessonOpen error:', err);
     }
 }
+
 
 function closeModal() {
     document.getElementById('lessonModal').style.display = 'none';
@@ -656,6 +668,7 @@ async function submitQuiz(event, quizId) {
         });
 
         const result = await res.json();
+        
 
         if (result.passed) {
             // ✅ FIXED: If advanced level, redirect to course page

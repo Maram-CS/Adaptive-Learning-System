@@ -45,9 +45,11 @@ const createProfile = async (req, res,next) => {
     }
 };
 
+// edit profile function
 const editProfile = async (req, res,next) => {
     try {
         const { email, firstName, lastName, userName, PhoneNumber, mainTrack, skillLevel,bio } = req.body;
+        // verify if the profile exists before editing it else render the create profile page with an error message prompting the user to create a profile first
         const profile = await profileModel.findOne({user: req.id});
         if(!profile) return res.render("auth/editProfile",{error: "Profile not found. Please create a profile first."});
 
@@ -75,6 +77,8 @@ const editProfile = async (req, res,next) => {
         res.render("auth/editProfile",{error: "Error updating profile. Please try again by filling all the required fields."});
     }
 };
+
+// view profile function
 const viewProfile = async (req, res) => {
     try {
         const profile = await profileModel.findOne({ user: req.id });
@@ -83,16 +87,16 @@ const viewProfile = async (req, res) => {
             // if the profile is not found render the create profile page with an error message prompting the user to create a profile first
             if (req.role === "teacher") {
                 return res.render("auth/createProfileTeacher", { error: "Profile not found. Please create a profile first." });
-              } else {      
+            } else {      
                 return res.render("auth/createProfile");
-              }
+            }
         }
         // if the user is a teacher render the teacher profile view otherwise render the student profile view
         if (req.role === "teacher") {
-      return res.render("auth/viewProfileTeacher", { profile });
-    } else {
-      return res.render("auth/Profile-view", { profile });
-    }
+            return res.render("auth/viewProfileTeacher", { profile });
+        } else {
+            return res.render("auth/Profile-view", { profile });
+        }
 
     } catch (err) {
         console.error(err);

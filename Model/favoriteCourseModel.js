@@ -19,7 +19,7 @@ const favoriteCourseSchema = new Schema(
 );
 
 // Prevent duplicates per user
-favoriteCourseSchema.index({ userId: 1, courseId: 1 }, { unique: true });
+favoriteCourseSchema.index({ userId: 1, courseId: 1 }, { unique: true });// This compound index ensures that a user cannot favorite the same course more than once, maintaining data integrity and optimizing query performance when checking for existing favorites.
 
 const favoriteCourseModel = model(
   "FavoriteCourse",

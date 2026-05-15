@@ -399,7 +399,16 @@
     }
 
     loadDashboardData();
-    
+
+    const dashboardSearchInput = document.getElementById('searchInput');
+    if (dashboardSearchInput) {
+        dashboardSearchInput.addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('.course-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(filter) ? 'block' : 'none';
+            });
+        });
+    }
    // ========== CODE PLAYGROUND FUNCTIONS ==========
 function runLiveCode() {
     const code = document.getElementById('htmlCode').value;

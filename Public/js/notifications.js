@@ -3,6 +3,15 @@ let currentFilter = 'all';
 let currentPage = 1;
 const itemsPerPage = 15;
 
+function escapeHtml(text) {
+    return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 /* =========================
    FETCH FROM DB
 ========================= */
@@ -63,14 +72,15 @@ function renderFilteredNotifications() {
         const type = getNotificationType(n);
         return `
             <div class="notification-item-page ${!n.is_read ? 'unread' : ''} ${type === 'ai' ? 'ai-notification' : ''}"
-                 data-id="${n._id}">
+                 data-id="${n._id}"
+                 data-link="${escapeHtml(n.link || '')}">
 
                 <div class="notification-icon-page ${type}">
                     ${getNotifIcon(type)}
                 </div>
                 <div class="notification-content-page">
-                    <strong>${n.title || ''}</strong>
-                    <p>${n.message || ''}</p>
+                    <strong>${escapeHtml(n.title || '')}</strong>
+                    <p>${escapeHtml(n.message || '')}</p>
 
                     <div class="notification-time-page">
                         <span>${formatTime(n.created_at || n.createdAt)}</span>
@@ -143,10 +153,18 @@ function attachEvents() {
         item.onclick = async (e) => {
             if (e.target.closest('.delete-btn')) return;
             const id = item.dataset.id;
+            const targetLink = item.dataset.link;
+
             await fetch(`/api/notifications/${id}/read`, {
                 method: 'PUT',
                 credentials: 'include'
             });
+
+            if (targetLink) {
+                window.location.href = targetLink;
+                return;
+            }
+
             await fetchNotifications();
             refreshUnreadBadge();
         };

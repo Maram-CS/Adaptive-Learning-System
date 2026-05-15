@@ -1,12 +1,20 @@
+// Node utils
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// Models
 import courseModel from "../Model/courseModel.js";
 import favoriteCourseModel from "../Model/favoriteCourseModel.js";
-
-
-import { notifyNewCourse } from "./notificationController.js";
 import levelProgressModel from "../Model/progressLevelModel.js";
 import progressModel from "../Model/Progress.js";
+import userModel from "../Model/userModel.js";
 import QuizMistake from "../Model/recommandation.js";
+
+// Controllers / Utils
+import { notifyNewCourse, notifyNewQuiz } from "./notificationController.js";
 import { extractTopic } from "../utils/topicExtractor.js";
+import { scoreQuestion, getCorrectAnswerDisplay } from "./quizController.js";
 import {
     calculateCurrentStreak,
     calculateQuizAverage,
@@ -14,16 +22,13 @@ import {
     calculateTimeSpentMinutes,
     formatMinutesAsHoursAndMinutes
 } from "../utils/learningStats.js";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helper function to parse lessons from req.body and req.files
 function parseLessons(bodyLessons = {}, lessonFiles = []) {
-    const lessonsArray = Object.values(bodyLessons);
+    const lessonsArray = Object.values(bodyLessons); // Convert from object to array
     return lessonsArray.map((lesson, index) => ({
         name: lesson.name || "",
         type: lesson.type || "video",
@@ -36,7 +41,7 @@ function parseLessons(bodyLessons = {}, lessonFiles = []) {
 function parseQuestions(rawQuestions = []) {
     return rawQuestions.map(q => {
         const base = {
-            question: q.question || "",
+            question: q.question || "", // default to empty string if not provided
             questionType: q.questionType || "multiple-choice",
         };
 
@@ -76,18 +81,21 @@ function parseQuestions(rawQuestions = []) {
     });
 }
 
-// ─── CREATE COURSE ────────────────────────────────────────────────────────────
+// create course
 const createCourse = async (req, res) => {
     try {
-        const instructorId = req.id;
+        // verify if the user is an instructor
+        const instructorId = req.id; 
         if (!instructorId) return res.status(401).json({ message: "Unauthorized" });
 
+        // check if course with same title already exists for this instructor
         const existingCourse = await courseModel.findOne({
             Title: req.body.Title,
             Instructor: instructorId
         });
         if (existingCourse) return res.status(400).json({ message: "Course already exists" });
 
+        // Handle file uploads and form data
         const imagePath = req.files?.image?.[0]
             ? `/uploads/${req.files.image[0].filename}`
             : null;
@@ -140,7 +148,7 @@ const createCourse = async (req, res) => {
     }
 };
 
-// ─── GET ALL COURSES ──────────────────────────────────────────────────────────
+// get all courses for students
 const getAllCourses = async (req, res) => {
     try {
         const allCourses = await courseModel.find({ isPublished: true });
@@ -158,7 +166,7 @@ const getAllCourses = async (req, res) => {
     }
 };
 
-// ─── GET BY SLUG (teacher/admin) ──────────────────────────────────────────────
+// get course by slug (for both teacher and student, with different rendering)
 const getCourseBySlug = async (req, res) => {
     try {
         const course = await courseModel
@@ -175,7 +183,7 @@ const getCourseBySlug = async (req, res) => {
     }
 };
 
-// ─── GET COURSE PAGE FOR STUDENT ─────────────────────────────────────────────
+// get course by slug for student view (with placement quiz logic)
 // Logic:
 //   1. If student already completed the placement quiz → redirect to /learn
 //   2. Otherwise → render course.ejs with the placement quiz embedded
@@ -236,7 +244,7 @@ const getCourseBySlugForStudent = async (req, res) => {
 
 
 
-// ─── GET LESSONS PAGE (teacher) ───────────────────────────────────────────────
+// get course lessons management page for teacher
 const getCourseLessonsPage = async (req, res) => {
     try {
         const course = await courseModel.findOne({
@@ -245,6 +253,7 @@ const getCourseLessonsPage = async (req, res) => {
         });
         if (!course) return res.status(404).send("Course not found");
 
+        // For teacher view, we want to show all lessons and quizzes regardless of level
         const placementQuiz = course.quizzes.find(q => q.quizType === "placement") || null;
         const quizzesByLevel = {
             beginner:     course.quizzes.filter(q => q.quizType === "level" && q.level === "beginner"),
@@ -265,7 +274,7 @@ const getCourseLessonsPage = async (req, res) => {
     }
 };
 
-// ─── COMPLETE A LESSON ────────────────────────────────────────────────────────
+// complete lesson (mark as completed and award points)
 const completeLesson = async (req, res) => {
     try {
         const { courseId, lessonId } = req.body;
@@ -273,7 +282,7 @@ const completeLesson = async (req, res) => {
 
         console.log('Complete lesson request:', { userId, courseId, lessonId });
 
-        // Validate required fields
+        // Additional validation to ensure courseId and lessonId are provided
         if (!courseId || !lessonId) {
             console.log('Missing required fields');
             return res.status(400).json({
@@ -283,7 +292,7 @@ const completeLesson = async (req, res) => {
         }
 
         console.log(`Completing lesson: userId=${userId}, courseId=${courseId}, lessonId=${lessonId}`);
-
+        // Find existing progress or create new
         let progress = await progressModel.findOne({ userId, courseId, lessonId });
         console.log('Found progress:', progress ? 'existing' : 'none');
 
@@ -303,7 +312,7 @@ const completeLesson = async (req, res) => {
 
         await progress.save();
         console.log('Progress saved successfully');
-
+         
         const course = await courseModel.findById(courseId);
         if (!course) {
             console.log('Course not found:', courseId);
@@ -312,7 +321,7 @@ const completeLesson = async (req, res) => {
                 message: "Course not found"
             });
         }
-
+        // Ensure level progress exists for this user and course
         const levelProgress = await levelProgressModel.findOne({ userId, courseId });
         if (!levelProgress) {
             console.log('Level progress not found, creating default level progress');
@@ -332,7 +341,7 @@ const completeLesson = async (req, res) => {
             await newLevelProgress.save();
             console.log('Created default level progress');
         }
-
+        // Check if all lessons of the current level are completed to determine if we show the quiz
         const currentLevelLessons = course.lessons.filter(l => l.level === (levelProgress ? levelProgress.currentLevel : 'beginner'));
         const completedLessons = await progressModel.find({
             userId, courseId,
@@ -369,7 +378,7 @@ const openLesson = async (req, res) => {
         if (!courseId || !lessonId) {
             return res.status(400).json({ success: false, message: "courseId and lessonId are required" });
         }
-
+        // Validate that the course and lesson exist
         const course = await courseModel.findById(courseId).select("_id lessons._id");
         if (!course) {
             return res.status(404).json({ success: false, message: "Course not found" });
@@ -379,7 +388,7 @@ const openLesson = async (req, res) => {
         if (!lessonExists) {
             return res.status(404).json({ success: false, message: "Lesson not found in this course" });
         }
-
+        // Find existing progress or create new with 0% progress (indicating it was opened)
         let progress = await progressModel.findOne({ userId, courseId, lessonId });
         if (!progress) {
             progress = new progressModel({
@@ -399,14 +408,24 @@ const openLesson = async (req, res) => {
         }
 
         await progress.save();
-        return res.json({ success: true });
+
+        // Increment global lesson-open click counter for every “View Lesson” click
+        // (This makes it increase on EVERY click, not only once per day)
+        // NOTE: This is a separate counter from the day-based streak.
+        const user = await userModel.findByIdAndUpdate(
+            userId,
+            { $inc: { lessonOpenClicks: 1 } },
+            { new: true }
+        );
+
+        return res.json({ success: true, lessonOpenClicks: user?.lessonOpenClicks });
     } catch (err) {
         console.error("openLesson error:", err);
         return res.status(500).json({ success: false, message: err.message });
     }
 };
 
-// ─── EDIT COURSE ──────────────────────────────────────────────────────────────
+// edit course ( by slug and the instructor who created it)  
 const editCourse = async (req, res) => {
     try {
         const course = await courseModel.findOne({ slug: req.params.slug, Instructor: req.id });
@@ -465,6 +484,7 @@ const editCourse = async (req, res) => {
     }
 };
 
+// get edit course page (only for the instructor who created it)
 const getEditCoursePage = async (req, res) => {
     try {
         const course = await courseModel.findOne({ slug: req.params.slug });
@@ -476,6 +496,7 @@ const getEditCoursePage = async (req, res) => {
     }
 };
 
+// get course lessons by level (for students)
 const getLessonsByLevel = async (req, res) => {
     try {
         const { courseId, level } = req.params;
@@ -487,6 +508,7 @@ const getLessonsByLevel = async (req, res) => {
     }
 };
 
+// delete course (only for the instructor who created it)
 const deleteCourse = async (req, res) => {
     try {
         const course = await courseModel.findOne({ slug: req.params.slug, Instructor: req.id });
@@ -499,7 +521,7 @@ const deleteCourse = async (req, res) => {
     }
 };
 
-// ─── GET COURSE LEARN PAGE ────────────────────────────────────────────────────
+//get course learn page (with placement quiz logic)
 const getCourseLearnPage = async (req, res) => {
     try {
         const course = await courseModel.findOne({ slug: req.params.slug });
@@ -514,7 +536,7 @@ const getCourseLearnPage = async (req, res) => {
 
         const lessonProgress = await progressModel.find({ userId, courseId: course._id, completed: true });
         const completedLessonIds = lessonProgress.map(p => p.lessonId.toString());
-
+        // Check if all lessons of the current level are completed to determine if we show the quiz
         const currentLessons = course.lessons.filter(l => l.level === levelProgress.currentLevel);
         const allLessonsCompleted = currentLessons.every(lesson =>
             completedLessonIds.includes(lesson._id.toString())
@@ -544,37 +566,9 @@ const getCourseLearnPage = async (req, res) => {
     }
 };
 
-function scoreQuestionLocal(question, rawAnswer) {
-    const type = question.questionType || "multiple-choice";
-    switch (type) {
-        case "multiple-choice":
-        case "true-false":
-            return parseInt(rawAnswer) === question.correctAnswer ? 1 : 0;
-        case "multi-select": {
-            const submitted = (Array.isArray(rawAnswer) ? rawAnswer : [rawAnswer]).map(Number).sort();
-            const correct = [...(question.correctAnswers || [])].sort();
-            if (submitted.length !== correct.length) return 0;
-            return submitted.every((v, i) => v === correct[i]) ? 1 : 0;
-        }
-        case "written": {
-            const expected = (question.correctAnswerText || "").trim().toLowerCase();
-            const given = (rawAnswer || "").toString().trim().toLowerCase();
-            return given === expected ? 1 : 0;
-        }
-        default:
-            return 0;
-    }
-}
+// Helper function to score a single question locally (without DB)
 
-function getCorrectDisplay(question) {
-    const type = question.questionType || "multiple-choice";
-    if (type === "written") return question.correctAnswerText || "";
-    if (type === "multi-select") return (question.correctAnswers || []).join(", ");
-    const idx = question.correctAnswer ?? 0;
-    return question.options?.[idx] ?? String(idx);
-}
-
-// ─── SUBMIT PLACEMENT QUIZ ────────────────────────────────────────────────────
+// SUBMIT PLACEMENT QUIZ 
 // Returns JSON with { success, score, level, message } — displayed inline on course.ejs
 const submitPlacementQuiz = async (req, res) => {
     try {
@@ -592,7 +586,7 @@ const submitPlacementQuiz = async (req, res) => {
         // Score all questions
         let score = 0;
         placementQuiz.questions.forEach((q, i) => {
-            score += scoreQuestionLocal(q, answers?.[i]);
+            score += scoreQuestion(q, answers?.[i]);
         });
 
         const percentage = Math.round((score / placementQuiz.questions.length) * 100);
@@ -600,7 +594,7 @@ const submitPlacementQuiz = async (req, res) => {
         // ── Save wrong answers as QuizMistakes ────────────────────────────────
         const mistakeDocs = [];
         placementQuiz.questions.forEach((q, i) => {
-            const correct = scoreQuestionLocal(q, answers?.[i]);
+            const correct = scoreQuestion(q, answers?.[i]);
             if (!correct) {
                 mistakeDocs.push({
                     userId,
@@ -611,7 +605,7 @@ const submitPlacementQuiz = async (req, res) => {
                     questionIndex: i,
                     questionText:  q.question || `Question ${i + 1}`,
                     studentAnswer: answers?.[i],
-                    correctAnswer: getCorrectDisplay(q),
+                    correctAnswer: getCorrectAnswerDisplay(q),
                     topic:         extractTopic(q.question || "")
                 });
             }
@@ -621,8 +615,7 @@ const submitPlacementQuiz = async (req, res) => {
             await QuizMistake.deleteMany({ userId, courseId, quizId: placementQuiz._id });
             await QuizMistake.insertMany(mistakeDocs);
         }
-        // ─────────────────────────────────────────────────────────────────────
-
+        
         // Determine level
         const determineLevel = (p) => {
             if (p >= 70) return "advanced";
@@ -680,7 +673,7 @@ const submitPlacementQuiz = async (req, res) => {
 
 
 
-// ─── ADD / SAVE QUIZ (teacher creates quizzes from courseLessons.ejs) ─────────
+// ADD / SAVE QUIZ (teacher creates quizzes from courseLessons.ejs)
 const saveQuiz = async (req, res) => {
     try {
         const { slug } = req.params;
@@ -706,6 +699,9 @@ const saveQuiz = async (req, res) => {
         course.quizzes.push(newQuiz);
         await course.save();
 
+        const savedQuiz = course.quizzes[course.quizzes.length - 1];
+        notifyNewQuiz(req.id, course, savedQuiz).catch(err => console.error("notifyNewQuiz error:", err));
+
         return res.json({ success: true, message: "Quiz saved successfully!" });
 
     } catch (err) {
@@ -714,7 +710,7 @@ const saveQuiz = async (req, res) => {
     }
 };
 
-// ─── DELETE QUIZ ──────────────────────────────────────────────────────────────
+//delete quiz (only for the instructor who created the course)
 const deleteQuiz = async (req, res) => {
     try {
         const { slug, quizId } = req.params;
@@ -730,6 +726,7 @@ const deleteQuiz = async (req, res) => {
     }
 };
 
+//get quiz for a level (called by frontend when student clicks "Take Quiz" after completing lessons)
 const getLevelQuiz = async (req, res) => {
     try {
         const { courseId, level } = req.query;
@@ -761,7 +758,7 @@ const getLevelQuiz = async (req, res) => {
     }
 };
 
-// ─── GET LESSONS FOR A LEVEL (called by frontend to load next level) ──────────
+// GET LESSONS FOR A LEVEL (called by frontend to load next level)
 // GET /courses/api/level-lessons?courseId=&level=
 const getLevelLessons = async (req, res) => {
     try {
@@ -794,7 +791,7 @@ const getLevelLessons = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
-// ========== Rating Course ==========
+// rate course (students can rate a course from 1 to 5 stars, and update their rating)
 const rateCourse = async (req, res) => {
     try {
         const { courseId, rating } = req.body;
@@ -842,7 +839,7 @@ const rateCourse = async (req, res) => {
     }
 };
 
-// ========== Get User Rating ==========
+//get user's rating for a course (to show their existing rating when they revisit the course page)
 const getUserRating = async (req, res) => {
     try {
         const { courseId } = req.params;
@@ -868,9 +865,23 @@ const getUserRating = async (req, res) => {
     }
 };
 export {
-    createCourse, getAllCourses, editCourse, deleteCourse,
-    getCourseBySlug, getCourseLessonsPage, getCourseBySlugForStudent,
-    getEditCoursePage, getLessonsByLevel, getCourseLearnPage,
-    completeLesson, openLesson, submitPlacementQuiz, saveQuiz, deleteQuiz, getLevelQuiz, getLevelLessons, rateCourse, getUserRating 
+    createCourse,
+    getAllCourses,
+    editCourse,
+    deleteCourse,
+    getCourseBySlug,
+    getCourseLessonsPage,
+    getCourseBySlugForStudent,
+    getEditCoursePage,
+    getLessonsByLevel,
+    getCourseLearnPage,
+    completeLesson,
+    openLesson,
+    submitPlacementQuiz,
+    saveQuiz,
+    deleteQuiz,
+    getLevelQuiz,
+    getLevelLessons,
+    rateCourse,
+    getUserRating
 };
-

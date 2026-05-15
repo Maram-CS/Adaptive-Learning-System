@@ -218,8 +218,8 @@
                     <h1><i class="fas fa-smile-wink"></i> Hello, ${userData.firstName}!</h1>
                     <p>You are enrolled in <strong>${courses.length} courses</strong><br>Click on any course to see its lessons.</p>
                 </div>
-                <div class="streak-badge" onclick="showToast('🔥 You\\'re on a ${userData.streakDays}-day streak!')">
-                    <i class="fas fa-fire"></i> Day ${userData.streakDays} 🔥
+                <div class="streak-badge" onclick="showToast('🔥 Lesson opens: ${userData.lessonOpenClicks}!')">
+                    <i class="fas fa-fire"></i> Opens ${userData.lessonOpenClicks} 🔥
                 </div>
             </div>
 
@@ -241,7 +241,7 @@
 
             <div class="stats-grid">
                 <div class="stat-card" onclick="showToast('📖 ${completedLessons} lessons completed')"><i class="fas fa-book-open"></i><div class="stat-number" data-target="${completedLessons}">0</div><div class="stat-label">Lessons Done</div></div>
-                <div class="stat-card" onclick="showToast('🔥 ${userData.streakDays}-day streak!')"><i class="fas fa-fire"></i><div class="stat-number" data-target="${userData.streakDays}">0</div><div class="stat-label">Day Streak</div></div>
+                <div class="stat-card" onclick="showToast('🔥 Lesson opens: ${userData.lessonOpenClicks}!')"><i class="fas fa-fire"></i><div class="stat-number" data-target="${userData.lessonOpenClicks}">0</div><div class="stat-label">Lesson Opens</div></div>
                 <div class="stat-card" onclick="showToast('${userData.totalLearningDisplay}')"><i class="fas fa-hourglass-half"></i><div class="stat-number">${userData.totalLearningDisplay}</div><div class="stat-label">Learning Time</div></div>
                 <div class="stat-card" onclick="showToast('📊 ${userData.quizAverage}% average')"><i class="fas fa-chart-simple"></i><div class="stat-number" data-target="${userData.quizAverage}">0</div><div class="stat-label">Quiz Average</div></div>
             </div>
@@ -329,6 +329,16 @@ function resetCode() {
         resetCode();
         loadDashboard();
     });
+
+    const studentDashboardSearch = document.getElementById('searchInput');
+    if (studentDashboardSearch) {
+        studentDashboardSearch.addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('.course-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(filter) ? 'flex' : 'none';
+            });
+        });
+    }
 </script>
 <script src="//code.tidio.co/ihlzjyy4poj2j2yjxbswichcqxzfdlfk.js" async></script>
 <script>
