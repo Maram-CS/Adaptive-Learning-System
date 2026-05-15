@@ -100,8 +100,10 @@
             <div class="header-actions">
                 <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
                 <div class="buttons">
-                    <button class="icon-btn">🔔</button>
-                    <button class="icon-btn">💬</button>
+                    <a href="/App/notifications" class="notif-btn">
+                        <button class="icon-btn">🔔<span class="notif-badge">0</span></button>
+                    </a>
+                    <button class="icon-btn" id="chatBtn">💬</button>
                     <a href="/profile/Profile-view"><button class="icon-btn">👤</button></a>
                 </div>
             </div>
@@ -435,5 +437,17 @@ function resetCode() {
 }
 
 </script>
+<script src="//code.tidio.co/ihlzjyy4poj2j2yjxbswichcqxzfdlfk.js" async></script>
+<script>
+document.addEventListener('tidioChat-ready', function () {
+    const chatBtn = document.getElementById('chatBtn');
+    if (chatBtn) {
+        chatBtn.addEventListener('click', function () {
+            window.tidioChatApi.open();
+        });
+    }
+});
+</script>
+<script src="/js/notifications.js"></script>
 </body>
 </html>
