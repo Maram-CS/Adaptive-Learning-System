@@ -28,13 +28,7 @@ const resourceSchema = new Schema({
     fileUrl: { type: String, default: "" }
 });
 
-// ─── Question Schema (shared by quizzes & placementQuiz) ─────────────────────
-// questionType controls how the question is rendered and scored:
-//   "multiple-choice"  → radio buttons, correctAnswer = index (Number)
-//   "true-false"       → radio True/False,  correctAnswer = 0 (True) | 1 (False)
-//   "multi-select"     → checkboxes,        correctAnswers = [0, 2, …]  (Array of Numbers)
-//   "written"          → text input,        correctAnswerText = "exact string" (case-insensitive)
-
+// question Schema defines the structure for quiz questions, supporting multiple types of questions with different answer formats.
 const questionSchema = new Schema({
     question: { type: String, required: true },
 
@@ -57,7 +51,7 @@ const questionSchema = new Schema({
     correctAnswerText: { type: String, default: "" },
 });
 
-// ─── Quiz Schema ──────────────────────────────────────────────────────────────
+// quiz schema
 const quizSchema = new Schema({
     title: { type: String, required: true },
 
@@ -81,7 +75,7 @@ const quizSchema = new Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// ─── Main Course Schema ───────────────────────────────────────────────────────
+//Main Course Schema
 const courseSchema = new Schema({
     Title: { type: String, required: true, trim: true },
     Description: { type: String, required: true },
@@ -121,7 +115,7 @@ const courseSchema = new Schema({
 
     lessons: [lessonSchema],
 
-    // ✅ All quizzes (placement + level)
+    //All quizzes (placement + level)
     quizzes: [quizSchema],
 
     resources: [resourceSchema],
@@ -156,7 +150,7 @@ courseSchema.pre("save", function () {
     }
 });
 
-// ─── Indexes ──────────────────────────────────────────────────────────────────
+// Indexes
 courseSchema.index({ Title: 1 });
 courseSchema.index({ category: 1 });
 courseSchema.index({ Instructor: 1 });

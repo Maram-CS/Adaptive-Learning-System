@@ -6,18 +6,18 @@ import fs from "fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ⚠️ CORRIGE CE CHEMIN !!!
-// Avant (faux): join(__dirname, "Public/uploads")
-// Après (correct): join(__dirname, "../Public/uploads")
+// Define the uploads directory path
 const uploadsDir = join(__dirname, "../Public/uploads");
 
-console.log("Uploads directory:", uploadsDir); // Pour debug
+// for debugging purposes
+console.log("Uploads directory:", uploadsDir); 
 
-// Créer le dossier s'il n'existe pas
+// verify if the uploads directory exists, if not create it
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+// Multer configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadsDir);
@@ -29,6 +29,7 @@ const storage = multer.diskStorage({
     }
 });
 
+// File filter to allow only specific file types
 const fileFilter = (req, file, cb) => {
     const allowedTypes = [
         "image/jpeg",
@@ -46,6 +47,7 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+// Export the configured multer instance
 export const upload = multer({
     storage,
     fileFilter,

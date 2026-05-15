@@ -1,9 +1,8 @@
 import jwt from "jsonwebtoken";
 
 const password = process.env.SECRET;
-
 const authRequest = (req,res,next)=>{
-
+   // Get token from cookies
    const token = req.cookies.token;
 
    if(!token){

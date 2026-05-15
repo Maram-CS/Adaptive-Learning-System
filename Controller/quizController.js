@@ -1,18 +1,19 @@
 import courseModel from "../Model/courseModel.js";
 import userModel from "../Model/userModel.js";
 import levelProgressModel from "../Model/progressLevelModel.js";
-import QuizMistake from "../Model/recommandation.js";        // ← NEW
-import { extractTopic } from "../utils/topicExtractor.js";    // ← NEW
+import QuizMistake from "../Model/recommandation.js";        
+import { extractTopic } from "../utils/topicExtractor.js";    
 
-// ─── Score a single question based on its type ────────────────────────────────
+//Score a single question based on its type
 function scoreQuestion(question, rawAnswer) {
     const type = question.questionType || "multiple-choice";
-
+    // For multiple-choice and true-false, correctAnswer is the index of the correct option
     switch (type) {
         case "multiple-choice":
         case "true-false": {
             return parseInt(rawAnswer) === question.correctAnswer ? 1 : 0;
         }
+        // For multi-select, correctAnswers is an array of indices
         case "multi-select": {
             const submitted = (Array.isArray(rawAnswer) ? rawAnswer : [rawAnswer])
                 .map(Number)
@@ -21,6 +22,7 @@ function scoreQuestion(question, rawAnswer) {
             if (submitted.length !== correct.length) return 0;
             return submitted.every((v, i) => v === correct[i]) ? 1 : 0;
         }
+        // For written, correctAnswerText is the expected answer text
         case "written": {
             const expected = (question.correctAnswerText || "").trim().toLowerCase();
             const given = (rawAnswer || "").toString().trim().toLowerCase();
@@ -31,7 +33,7 @@ function scoreQuestion(question, rawAnswer) {
     }
 }
 
-// ─── Helper: get the "correct answer" in a human-readable form ────────────────
+// get the display text for the correct answer based on question type (used for showing correct answers in recommendations)
 function getCorrectAnswerDisplay(question) {
     const type = question.questionType || "multiple-choice";
     if (type === "written") return question.correctAnswerText || "";
@@ -41,7 +43,7 @@ function getCorrectAnswerDisplay(question) {
     return question.options?.[idx] ?? String(idx);
 }
 
-// ─── Helper: save wrong answers as QuizMistakes ───────────────────────────────
+//save the user's mistakes for a quiz attempt, which will be used for generating smart recommendations later
 async function saveMistakes({ userId, courseId, quizId, quizType, level, quiz, answers }) {
     const mistakeDocs = [];
 
@@ -70,7 +72,7 @@ async function saveMistakes({ userId, courseId, quizId, quizType, level, quiz, a
     }
 }
 
-// ─── Submit a level quiz ──────────────────────────────────────────────────────
+// submit quiz answers, calculate score, update progress, and return result with personalized message
 const submitQuiz = async (req, res) => {
     try {
         const { courseId, quizId, answers, level } = req.body;
@@ -160,7 +162,7 @@ const submitQuiz = async (req, res) => {
     }
 };
 
-// ─── Get quiz page (legacy fallback) ─────────────────────────────────────────
+// get quiz page with quiz data (used for rendering the quiz page when a student clicks "Take Quiz")
 const getQuizPage = async (req, res) => {
     try {
         const { courseId, quizId } = req.params;
@@ -174,4 +176,4 @@ const getQuizPage = async (req, res) => {
     }
 };
 
-export { submitQuiz, getQuizPage };
+export { submitQuiz, getQuizPage, scoreQuestion, getCorrectAnswerDisplay };
