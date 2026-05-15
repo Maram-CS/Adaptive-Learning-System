@@ -68,7 +68,7 @@ const getDashboardStats = async (req, res) => {
         const students = await userModel.countDocuments({ role: 'student' });
         const teachers = await userModel.countDocuments({ role: 'teacher' });
         
-        // حساب المستخدمين النشطين: المستخدمين الذين تم إنشاؤهم في آخر 30 يوماً
+        // Count users created in the last 30 days as "active users"
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         const activeUsers = await userModel.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
@@ -98,7 +98,7 @@ const getDashboardStats = async (req, res) => {
 };
 
 
-// Delete User by ID (للاستخدام مع Admin Dashboard)
+// Delete User by ID (used by admin to remove a user from the system)
  const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
