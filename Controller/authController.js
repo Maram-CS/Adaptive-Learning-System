@@ -14,22 +14,38 @@ const  createToken = (id, role)=> {
 }
 
 // Login user
+// Login user
 const loginUser = async (req, res) => {
+    const { email, password } = req.body;
     const { email, password } = req.body;
 
   try {
     // Find user by email
+    // Find user by email
     const user = await userModel.login(email, password);
 
       if (user) {
+      if (user) {
 
+        const token = createToken(user._id, user.role);
         const token = createToken(user._id, user.role);
       
           res.cookie("token", token, {
             httpOnly: true,
             maxAge: 3 * 24 * 60 * 60 * 1000, 
+          res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 3 * 24 * 60 * 60 * 1000, 
       });
 
+          // 🔔 Create a login notification for students
+        if (user.role === "student") {
+          await Notification.create({
+            studentId: user._id,
+            type: "info",
+            title: "Welcome 👋",
+            message: "You logged in successfully",
+          });
           // 🔔 Create a login notification for students
         if (user.role === "student") {
           await Notification.create({
@@ -50,12 +66,24 @@ const loginUser = async (req, res) => {
               } else {
                     return res.redirect("/login");
               }
+            // Redirect based on role
+          if (user.role === "admin") {
+              return res.redirect("/App/AdminDashboard");
+          } else if (user.role === "teacher") {
+                return res.redirect("/teacherDashboard/get");
+            } else if (user.role === "student") {
+                  return res.redirect("/studentDashboard/");
+              } else {
+                    return res.redirect("/login");
+              }
     }
   } catch (err) {
   console.log("ERROR LOGIN:", err.message);
   res.render("auth/login", { error: err.message });
 }
 };
+
+    // Forgot password
 
     // Forgot password
 const forgotPassword = async (req, res) => {
@@ -106,6 +134,11 @@ const resetPassword = async (req, res) => {
     await user.save();
 
     // 🔔 notification
+    await Notification.create({
+    studentId: user._id,
+    type: "info",
+    title: "Password changed 🔐",
+    message: "Your password has been updated successfully"
     await Notification.create({
     studentId: user._id,
     type: "info",

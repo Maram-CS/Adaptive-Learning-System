@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import "dotenv/config";
+=======
+import "./env.js";
+>>>>>>> a00fe9f46e896ccb211ddfeaadb484af2d668dc3
 import express from "express";
 import cookieParser from "cookie-parser";
 import { join } from "path";
