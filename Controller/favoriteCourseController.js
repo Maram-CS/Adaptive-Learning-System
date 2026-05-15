@@ -1,7 +1,7 @@
 import courseModel from "../Model/courseModel.js";
 import favoriteCourseModel from "../Model/favoriteCourseModel.js";
 
-// GET: render favorite courses for logged-in student
+// get all favorite courses for logged-in user
 const getAllCourses = async (req, res) => {
     try {
         const userId = req.id;
@@ -12,8 +12,8 @@ const getAllCourses = async (req, res) => {
         const favorites = await favoriteCourseModel.find({ userId }).select("courseId");
         const courseIds = favorites.map((f) => f.courseId);
 
-        // Courses the user has favorited
-        const favoritedCourses = courseIds.length
+        // Courses the user has favorite
+        const favoriteCourses = courseIds.length
             ? await courseModel.find({ _id: { $in: courseIds }, isPublished: true })
             : [];
 
@@ -22,8 +22,8 @@ const getAllCourses = async (req, res) => {
         const allCourses = await courseModel.find({ isPublished: true });
 
         return res.render("auth/favoriteCourses", {
-            courses: favoritedCourses,
-            allCourses,                                   // ← NEW: full catalog for the JS map
+            courses: favoriteCourses,
+            allCourses,                                  
             favoriteIds: courseIds.map(String),
         });
     } catch (err) {

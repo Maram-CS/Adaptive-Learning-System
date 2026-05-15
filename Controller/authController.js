@@ -5,54 +5,59 @@ import { render } from "ejs";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 
-
-const password = process.env.SECRET;
 const  createToken = (id, role)=> {
+    const password = process.env.SECRET;
+    if (!password) {
+        throw new Error("SECRET is missing in .env");
+    }
     return jwt.sign({id, role},password,{expiresIn: "3d"});
 }
 
+// Login user
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
   try {
+    // Find user by email
     const user = await userModel.login(email, password);
 
-    if (user) {
+      if (user) {
 
-      const token = createToken(user._id, user.role);
+        const token = createToken(user._id, user.role);
       
-       res.cookie("token", token, {
-        httpOnly: true,
-        maxAge: 3 * 24 * 60 * 60 * 1000, 
+          res.cookie("token", token, {
+            httpOnly: true,
+            maxAge: 3 * 24 * 60 * 60 * 1000, 
       });
 
-      // notification t3 create
-      if (user.role === "student") {
-        await Notification.create({
-          studentId: user._id,
-          type: "info",
-          title: "Welcome 👋",
-          message: "You logged in successfully",
-        });
+          // 🔔 Create a login notification for students
+        if (user.role === "student") {
+          await Notification.create({
+            studentId: user._id,
+            type: "info",
+            title: "Welcome 👋",
+            message: "You logged in successfully",
+          });
       }
 
-      //  check role
-      if (user.role === "admin") {
-  return res.redirect("/App/AdminDashboard");
-} else if (user.role === "teacher") {
-  return res.redirect("/teacherDashboard/get");
-} else if (user.role === "student") {
-  return res.redirect("/studentDashboard/");
-} else {
-  return res.redirect("/login");
-}
+            // Redirect based on role
+          if (user.role === "admin") {
+              return res.redirect("/App/AdminDashboard");
+          } else if (user.role === "teacher") {
+                return res.redirect("/teacherDashboard/get");
+            } else if (user.role === "student") {
+                  return res.redirect("/studentDashboard/");
+              } else {
+                    return res.redirect("/login");
+              }
     }
   } catch (err) {
   console.log("ERROR LOGIN:", err.message);
   res.render("auth/login", { error: err.message });
 }
 };
-//  forgot password
+
+    // Forgot password
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -101,11 +106,11 @@ const resetPassword = async (req, res) => {
     await user.save();
 
     // 🔔 notification
-  await Notification.create({
-  studentId: user._id,
-  type: "info",
-  title: "Password changed 🔐",
-  message: "Your password has been updated successfully"
+    await Notification.create({
+    studentId: user._id,
+    type: "info",
+    title: "Password changed 🔐",
+    message: "Your password has been updated successfully"
 });
 
       res.redirect("/login?reset=success");

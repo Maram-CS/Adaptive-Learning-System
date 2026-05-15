@@ -1,9 +1,12 @@
 import jwt from "jsonwebtoken";
 
-const password = process.env.SECRET;
-
 const authRequest = (req,res,next)=>{
+   const password = process.env.SECRET;
+   if (!password) {
+      return res.status(500).json({message:"SECRET is missing in .env"});
+   }
 
+   // Get token from cookies
    const token = req.cookies.token;
 
    if(!token){
