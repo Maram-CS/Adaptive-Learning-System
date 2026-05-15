@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { getAllCourses } from "../Controller/favoriteCourseController.js";
+import authRequest from "../middleware/authMiddleware.js";
+import { getAllCourses, toggleFavorite } from "../Controller/favoriteCourseController.js";
 
 const favoriteCoursesRouter = Router();
 
-favoriteCoursesRouter.get("/All", getAllCourses);
+favoriteCoursesRouter.get("/All", authRequest, getAllCourses);
+favoriteCoursesRouter.post("/toggle", authRequest, toggleFavorite);
 
 export default favoriteCoursesRouter;

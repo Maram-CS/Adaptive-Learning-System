@@ -1,12 +1,10 @@
 import userModel from "../Model/userModel.js";
 import Notification from "../Model/notificationModel.js";
 import jwt from "jsonwebtoken";
-import {config} from "dotenv";
 import { render } from "ejs";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 
-config();
 
 const password = process.env.SECRET;
 const  createToken = (id, role)=> {
