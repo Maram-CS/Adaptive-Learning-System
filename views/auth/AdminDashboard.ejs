@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+        <!-- Makes the page responsive on all devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Eduphin</title>
+        <!-- Font Awesome library for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/Style/adminDashboard.css">
 </head>
 <body>
-
+ <!-- ================= SIDEBAR SECTION ================= -->
+    <!-- Contains logo, navigation menu, and logout button -->
 <div class="sidebar">
     <div class="logo">
         <i class="fas fa-graduation-cap"></i>
@@ -26,7 +29,7 @@
     </div>
     <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
 </div>
-
+ <!-- ==================== MAIN CONTENT ==================== -->
 <div class="main">
     <div class="main-header">
         <h1>Admin <span>Dashboard</span></h1>
@@ -35,13 +38,15 @@
 
     <!-- Dashboard Page -->
     <div id="dashboardPage">
+        <!-- ================= STATISTICS GRID ================= -->
         <div class="stats-grid" id="statsGrid">
+             <!-- Total Users Card -->
             <div class="stat-card"><div class="stat-info"><h3>Total Users</h3><div class="number" id="totalUsers">0</div></div><div class="stat-icon"><i class="fas fa-users"></i></div></div>
             <div class="stat-card"><div class="stat-info"><h3>Students</h3><div class="number" id="totalStudents">0</div></div><div class="stat-icon"><i class="fas fa-user-graduate"></i></div></div>
             <div class="stat-card"><div class="stat-info"><h3>Teachers</h3><div class="number" id="totalTeachers">0</div></div><div class="stat-icon"><i class="fas fa-chalkboard-user"></i></div></div>
             <div class="stat-card"><div class="stat-info"><h3>Total Courses</h3><div class="number" id="totalCourses">0</div></div><div class="stat-icon"><i class="fas fa-book"></i></div></div>
         </div>
-
+<!-- ================= ANALYTICS SECTION ================= -->
         <div class="analytics-card">
             <div class="analytics-header"><h3><i class="fas fa-chart-line"></i> System Analytics</h3></div>
             <div class="analytics-grid" id="analyticsGrid">
@@ -66,6 +71,7 @@
 </div>
 
 <!-- Add User Modal -->
+<!-- Popup window used to add a new user -->
 <div id="userModal" class="modal">
     <div class="modal-content">
         <h3>Add New User</h3>

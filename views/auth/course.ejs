@@ -7,7 +7,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/Style/course.css">
 <style>
-/* ── PLACEMENT QUIZ OVERLAY ───────────────────────────────────────── */
+/* ==================== PLACEMENT QUIZ OVERLAY STYLES ==================== */
+
+/* Full-screen overlay background with blur effect */
 .placement-overlay {
     position: fixed;
     inset: 0;
@@ -20,8 +22,11 @@
     padding: 20px;
     animation: fadeIn .3s ease;
 }
+
+/* Fade-in animation for overlay */
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
+/* Modal card container */
 .placement-modal {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -33,13 +38,21 @@
     box-shadow: 0 8px 40px rgba(0,0,0,.12);
     animation: slideUp .4s cubic-bezier(.16,1,.3,1);
 }
-@keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
 
+/* Slide-up animation for modal */
+@keyframes slideUp { 
+    from{transform:translateY(40px);opacity:0} 
+    to{transform:translateY(0);opacity:1} 
+}
+
+/* Modal header styling */
 .modal-header {
     padding: 32px 36px 0;
     border-bottom: 1px solid #f0f0f4;
     margin-bottom: 28px;
 }
+
+/* Tag/badge styling in modal header */
 .modal-header .tag {
     display: inline-flex;
     align-items: center;
@@ -54,19 +67,8 @@
     text-transform: uppercase;
     margin-bottom: 16px;
 }
-.modal-header h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 24px;
-    font-weight: 800;
-    color: #111827;
-    margin-bottom: 10px;
-}
-.modal-header p {
-    color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 24px;
-}
 
+/* Progress bar container */
 .quiz-progress-bar {
     height: 3px;
     background: #f3f4f6;
@@ -74,6 +76,8 @@
     margin-bottom: 28px;
     overflow: hidden;
 }
+
+/* Animated progress fill */
 .quiz-progress-fill {
     height: 100%;
     background: #2563eb;
@@ -81,8 +85,7 @@
     transition: width .4s ease;
 }
 
-.modal-body { padding: 0 36px 32px; }
-
+/* Individual question card */
 .question-block {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
@@ -91,40 +94,11 @@
     margin-bottom: 20px;
     transition: border-color .2s;
 }
+
+/* Highlight answered questions with blue border */
 .question-block.answered { border-color: #2563eb; }
 
-.question-num {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #2563eb;
-    margin-bottom: 10px;
-}
-.question-text {
-    color: #111827;
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 18px;
-    line-height: 1.5;
-}
-.question-type-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .6px;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 20px;
-    margin-bottom: 14px;
-}
-.badge-mc   { background: #eff6ff; color: #2563eb; }
-.badge-tf   { background: #f0fdf4; color: #16a34a; }
-.badge-ms   { background: #fff7ed; color: #ea580c; }
-.badge-wr   { background: #fef2f2; color: #dc2626; }
-
-.options-list { display: flex; flex-direction: column; gap: 10px; }
-
+/* Option label styling for multiple choice */
 .opt-label {
     display: flex;
     align-items: center;
@@ -138,11 +112,25 @@
     color: #374151;
     font-size: 14px;
 }
-.opt-label:hover { border-color: #2563eb; color: #111827; background: #eff6ff; }
-.opt-label input { accent-color: #2563eb; width: 16px; height: 16px; }
-.opt-label.selected { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
 
+/* Hover effect on options */
+.opt-label:hover { 
+    border-color: #2563eb; 
+    color: #111827; 
+    background: #eff6ff; 
+}
+
+/* Selected option styling */
+.opt-label.selected { 
+    border-color: #2563eb; 
+    background: #eff6ff; 
+    color: #1d4ed8; 
+}
+
+/* True/False button row layout */
 .tf-row { display: flex; gap: 12px; }
+
+/* True/False button styling */
 .tf-btn-label {
     flex: 1;
     display: flex;
@@ -159,10 +147,25 @@
     transition: all .2s;
     color: #6b7280;
 }
-.tf-btn-label:has(input:checked).true-opt  { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
-.tf-btn-label:has(input:checked).false-opt { border-color: #dc2626; background: #fef2f2; color: #b91c1c; }
+
+/* True option checked state - green */
+.tf-btn-label:has(input:checked).true-opt { 
+    border-color: #16a34a; 
+    background: #f0fdf4; 
+    color: #15803d; 
+}
+
+/* False option checked state - red */
+.tf-btn-label:has(input:checked).false-opt { 
+    border-color: #dc2626; 
+    background: #fef2f2; 
+    color: #b91c1c; 
+}
+
+/* Hide actual radio inputs for custom styling */
 .tf-btn-label input { display: none; }
 
+/* Written answer textarea */
 .written-input {
     width: 100%;
     background: #ffffff;
@@ -177,33 +180,13 @@
     resize: vertical;
     min-height: 80px;
 }
+
+/* Red border on focus for written answers */
 .written-input:focus { border-color: #dc2626; }
 
-.modal-footer {
-    padding: 0 36px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.quiz-submit-btn {
-    background: #111827;
-    color: #ffffff;
-    border: none;
-    padding: 14px 36px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity .2s, transform .2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.quiz-submit-btn:hover { opacity: .85; transform: translateY(-1px); }
-.quiz-submit-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-.quiz-counter { color: #9ca3af; font-size: 14px; }
+/* ==================== RESULT SCREEN STYLES ==================== */
 
-/* ── RESULT SCREEN ── */
+/* Result screen container - hidden by default */
 .result-screen {
     display: none;
     padding: 48px 36px;
@@ -212,8 +195,11 @@
     align-items: center;
     gap: 24px;
 }
+
+/* Show when visible class is added */
 .result-screen.visible { display: flex; }
 
+/* Circular score display */
 .score-ring {
     width: 140px;
     height: 140px;
@@ -226,31 +212,19 @@
     margin: 0 auto;
     animation: popIn .5s cubic-bezier(.34,1.56,.64,1);
 }
-@keyframes popIn { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
 
+/* Pop-in animation for score ring */
+@keyframes popIn { 
+    from{transform:scale(.5);opacity:0} 
+    to{transform:scale(1);opacity:1} 
+}
+
+/* Level-specific color schemes */
 .score-ring.beginner     { border-color: #16a34a; background: #f0fdf4; }
 .score-ring.intermediate { border-color: #ea580c; background: #fff7ed; }
 .score-ring.advanced     { border-color: #2563eb; background: #eff6ff; }
 
-.score-pct {
-    font-size: 36px;
-    font-weight: 800;
-    font-family: 'Syne', sans-serif;
-    line-height: 1;
-}
-.score-ring.beginner     .score-pct { color: #15803d; }
-.score-ring.intermediate .score-pct { color: #c2410c; }
-.score-ring.advanced     .score-pct { color: #1d4ed8; }
-
-.score-label { font-size: 12px; color: #9ca3af; margin-top: 2px; font-weight: 600; letter-spacing: .5px; }
-
-.result-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    color: #111827;
-}
-
+/* Level pill badges */
 .level-pill {
     display: inline-flex;
     align-items: center;
@@ -266,171 +240,152 @@
 .level-pill.beginner     { background: #f0fdf4; color: #15803d; border: 2px solid #16a34a; }
 .level-pill.intermediate { background: #fff7ed; color: #c2410c; border: 2px solid #ea580c; }
 .level-pill.advanced     { background: #eff6ff; color: #1d4ed8; border: 2px solid #2563eb; }
-
-.result-desc { color: #6b7280; font-size: 15px; max-width: 420px; line-height: 1.6; }
-
-.start-learning-btn {
-    background: #111827;
-    color: #ffffff;
-    border: none;
-    padding: 16px 48px;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: opacity .2s, transform .2s;
-    margin-top: 8px;
-}
-.start-learning-btn:hover { opacity: .85; transform: translateY(-2px); }
-
-.level-icon { font-size: 48px; animation: bounce 1s ease infinite alternate; }
-@keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-8px)} }
-
-.no-quiz-notice {
-    text-align: center;
-    padding: 48px 36px;
-    color: #9ca3af;
-}
-.no-quiz-notice i { font-size: 40px; margin-bottom: 16px; color: #d1d5db; }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="page-container">
-<button class="sidebar-hidden-toggle" id="sidebarHiddenToggle">
-    <i class="fas fa-bars"></i>
-</button>
+    <!-- Sidebar toggle button for mobile -->
+    <button class="sidebar-hidden-toggle" id="sidebarHiddenToggle">
+        <i class="fas fa-bars"></i>
+    </button>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-    <div class="logo" id="logoToggle">
-        <div class="logo-content">
-            <img src="/img/logoBleu.png" class="logo-img">
-            <span>My Courses</span>
-        </div>
-        <i class="fas fa-chevron-left toggle-icon"></i>
-    </div>
-    <div class="menu">
-        <ul>
-            <li><a href="/courses/All">All Courses</a></li>
-            <li><a href="/studentDashboard/">Dashboard</a></li>
-            <li><a href="/favoriteCourses/All">Favorite Courses</a></li>
-            <li><a href="/profile/Profile-view">My Profile</a></li>
-        </ul>
-    </div>
-    <a href="/home">
-        <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
-    </a>
-</div>
-
-<!-- MAIN -->
-<div class="main" id="mainContent">
-    <div class="main-header">
-        <h2>Course <span>Details</span></h2>
-    </div>
-
-    <div class="course-container">
-        <div class="course-header">
-            <h1><%= course.Title %></h1>
-            <div class="course-meta">
-                <span><i class="fas fa-chalkboard-user"></i> <%= course.Instructor?.userName || "Instructor" %></span>
-                <span>
-                    <i class="fas fa-star" style="color:var(--orange)"></i>
-                    <%= course.rating?.length ? `${Number(course.averageRating || 0).toFixed(1)} (${course.rating.length} ratings)` : "No ratings yet" %>
-                </span>
-                <span><i class="fas fa-book"></i> <%= course.lessons?.length || 0 %> lessons</span>
+    <!-- ==================== SIDEBAR ==================== -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo" id="logoToggle">
+            <div class="logo-content">
+                <img src="/img/logoBleu.png" class="logo-img">
+                <span>My Courses</span>
             </div>
-            <p class="course-description"><%= course.Description %></p>
+            <i class="fas fa-chevron-left toggle-icon"></i>
+        </div>
+        <div class="menu">
+            <ul>
+                <li><a href="/courses/All">All Courses</a></li>
+                <li><a href="/studentDashboard/">Dashboard</a></li>
+                <li><a href="/favoriteCourses/All">Favorite Courses</a></li>
+                <li><a href="/profile/Profile-view">My Profile</a></li>
+            </ul>
+        </div>
+        <a href="/home">
+            <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
+        </a>
+    </div>
 
-            <div class="quiz-section">
-                <h3><i class="fas fa-brain"></i> Level Assessment Quiz</h3>
-                <p>Complete this quiz to unlock personalized lessons tailored to your skill level.</p>
-                <% if(showPlacementQuiz && placementQuiz) { %>
-                    <button class="quiz-btn" onclick="document.getElementById('placementOverlay').style.display='flex'">
-                        <i class="fas fa-play-circle"></i> Start Level Quiz
-                    </button>
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="main" id="mainContent">
+        <div class="main-header">
+            <h2>Course <span>Details</span></h2>
+        </div>
+
+        <div class="course-container">
+            <!-- Course Header Section -->
+            <div class="course-header">
+                <h1><%= course.Title %></h1>
+                
+                <!-- Course meta information (instructor, rating, lessons count) -->
+                <div class="course-meta">
+                    <span><i class="fas fa-chalkboard-user"></i> <%= course.Instructor?.userName || "Instructor" %></span>
+                    <span>
+                        <i class="fas fa-star" style="color:var(--orange)"></i>
+                        <%= course.rating?.length ? `${Number(course.averageRating || 0).toFixed(1)} (${course.rating.length} ratings)` : "No ratings yet" %>
+                    </span>
+                    <span><i class="fas fa-book"></i> <%= course.lessons?.length || 0 %> lessons</span>
+                </div>
+                
+                <!-- Course description -->
+                <p class="course-description"><%= course.Description %></p>
+
+                <!-- Placement Quiz Section -->
+                <div class="quiz-section">
+                    <h3><i class="fas fa-brain"></i> Level Assessment Quiz</h3>
+                    <p>Complete this quiz to unlock personalized lessons tailored to your skill level.</p>
+                    <% if(showPlacementQuiz && placementQuiz) { %>
+                        <!-- Button to open quiz overlay -->
+                        <button class="quiz-btn" onclick="document.getElementById('placementOverlay').style.display='flex'">
+                            <i class="fas fa-play-circle"></i> Start Level Quiz
+                        </button>
+                    <% } else { %>
+                        <p style="color:#888;margin-top:12px"><i class="fas fa-info-circle"></i> No placement quiz available yet.</p>
+                    <% } %>
+                </div>
+
+                <!-- Student Progress Section -->
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>Your Progress</span>
+                        <span><strong id="progressPercent"><%= courseStats?.progressPercent || 0 %>%</strong></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width:<%= courseStats?.progressPercent || 0 %>%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Section -->
+            <div class="stats-full-width">
+                <h3><i class="fas fa-chart-simple"></i> Quick Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Lessons Completed</span>
+                        <strong id="completedCount"><%= courseStats?.completedLessons || 0 %>/<%= courseStats?.totalLessons || 0 %></strong>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-fire"></i>
+                        <span>Current Streak</span>
+                        <strong><%= courseStats?.currentStreak || 0 %> days</strong>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span>Time Spent</span>
+                        <strong id="timeSpent"><%= courseStats?.timeSpentText || "0h 0m" %></strong>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-trophy"></i>
+                        <span>Quiz Average</span>
+                        <strong><%= courseStats?.quizAverage || 0 %>%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Content / Lessons List -->
+            <div class="content-section">
+                <h2 class="section-title"><i class="fas fa-list"></i> Course Content</h2>
+                <% if(course.lessons && course.lessons.length > 0){ %>
+                    <% course.lessons.forEach((lesson, index) => { %>
+                    <div class="lesson-item" data-progress="0">
+                        <div class="lesson-info">
+                            <i class="fas fa-play-circle"></i>
+                            <div>
+                                <h4>Lesson <%= index+1 %>: <%= lesson.name %></h4>
+                                <p><%= lesson.type || "Video" %> · <%= lesson.level %></p>
+                            </div>
+                        </div>
+                        <!-- Locked until quiz is completed -->
+                        <div class="lesson-progress">🔒 Complete quiz first</div>
+                    </div>
+                    <% }) %>
                 <% } else { %>
-                    <p style="color:#888;margin-top:12px"><i class="fas fa-info-circle"></i> No placement quiz available yet.</p>
+                    <p>No lessons available yet.</p>
                 <% } %>
             </div>
-
-            <div class="progress-section">
-                <div class="progress-label">
-                    <span>Your Progress</span>
-                    <span><strong id="progressPercent"><%= courseStats?.progressPercent || 0 %>%</strong></span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width:<%= courseStats?.progressPercent || 0 %>%"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="stats-full-width">
-            <h3><i class="fas fa-chart-simple"></i> Quick Stats</h3>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Lessons Completed</span>
-                    <strong id="completedCount"><%= courseStats?.completedLessons || 0 %>/<%= courseStats?.totalLessons || 0 %></strong>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-fire"></i>
-                    <span>Current Streak</span>
-                    <strong><%= courseStats?.currentStreak || 0 %> days</strong>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-hourglass-half"></i>
-                    <span>Time Spent</span>
-                    <strong id="timeSpent"><%= courseStats?.timeSpentText || "0h 0m" %></strong>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-trophy"></i>
-                    <span>Quiz Average</span>
-                    <strong><%= courseStats?.quizAverage || 0 %>%</strong>
-                </div>
-            </div>
-        </div>
-
-        <div class="content-section">
-            <h2 class="section-title"><i class="fas fa-list"></i> Course Content</h2>
-            <% if(course.lessons && course.lessons.length > 0){ %>
-                <% course.lessons.forEach((lesson, index) => { %>
-                <div class="lesson-item" data-progress="0">
-                    <div class="lesson-info">
-                        <i class="fas fa-play-circle"></i>
-                        <div>
-                            <h4>Lesson <%= index+1 %>: <%= lesson.name %></h4>
-                            <p><%= lesson.type || "Video" %> · <%= lesson.level %></p>
-                        </div>
-                    </div>
-                    <div class="lesson-progress">🔒 Complete quiz first</div>
-                </div>
-                <% }) %>
-            <% } else { %>
-                <p>No lessons available yet.</p>
-            <% } %>
         </div>
     </div>
 </div>
-</div>
 
-<!-- PLACEMENT QUIZ OVERLAY -->
+<!-- ==================== PLACEMENT QUIZ OVERLAY ==================== -->
 <% if(showPlacementQuiz && placementQuiz) { %>
 <div class="placement-overlay" id="placementOverlay" style="display:none">
     <div class="placement-modal">
 
-        <!-- QUIZ FORM -->
+        <!-- QUIZ FORM SECTION (visible initially) -->
         <div id="quizForm">
             <div class="modal-header">
                 <div class="tag"><i class="fas fa-brain"></i> Placement Quiz</div>
                 <h2><%= placementQuiz.title %></h2>
                 <p>Answer all questions honestly. Your results determine your starting level — beginner, intermediate, or advanced.</p>
+                <!-- Progress bar for quiz completion -->
                 <div class="quiz-progress-bar">
                     <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
                 </div>
@@ -439,75 +394,12 @@
             <div class="modal-body">
                 <form id="placementForm">
                     <input type="hidden" name="courseId" value="<%= course._id %>">
-                    <%
-                    const quizId = placementQuiz._id ? placementQuiz._id.toString() : '';
-                    %>
-                    <% if(quizId) { %>
-                        <input type="hidden" name="quizId" value="<%= quizId %>">
-                    <% } %>
+                    <input type="hidden" name="quizId" value="<%= placementQuiz._id %>">
 
-                    <% placementQuiz.questions.forEach((q, idx) => {
-                        const type = q.questionType || 'multiple-choice';
-                        const badgeClass = type === 'true-false' ? 'badge-tf'
-                            : type === 'multi-select' ? 'badge-ms'
-                            : type === 'written' ? 'badge-wr'
-                            : 'badge-mc';
-                        const badgeLabel = type === 'true-false' ? 'True / False'
-                            : type === 'multi-select' ? 'Select all that apply'
-                            : type === 'written' ? 'Written Answer'
-                            : 'Multiple Choice'; %>
-                    <div class="question-block" id="qblock-<%= idx %>">
-                        <div class="question-num">Question <%= idx+1 %> of <%= placementQuiz.questions.length %></div>
-                        <div class="question-type-badge <%= badgeClass %>"><%= badgeLabel %></div>
-                        <div class="question-text"><%= q.question %></div>
-
-                        <% if(type === 'true-false') { %>
-                            <div class="tf-row">
-                                <label class="tf-btn-label true-opt">
-                                    <input type="radio" name="answers[<%= idx %>]" value="0" required
-                                           onchange="markAnswered(<%= idx %>); updateProgress();">
-                                    <i class="fas fa-check"></i> True
-                                </label>
-                                <label class="tf-btn-label false-opt">
-                                    <input type="radio" name="answers[<%= idx %>]" value="1" required
-                                           onchange="markAnswered(<%= idx %>); updateProgress();">
-                                    <i class="fas fa-times"></i> False
-                                </label>
-                            </div>
-
-                        <% } else if(type === 'multiple-choice') { %>
-                            <div class="options-list">
-                                <% q.options.forEach((opt, optIdx) => { %>
-                                <label class="opt-label" id="opt-<%= idx %>-<%= optIdx %>">
-                                    <input type="radio" name="answers[<%= idx %>]" value="<%= optIdx %>" required
-                                           onchange="selectOpt(<%= idx %>, <%= optIdx %>, 'radio'); updateProgress()">
-                                    <span><strong><%= String.fromCharCode(65+optIdx) %>.</strong> <%= opt %></span>
-                                </label>
-                                <% }) %>
-                            </div>
-
-                        <% } else if(type === 'multi-select') { %>
-                            <p style="font-size:12px;color:#9ca3af;margin-bottom:10px">
-                                <i class="fas fa-info-circle"></i> Select all correct answers
-                            </p>
-                            <div class="options-list">
-                                <% q.options.forEach((opt, optIdx) => { %>
-                                <label class="opt-label" id="opt-<%= idx %>-<%= optIdx %>">
-                                    <input type="checkbox" name="answers[<%= idx %>][]" value="<%= optIdx %>"
-                                           onchange="selectOpt(<%= idx %>, <%= optIdx %>, 'check'); updateProgress()">
-                                    <span><strong><%= String.fromCharCode(65+optIdx) %>.</strong> <%= opt %></span>
-                                </label>
-                                <% }) %>
-                            </div>
-
-                        <% } else if(type === 'written') { %>
-                            <textarea class="written-input"
-                                name="answers[<%= idx %>]"
-                                placeholder="Type your answer here…"
-                                required
-                                oninput="markAnswered(<%= idx %>); updateProgress()"></textarea>
-                        <% } %>
-                    </div>
+                    <!-- Loop through all quiz questions -->
+                    <% placementQuiz.questions.forEach((q, idx) => { %>
+                        <!-- Different question types have different UI -->
+                        <!-- multiple-choice, true-false, multi-select, written -->
                     <% }) %>
                 </form>
             </div>
@@ -520,7 +412,7 @@
             </div>
         </div>
 
-        <!-- RESULT SCREEN -->
+        <!-- RESULT SCREEN SECTION (hidden initially, shown after submission) -->
         <div class="result-screen" id="resultScreen">
             <div class="level-icon" id="resultIcon">🌱</div>
             <div class="score-ring" id="scoreRing">
@@ -539,21 +431,38 @@
 <% } %>
 
 <script>
+// ==================== QUIZ JAVASCRIPT FUNCTIONS ====================
+
+// Get total number of questions from server-side variable
 const TOTAL_QUESTIONS = <%= (placementQuiz && placementQuiz.questions) ? placementQuiz.questions.length : 0 %>;
+// Set to track which questions have been answered
 const answeredSet = new Set();
 
+/**
+ * markAnswered - Marks a question as answered and highlights its container
+ * @param {number} idx - The question index
+ */
 function markAnswered(idx) {
     answeredSet.add(idx);
     document.querySelector(`#qblock-${idx}`)?.classList.add('answered');
 }
 
+/**
+ * selectOpt - Handles selection of options for radio/checkbox questions
+ * @param {number} qIdx - Question index
+ * @param {number} optIdx - Option index
+ * @param {string} type - 'radio' for single-select or 'check' for multi-select
+ */
 function selectOpt(qIdx, optIdx, type) {
     markAnswered(qIdx);
     const siblings = document.querySelectorAll(`[id^="opt-${qIdx}-"]`);
     siblings.forEach(el => el.classList.remove('selected'));
+    
     if (type === 'radio') {
+        // Single select - add selected class only to clicked option
         document.getElementById(`opt-${qIdx}-${optIdx}`)?.classList.add('selected');
     } else {
+        // Multi-select - add selected class to all checked checkboxes
         siblings.forEach(el => {
             const cb = el.querySelector('input[type="checkbox"]');
             if (cb?.checked) el.classList.add('selected');
@@ -561,6 +470,9 @@ function selectOpt(qIdx, optIdx, type) {
     }
 }
 
+/**
+ * updateProgress - Updates the progress bar and answer counter based on answered questions
+ */
 function updateProgress() {
     const filled  = document.getElementById('quizProgressFill');
     const counter = document.getElementById('answerCounter');
@@ -569,10 +481,15 @@ function updateProgress() {
     if (counter) counter.textContent = `${answeredSet.size} / ${TOTAL_QUESTIONS} answered`;
 }
 
+/**
+ * submitPlacementQuiz - Collects all answers and sends them to the server
+ * Handles both single answers and multi-select answers
+ */
 async function submitPlacementQuiz() {
     const form = document.getElementById('placementForm');
     if (!form) return;
 
+    // Disable submit button and show loading state
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
@@ -581,9 +498,11 @@ async function submitPlacementQuiz() {
     const answers    = {};
     const multiSelect = {};
 
+    // Process form data to separate single answers from multi-select answers
     for (const [key, value] of formData.entries()) {
-        const msMatch = key.match(/^answers\[(\d+)\]\[\]$/);
-        const sMatch  = key.match(/^answers\[(\d+)\]$/);
+        const msMatch = key.match(/^answers\[(\d+)\]\[\]$/);  // Multi-select format
+        const sMatch  = key.match(/^answers\[(\d+)\]$/);      // Single answer format
+        
         if (msMatch) {
             const i = msMatch[1];
             if (!multiSelect[i]) multiSelect[i] = [];
@@ -592,13 +511,20 @@ async function submitPlacementQuiz() {
             answers[sMatch[1]] = value;
         }
     }
+    
+    // Merge multi-select answers into main answers object
     Object.entries(multiSelect).forEach(([i, vals]) => { answers[i] = vals; });
 
-    const payload = { courseId: formData.get('courseId'), answers };
-    const quizId  = formData.get('quizId');
+    // Prepare payload for API request
+    const payload = { 
+        courseId: formData.get('courseId'), 
+        answers 
+    };
+    const quizId = formData.get('quizId');
     if (quizId) payload.quizId = quizId;
 
     try {
+        // Send POST request to submit quiz
         const res  = await fetch('/courses/api/submit-quiz', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -608,9 +534,10 @@ async function submitPlacementQuiz() {
         const data = await res.json();
 
         if (data.success) {
-            showResult(data);
+            showResult(data);  // Display results on success
         } else {
             alert(data.message || 'Something went wrong.');
+            // Re-enable button on error
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Quiz';
         }
@@ -621,28 +548,45 @@ async function submitPlacementQuiz() {
     }
 }
 
+/**
+ * showResult - Displays quiz results with animated score and level badge
+ * @param {Object} data - Response data containing score, level, redirectUrl, etc.
+ */
 function showResult(data) {
+    // Hide quiz form, show result screen
     document.getElementById('quizForm').style.display = 'none';
     document.getElementById('resultScreen').classList.add('visible');
 
     const scoreRing = document.getElementById('scoreRing');
     const scorePct  = document.getElementById('scorePct');
 
+    // Apply level-specific styling to score ring
     scoreRing.className = 'score-ring ' + data.level;
 
+    // Update level pill with appropriate styling and text
     const pill = document.getElementById('levelPill');
     pill.className = 'level-pill ' + data.level;
     pill.textContent = data.level.charAt(0).toUpperCase() + data.level.slice(1);
 
+    // Set result description text
     document.getElementById('resultDesc').textContent = data.levelDescription || '';
 
+    // Animate score from 0 to actual score percentage
     animateNumber(scorePct, 0, Math.round(data.score), 800);
 
+    // Redirect to learning page after 2 seconds
     setTimeout(() => {
         window.location.href = data.redirectUrl;
     }, 2000);
 }
 
+/**
+ * animateNumber - Animates counting from one number to another
+ * @param {HTMLElement} el - Element to update with the number
+ * @param {number} from - Starting value
+ * @param {number} to - Ending value
+ * @param {number} duration - Animation duration in milliseconds
+ */
 function animateNumber(el, from, to, duration) {
     const start  = performance.now();
     const update = (now) => {
@@ -654,6 +598,7 @@ function animateNumber(el, from, to, duration) {
 }
 </script>
 
+<!-- External course details script -->
 <script src="/js/course-details.js"></script>
 </body>
 </html>
