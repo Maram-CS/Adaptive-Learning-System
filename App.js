@@ -1,7 +1,9 @@
+import "./env.js";
+
+import UserDB from "./ConfigDB/userDB.js";
 import RouterLogin from "./Router/userRouter.js";
 import AppRouter from "./Router/appRouter.js";
 import express from "express";
-import dotenv from "dotenv";
 import { join } from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -17,7 +19,9 @@ import adminRouter from "./Router/AdminRouter.js";
 import notificationRoutes from "./Router/notificationRoutes.js";
 import quizRouter from "./Router/quizRouter.js";
 
-dotenv.config();
+
+const userDB = process.env.NAME_DB;        
+UserDB(userDB); 
 
 const App = express();
 const PORT = process.env.PORT || 1000;

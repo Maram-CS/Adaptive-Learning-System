@@ -44,7 +44,7 @@
                     <a href="/App/notifications" class="notif-btn">
                         <button class="icon-btn">🔔<span class="notif-badge">0</span></button>
                     </a>
-                    <button class="icon-btn">💬</button>
+                    <button class="icon-btn" id="chatBtn">💬</button>
                     <a href="/profile/Profile-view"><button class="icon-btn">👤</button></a>
                 </div>
             </div>
@@ -107,6 +107,13 @@
 
     function continueLesson(lessonTitle, courseTitle) {
         showToast(`📚 Continuing: ${lessonTitle} from ${courseTitle}`);
+    }
+
+    function continueCourse(courseId, courseTitle) {
+        showToast(`📚 Continuing ${courseTitle}`);
+        setTimeout(() => {
+            window.location.href = `/studentDashboard/course/${courseId}`;
+        }, 120);
     }
 
     function animateNumbers() {
@@ -246,7 +253,7 @@
                         <div class="course-header"><div class="course-title"><i class="${course.icon}"></i> <strong>${course.title}</strong></div><div class="course-progress-badge">${course.overallProgress}%</div></div>
                         <div class="progress-bar"><div class="progress-fill" style="width: ${course.overallProgress}%"></div></div>
                         <div class="last-lesson"><i class="fas fa-clock"></i> Last: ${course.lastLesson} — ${course.lastLessonTime} min left</div>
-                        <div class="course-actions"><button class="continue-btn" onclick="event.stopPropagation(); showToast('📚 Continue ${course.title}')"><i class="fas fa-play"></i> Continue Course</button><i id="expand-icon-${course.id}" class="fas fa-chevron-right expand-icon"></i></div>
+                        <div class="course-actions"><a class="continue-btn" href="/studentDashboard/course/${course.id}" onclick="event.stopPropagation();"><i class="fas fa-play"></i> Continue Course</a><i id="expand-icon-${course.id}" class="fas fa-chevron-right expand-icon"></i></div>
                         <div id="lessons-${course.id}" class="lessons-container">
                             <div class="lessons-header"><i class="fas fa-list"></i> Lessons in this course</div>
                             ${course.lessons.map(lesson => `
@@ -323,6 +330,16 @@ function resetCode() {
         loadDashboard();
     });
 </script>
+<script src="//code.tidio.co/ihlzjyy4poj2j2yjxbswichcqxzfdlfk.js" async></script>
+<script>
+document.addEventListener('tidioChat-ready', function () {
+    const chatBtn = document.getElementById('chatBtn');
+    if (chatBtn) {
+        chatBtn.addEventListener('click', function () {
+            window.tidioChatApi.open();
+        });
+    }
+});
 </script>
 <script src="/js/notifications.js"></script>
 </body>

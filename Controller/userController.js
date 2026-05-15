@@ -1,16 +1,7 @@
 import userModel from "../Model/userModel.js";
-import UserDB from "../ConfigDB/userDB.js";
 import profileModel from "../Model/profileModel.js";
 import courseModel from "../Model/courseModel.js";
 import ProgressModel from "../Model/Progress.js";
-import { config } from "dotenv";
-
-config();
-
-const userDB = process.env.NAME_DB;
-UserDB(userDB);
-
-
 
 // add user function
 const addUser = async (req, res, next) => {
