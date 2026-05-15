@@ -6,15 +6,12 @@
     <title>Student Dashboard | Adaptive Learning Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/Style/dashboard.css">
-    
-        
-        
 </head>
 <body>
 
 <div class="page-container">
 
-    <!-- SIDEBAR -->
+    <!-- ==================== SIDEBAR ==================== -->
     <div class="sidebar">
         <div class="logo">
             <img src="/img/logoBleu.png" class="logo-img" alt="logo">
@@ -28,58 +25,72 @@
                 <li><a href="/profile/Profile-view">My Profile</a></li>
             </ul>
         </div>
-        <br><br><br><br><br><br><br><br>
-        <a href="/home"><button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button></a>
+        <!-- Logout button -->
+        <a href="/home">
+            <button class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign out</button>
+        </a>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- ==================== MAIN CONTENT ==================== -->
     <div class="main">
 
-        <!-- HEADER -->
+        <!-- HEADER with search and user actions -->
         <div class="main-header">
             <h2>Student <span>Dashboard</span></h2>
             <div class="header-actions">
+                <!-- Search input -->
                 <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
                 <div class="buttons">
+                    <!-- Notification button with badge -->
                     <a href="/App/notifications" class="notif-btn">
                         <button class="icon-btn">🔔<span class="notif-badge">0</span></button>
                     </a>
+                    <!-- Chat button (opens Tidio) -->
                     <button class="icon-btn" id="chatBtn">💬</button>
+                    <!-- Profile button -->
                     <a href="/profile/Profile-view"><button class="icon-btn">👤</button></a>
                 </div>
             </div>
         </div>
 
-        <!-- DASHBOARD CONTENT -->
+        <!-- ==================== DYNAMIC DASHBOARD CONTENT ==================== -->
         <div id="dashboard-container">
             <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading your dashboard...</div>
         </div>
-<!-- ========== CODE PLAYGROUND SECTION ========== -->
-<div class="dashboard-card">
-  <div class="card-header">
-    <i class="fas fa-laptop-code"></i>
-    <h3>Live Code Editor</h3>
-  </div>
-  <p style="color: #555; margin-bottom: 15px;">
-    Write, run, and experiment with HTML, CSS, and JavaScript directly in your browser.
-  </p>
 
-  <div class="code-playground">
-    <textarea id="htmlCode" rows="8" placeholder='Write your HTML/CSS/JS code here...'>
+        <!-- ==================== CODE PLAYGROUND SECTION ==================== -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <i class="fas fa-laptop-code"></i>
+                <h3>Live Code Editor</h3>
+            </div>
+            <p style="color: #555; margin-bottom: 15px;">
+                Write, run, and experiment with HTML, CSS, and JavaScript directly in your browser.
+            </p>
+
+            <div class="code-playground">
+                <!-- Code editor textarea -->
+                <textarea id="htmlCode" rows="8" placeholder='Write your HTML/CSS/JS code here...'>
 <h2 style="color: #2b7de9;">Hello, Eduphin! 🚀</h2>
 <p>This is my first live code.</p>
 <button onclick="alert('🎉 You clicked!')">Click me</button>
-    </textarea>
-    <div class="code-actions">
-      <button id="runCodeBtn" onclick="runLiveCode()">▶️ Run Code</button>
-      <button id="resetCodeBtn" onclick="resetCode()">⟳ Reset</button>
-    </div>
-    <div class="live-result">
-      <strong>📱 Result:</strong>
-      <iframe id="liveResult" class="result-frame" title="Live Code Preview" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"></iframe>
-    </div>
-  </div>
-</div>
+                </textarea>
+                
+                <!-- Action buttons -->
+                <div class="code-actions">
+                    <button id="runCodeBtn" onclick="runLiveCode()">▶️ Run Code</button>
+                    <button id="resetCodeBtn" onclick="resetCode()">⟳ Reset</button>
+                </div>
+                
+                <!-- Live preview iframe -->
+                <div class="live-result">
+                    <strong>📱 Result:</strong>
+                    <iframe id="liveResult" class="result-frame" title="Live Code Preview" 
+                            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"></iframe>
+                </div>
+            </div>
+        </div>
+
         <!-- FOOTER -->
         <div class="footer">© 2026 Eduphin. All rights reserved.</div>
 
@@ -88,6 +99,7 @@
 
 <script>
 
+    // ==================== TOAST NOTIFICATION ====================
     function showToast(message) {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -96,6 +108,8 @@
         setTimeout(() => toast.remove(), 2500);
     }
 
+    // ==================== COURSE LESSONS TOGGLE ====================
+   
     function toggleLessons(courseId) {
         const lessonsDiv = document.getElementById(`lessons-${courseId}`);
         const icon = document.getElementById(`expand-icon-${courseId}`);
@@ -105,6 +119,8 @@
         }
     }
 
+    // ==================== LESSON NAVIGATION ====================
+    
     function continueLesson(lessonTitle, courseTitle) {
         showToast(`📚 Continuing: ${lessonTitle} from ${courseTitle}`);
     }
@@ -116,31 +132,42 @@
         }, 120);
     }
 
+    // ==================== ANIMATED COUNTERS ====================
+    
     function animateNumbers() {
         document.querySelectorAll('.stat-number').forEach(el => {
             const rawTarget = el.getAttribute('data-target');
             const target = Number(rawTarget);
             if (!rawTarget || Number.isNaN(target)) return;
+            
             let current = 0;
-            const increment = target / 50;
+            const increment = target / 50;  // Divide animation into 50 steps
             const updateNumber = () => {
                 current += increment;
-                if (current < target) { el.textContent = Math.floor(current); requestAnimationFrame(updateNumber); }
-                else el.textContent = target;
+                if (current < target) {
+                    el.textContent = Math.floor(current);
+                    requestAnimationFrame(updateNumber);
+                } else {
+                    el.textContent = target;
+                }
             };
             updateNumber();
         });
     }
 
+    // ==================== LEADERBOARD FETCH ====================
+    
     async function fetchLeaderboard() {
         try {
             const response = await fetch(`/studentDashboard/leaderboard`, { credentials: "include" });
             const data = await response.json();
             return data.success ? data.leaderboard : [];
-        } catch { return []; }
+        } catch { 
+            return []; 
+        }
     }
 
-    // ── NEW: fetch real recommendations from the backend ──────────────────────
+    // ==================== SMART RECOMMENDATIONS ====================
     async function fetchSmartRecommendations() {
         try {
             const response = await fetch(`/studentDashboard/recommendations`, { credentials: "include" });
@@ -151,16 +178,24 @@
         }
     }
 
-    // ── Render a recommendation item ──────────────────────────────────────────
+    
     function renderRecommendation(rec) {
-        // Badge colour by mistake count
+        // Determine badge color based on mistake count
         let badgeClass = "success";
         let badgeText  = "✓ Good to review";
-        if (rec.count >= 4) { badgeClass = "danger"; badgeText = `⚠️ ${rec.count} mistakes`; }
-        else if (rec.count >= 2) { badgeClass = "";      badgeText = `${rec.count} mistakes`; }
-        else if (rec.count === 1) { badgeClass = "success"; badgeText = "1 mistake"; }
+        
+        if (rec.count >= 4) { 
+            badgeClass = "danger"; 
+            badgeText = `⚠️ ${rec.count} mistakes`; 
+        } else if (rec.count >= 2) { 
+            badgeClass = "";      
+            badgeText = `${rec.count} mistakes`; 
+        } else if (rec.count === 1) { 
+            badgeClass = "success"; 
+            badgeText = "1 mistake"; 
+        }
 
-        // If it's the motivational default (no quiz taken yet)
+        // Special case: motivational message when no quiz taken yet
         if (rec.count === 0) {
             return `
                 <li onclick="showToast('Complete a quiz to unlock your personal study plan!')">
@@ -183,12 +218,13 @@
             </li>`;
     }
 
+    // ==================== LOAD DASHBOARD ====================
     async function loadDashboard() {
         const container = document.getElementById('dashboard-container');
         container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading your dashboard...</div>';
 
         try {
-            // Fetch all 3 data sources in parallel
+            // Fetch all 3 data sources in parallel for better performance
             const [dashboardRes, leaderboard, recommendations] = await Promise.all([
                 fetch(`/studentDashboard/get`, { credentials: "include" }).then(r => r.json()),
                 fetchLeaderboard(),
@@ -200,19 +236,34 @@
             renderDashboard(dashboardRes, leaderboard, recommendations);
         } catch (error) {
             console.error("Error:", error);
-            container.innerHTML = `<div class="error">❌ Failed to load dashboard. <button onclick="loadDashboard()" style="margin-top:10px;padding:8px 20px;background:#2b7de9;color:white;border:none;border-radius:20px;">Retry</button></div>`;
+            container.innerHTML = `
+                <div class="error">
+                    ❌ Failed to load dashboard. 
+                    <button onclick="loadDashboard()" style="margin-top:10px;padding:8px 20px;background:#2b7de9;color:white;border:none;border-radius:20px;">
+                        Retry
+                    </button>
+                </div>`;
         }
     }
+
 
     function renderDashboard(data, leaderboard, recommendations) {
         const { userData, courses, completedLessons, totalLessons, avgProgress } = data;
         const container = document.getElementById('dashboard-container');
 
+        // Generate recommendations HTML
         const recommendationsHTML = recommendations.length > 0
             ? recommendations.map(renderRecommendation).join('')
-            : `<li><span class="rec-icon"><i class="fas fa-rocket"></i></span><div class="rec-body"><div class="rec-topic">All good!</div><div class="rec-message">No weak spots found yet. Keep learning!</div></div></li>`;
+            : `<li><span class="rec-icon"><i class="fas fa-rocket"></i></span>
+                <div class="rec-body">
+                    <div class="rec-topic">All good!</div>
+                    <div class="rec-message">No weak spots found yet. Keep learning!</div>
+                </div>
+               </li>`;
 
+        // Main dashboard HTML structure
         container.innerHTML = `
+            <!-- Welcome Card with streak badge -->
             <div class="welcome-card">
                 <div class="welcome-text">
                     <h1><i class="fas fa-smile-wink"></i> Hello, ${userData.firstName}!</h1>
@@ -223,7 +274,9 @@
                 </div>
             </div>
 
+            <!-- Two column grid: Progress + Recommendations -->
             <div class="dashboard-grid-2">
+                <!-- Overall Progress Card -->
                 <div class="dashboard-card">
                     <div class="card-header"><i class="fas fa-chart-line"></i><h3>Overall Progress</h3></div>
                     <div class="progress-label"><span>All Courses</span><span><strong>${avgProgress}%</strong></span></div>
@@ -231,6 +284,7 @@
                     <p><i class="fas fa-check-circle"></i> ${completedLessons}/${totalLessons} lessons completed</p>
                 </div>
 
+                <!-- Smart Recommendations Card -->
                 <div class="dashboard-card">
                     <div class="card-header"><i class="fas fa-lightbulb"></i><h3>Smart Recommendations</h3></div>
                     <ul class="recommendations-list">
@@ -239,28 +293,59 @@
                 </div>
             </div>
 
+            <!-- Statistics Grid (4 cards) -->
             <div class="stats-grid">
-                <div class="stat-card" onclick="showToast('📖 ${completedLessons} lessons completed')"><i class="fas fa-book-open"></i><div class="stat-number" data-target="${completedLessons}">0</div><div class="stat-label">Lessons Done</div></div>
-                <div class="stat-card" onclick="showToast('🔥 ${userData.streakDays}-day streak!')"><i class="fas fa-fire"></i><div class="stat-number" data-target="${userData.streakDays}">0</div><div class="stat-label">Day Streak</div></div>
-                <div class="stat-card" onclick="showToast('${userData.totalLearningDisplay}')"><i class="fas fa-hourglass-half"></i><div class="stat-number">${userData.totalLearningDisplay}</div><div class="stat-label">Learning Time</div></div>
-                <div class="stat-card" onclick="showToast('📊 ${userData.quizAverage}% average')"><i class="fas fa-chart-simple"></i><div class="stat-number" data-target="${userData.quizAverage}">0</div><div class="stat-label">Quiz Average</div></div>
+                <div class="stat-card" onclick="showToast('📖 ${completedLessons} lessons completed')">
+                    <i class="fas fa-book-open"></i>
+                    <div class="stat-number" data-target="${completedLessons}">0</div>
+                    <div class="stat-label">Lessons Done</div>
+                </div>
+                <div class="stat-card" onclick="showToast('🔥 ${userData.streakDays}-day streak!')">
+                    <i class="fas fa-fire"></i>
+                    <div class="stat-number" data-target="${userData.streakDays}">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card" onclick="showToast('${userData.totalLearningDisplay}')">
+                    <i class="fas fa-hourglass-half"></i>
+                    <div class="stat-number">${userData.totalLearningDisplay}</div>
+                    <div class="stat-label">Learning Time</div>
+                </div>
+                <div class="stat-card" onclick="showToast('📊 ${userData.quizAverage}% average')">
+                    <i class="fas fa-chart-simple"></i>
+                    <div class="stat-number" data-target="${userData.quizAverage}">0</div>
+                    <div class="stat-label">Quiz Average</div>
+                </div>
             </div>
 
+            <!-- My Courses Section (expandable course cards) -->
             <div class="dashboard-card courses-section">
                 <div class="card-header"><i class="fas fa-graduation-cap"></i><h3>My Courses (${courses.length})</h3></div>
                 ${courses.map(course => `
                     <div class="course-card" onclick="toggleLessons(${course.id})">
-                        <div class="course-header"><div class="course-title"><i class="${course.icon}"></i> <strong>${course.title}</strong></div><div class="course-progress-badge">${course.overallProgress}%</div></div>
+                        <div class="course-header">
+                            <div class="course-title"><i class="${course.icon}"></i> <strong>${course.title}</strong></div>
+                            <div class="course-progress-badge">${course.overallProgress}%</div>
+                        </div>
                         <div class="progress-bar"><div class="progress-fill" style="width: ${course.overallProgress}%"></div></div>
                         <div class="last-lesson"><i class="fas fa-clock"></i> Last: ${course.lastLesson} — ${course.lastLessonTime} min left</div>
-                        <div class="course-actions"><a class="continue-btn" href="/studentDashboard/course/${course.id}" onclick="event.stopPropagation();"><i class="fas fa-play"></i> Continue Course</a><i id="expand-icon-${course.id}" class="fas fa-chevron-right expand-icon"></i></div>
+                        <div class="course-actions">
+                            <a class="continue-btn" href="/studentDashboard/course/${course.id}" onclick="event.stopPropagation();">
+                                <i class="fas fa-play"></i> Continue Course
+                            </a>
+                            <i id="expand-icon-${course.id}" class="fas fa-chevron-right expand-icon"></i>
+                        </div>
                         <div id="lessons-${course.id}" class="lessons-container">
                             <div class="lessons-header"><i class="fas fa-list"></i> Lessons in this course</div>
                             ${course.lessons.map(lesson => `
                                 <div class="lesson-item" onclick="event.stopPropagation(); continueLesson('${lesson.title}', '${course.title}')">
-                                    <div class="lesson-title"><span><i class="${lesson.icon}"></i> <strong>${lesson.title}</strong></span>${lesson.completed ? '<span class="completed-badge"><i class="fas fa-check"></i> Done</span>' : `<span>${lesson.progress}%</span>`}</div>
+                                    <div class="lesson-title">
+                                        <span><i class="${lesson.icon}"></i> <strong>${lesson.title}</strong></span>
+                                        ${lesson.completed ? '<span class="completed-badge"><i class="fas fa-check"></i> Done</span>' : `<span>${lesson.progress}%</span>`}
+                                    </div>
                                     <div class="progress-bar"><div class="progress-fill" style="width: ${lesson.progress}%"></div></div>
-                                    ${!lesson.completed ? `<button class="small-continue-btn" onclick="event.stopPropagation(); continueLesson('${lesson.title}', '${course.title}')"><i class="fas fa-play"></i> ${lesson.progress > 0 ? 'Continue' : 'Start'} Lesson</button>` : ''}
+                                    ${!lesson.completed ? `<button class="small-continue-btn" onclick="event.stopPropagation(); continueLesson('${lesson.title}', '${course.title}')">
+                                        <i class="fas fa-play"></i> ${lesson.progress > 0 ? 'Continue' : 'Start'} Lesson
+                                    </button>` : ''}
                                 </div>
                             `).join('')}
                         </div>
@@ -268,79 +353,111 @@
                 `).join('')}
             </div>
 
+            <!-- Two column grid: Leaderboard + Today's Learning Path -->
             <div class="dashboard-grid-2">
-                <div class="dashboard-card"><div class="card-header"><i class="fas fa-trophy"></i><h3>Weekly Leaderboard</h3></div>
-                    <table class="leaderboard-table"><thead><tr><th>Rank</th><th>Student</th><th>Points</th></tr></thead><tbody>
-                    ${leaderboard.map((item, idx) => `<tr onclick="showToast('${item.name}: ${item.points} pts')"><td>${idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':idx+1}</td><td><strong>${item.name}</strong></td><td>${item.points}</td></tr>`).join('')}
-                    </tbody></table>
+                <!-- Weekly Leaderboard -->
+                <div class="dashboard-card">
+                    <div class="card-header"><i class="fas fa-trophy"></i><h3>Weekly Leaderboard</h3></div>
+                    <table class="leaderboard-table">
+                        <thead><tr><th>Rank</th><th>Student</th><th>Points</th></tr></thead>
+                        <tbody>
+                            ${leaderboard.map((item, idx) => `
+                                <tr onclick="showToast('${item.name}: ${item.points} pts')">
+                                    <td>${idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':idx+1}</td>
+                                    <td><strong>${item.name}</strong></td>
+                                    <td>${item.points}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
                 </div>
-                <div class="dashboard-card"><div class="card-header"><i class="fas fa-calendar-day"></i><h3>Today's Learning Path</h3></div>
-                    <ul class="today-path-list">${courses.slice(0,3).map(course => `<li><i class="${course.icon}"></i> <strong>${course.title}:</strong> ${course.lastLesson} (${course.lastLessonTime} min)</li>`).join('')}</ul>
+
+                <!-- Today's Learning Path -->
+                <div class="dashboard-card">
+                    <div class="card-header"><i class="fas fa-calendar-day"></i><h3>Today's Learning Path</h3></div>
+                    <ul class="today-path-list">
+                        ${courses.slice(0,3).map(course => `
+                            <li><i class="${course.icon}"></i> <strong>${course.title}:</strong> ${course.lastLesson} (${course.lastLessonTime} min)</li>
+                        `).join('')}
+                    </ul>
                 </div>
             </div>
 
-            <div class="dashboard-card"><div class="card-header"><i class="fas fa-calendar-alt"></i><h3>Upcoming Assessments</h3></div>
-                <ul class="assessments-list"><li><i class="fas fa-clock"></i> <strong>Tomorrow:</strong> JavaScript Functions Quiz (Full-Stack)</li><li><i class="fas fa-clock"></i> <strong>In 3 days:</strong> Final Project – Calculator App (Full-Stack)</li><li><i class="fas fa-clock"></i> <strong>Next week:</strong> Pandas Quiz (Python for Data Science)</li></ul>
+            <!-- Upcoming Assessments -->
+            <div class="dashboard-card">
+                <div class="card-header"><i class="fas fa-calendar-alt"></i><h3>Upcoming Assessments</h3></div>
+                <ul class="assessments-list">
+                    <li><i class="fas fa-clock"></i> <strong>Tomorrow:</strong> JavaScript Functions Quiz (Full-Stack)</li>
+                    <li><i class="fas fa-clock"></i> <strong>In 3 days:</strong> Final Project – Calculator App (Full-Stack)</li>
+                    <li><i class="fas fa-clock"></i> <strong>Next week:</strong> Pandas Quiz (Python for Data Science)</li>
+                </ul>
             </div>
         `;
 
+        // Start animated counters
         setTimeout(animateNumbers, 500);
     }
 
     
+    function runLiveCode() {
+        const code = document.getElementById('htmlCode').value;
+        const iframe = document.getElementById('liveResult');
+        
+        const doc = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        padding: 20px;
+                        margin: 0;
+                    }
+                </style>
+            </head>
+            <body>
+                ${code}
+            </body>
+            </html>
+        `;
+        
+        iframe.srcdoc = doc;
+    }
 
-    // ========== CODE PLAYGROUND FUNCTIONS ==========
-function runLiveCode() {
-    const code = document.getElementById('htmlCode').value;
-    const iframe = document.getElementById('liveResult');
-    
-    const doc = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-                body {
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    padding: 20px;
-                    margin: 0;
-                }
-            </style>
-        </head>
-        <body>
-            ${code}
-        </body>
-        </html>
-    `;
-    
-    iframe.srcdoc = doc;
-}
-
-function resetCode() {
-    const defaultCode = `<h2 style="color: #2b7de9;">Hello, Eduphin! 🚀</h2>
+    /**
+     * resetCode - Resets the code editor to the default example code
+     */
+    function resetCode() {
+        const defaultCode = `<h2 style="color: #2b7de9;">Hello, Eduphin! 🚀</h2>
 <p>This is my first live code.</p>
 <button onclick="alert('🎉 You clicked!')">Click me</button>`;
-    document.getElementById('htmlCode').value = defaultCode;
-    runLiveCode();
-}
+        document.getElementById('htmlCode').value = defaultCode;
+        runLiveCode();
+    }
 
+    // ==================== INITIALIZATION ====================
     window.addEventListener('DOMContentLoaded', () => {
-        resetCode();
-        loadDashboard();
+        resetCode();      // Initialize code playground with default code
+        loadDashboard();  // Load dashboard data
     });
 </script>
+
+<!-- Tidio Chat Integration -->
 <script src="//code.tidio.co/ihlzjyy4poj2j2yjxbswichcqxzfdlfk.js" async></script>
 <script>
-document.addEventListener('tidioChat-ready', function () {
-    const chatBtn = document.getElementById('chatBtn');
-    if (chatBtn) {
-        chatBtn.addEventListener('click', function () {
-            window.tidioChatApi.open();
-        });
-    }
-});
+    document.addEventListener('tidioChat-ready', function () {
+        const chatBtn = document.getElementById('chatBtn');
+        if (chatBtn) {
+            chatBtn.addEventListener('click', function () {
+                window.tidioChatApi.open();
+            });
+        }
+    });
 </script>
+
+<!-- Notifications script -->
 <script src="/js/notifications.js"></script>
 </body>
 </html>
