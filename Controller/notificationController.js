@@ -1,7 +1,8 @@
 import userModel from "../Model/userModel.js";
 import Notification from "../Model/notificationModel.js";
 
-export const notifyNewCourse = async (teacherId, course) => {
+// Notify students of new course added by a teacher
+const notifyNewCourse = async (teacherId, course) => {
     try {
 
         const teacher = await userModel.findById(teacherId);
@@ -23,3 +24,5 @@ export const notifyNewCourse = async (teacherId, course) => {
         console.log(err);
     }
 };
+
+export { notifyNewCourse };
